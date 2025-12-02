@@ -1,0 +1,6 @@
+targets:
+  $default:
+    builders:
+      cirno_yaml_settings_maker:cirno_config_builder:
+        generate_for:
+          - lib/main.dart

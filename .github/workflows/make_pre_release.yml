@@ -1,0 +1,200 @@
+name: Build and Release Flutter app
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release-create:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract version from pubspec.yaml
+        id: version
+        run: |
+          VERSION=$(grep "^version: " pubspec.yaml | awk '{print $2}')
+          echo "APP_VERSION=$VERSION" >> $GITHUB_ENV
+          echo "RELEASE_TAG=v$VERSION" >> $GITHUB_ENV
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: "corrupt ${{ env.APP_VERSION }}"
+          body: "Automated build for ${{ env.APP_VERSION }}"
+          draft: true
+          prerelease: true
+          token: ${{ secrets.ACCESS_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+
+  android-build:
+    needs: release-create
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Cache Flutter dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            android/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.3'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Decode keystore from secrets
+        run: |
+          echo "${{ secrets.KEYSTORE }}" | base64 -d > android/app/upload-keystore.jks
+
+      - name: Create key.properties
+        run: |
+          cat > android/key.properties <<EOF
+          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          storeFile=upload-keystore.jks
+          EOF
+
+      - name: Build signed APK per abi
+        run: flutter build apk --release --split-per-abi
+        
+      - name: Build signed APK universal
+        run: |
+          flutter build apk --release
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-universal-release.apk
+        
+      - name: Upload APK as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android
+          path: |
+            build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+            build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+            build/app/outputs/flutter-apk/app-x86_64-release.apk
+            build/app/outputs/flutter-apk/app-universal-release.apk
+
+  ios-build:
+    needs: release-create
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.3'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build iOS (no codesign)
+        run: flutter build ios --no-codesign --release
+
+      - name: Package app as unsigned IPA
+        run: |
+          cd build/ios/iphoneos
+          mkdir Payload
+          cp -R Runner.app Payload/
+          zip -r ios-unsigned.ipa Payload
+
+      - name: Upload IPA as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-unsigned
+          path: build/ios/iphoneos/ios-unsigned.ipa
+      
+  windows-build:
+    needs: release-create
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.3'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Windows
+        run: flutter build windows --release
+
+      - name: Packing Windows app
+        run: Compress-Archive -Path build/windows/x64/runner/Release -DestinationPath windows-x64.zip
+
+      - name: Upload Windows package as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-x64
+          path: windows-x64.zip
+
+  publish-release-draft:
+    needs: 
+      - windows-build
+      - android-build
+      - ios-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Extract version from pubspec.yaml
+        id: version
+        run: |
+          VERSION=$(grep "^version: " pubspec.yaml | awk '{print $2}')
+          echo "APP_VERSION=$VERSION" >> $GITHUB_ENV
+          echo "RELEASE_TAG=v$VERSION" >> $GITHUB_ENV
+          
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+          
+      - name: List downloaded artifact files
+        run: ls -R ./artifacts
+      
+      - name: Upload files to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          files: |
+            ./artifacts/android/app-arm64-v8a-release.apk,
+            ./artifacts/android/app-armeabi-v7a-release.apk,
+            ./artifacts/android/app-x86_64-release.apk,
+            ./artifacts/android/app-universal-release.apk,
+            ./artifacts/ios-unsigned/ios-unsigned.ipa,
+            ./artifacts/windows-x64/windows-x64.zip
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}

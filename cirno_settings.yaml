@@ -1,0 +1,128 @@
+meta:
+  type: metadata
+  data_output: "lib/features/pref/domain/entity/settings_key.g.dart"
+  data_part_of: "settings_key.dart"
+  presentation_output: "lib/presentation/page/navigation_pages/settings_page.g.dart"
+  presentation_part_of: "settings_page.dart"
+theme_switch:
+  type: select
+  display_id: settings_customize_theme
+  icon: dark_mode
+  default: follow_system
+  entries:
+    - value: follow_system
+      display_id: settings_customize_theme_1
+    - value: light
+      display_id: settings_customize_theme_2
+    - value: dark
+      display_id: settings_customize_theme_3
+color_scheme:
+  type: select
+  display_id: settings_customize_color
+  icon: color_lens
+  default: corrupt_default
+  entries:
+    - value: corrupt_default
+      display_id: settings_customize_color_1
+    - value: dynamic
+      display_id: settings_customize_color_2
+    - value: background
+      display_id: settings_customize_color_3
+    - value: iota
+      display_id: settings_customize_color_4
+    - value: miku
+      display_id: settings_customize_color_5
+background_switch:
+  type: switch
+  display_id: settings_customize_background_switch
+  icon: image
+  default: false
+background_select:
+  type: link
+  display_id: settings_customize_background_select
+background_alpha:
+  type: slider
+  display_id: settings_customize_background_alpha
+  default: 0.12
+  min: 0.0
+  max: 1.0
+appbar_alpha:
+  type: slider
+  display_id: settings_customize_appbar_alpha
+  default: 1.0
+  min: 0.0
+  max: 1.0
+navigation_bar_alpha:
+  type: slider
+  display_id: settings_customize_navigation_bar_alpha
+  default: 1.0
+  min: 0.0
+  max: 1.0
+settings_customize_legacy_color_switch:
+  type: switch
+  display_id: settings_customize_legacy_color_switch
+  display_id_subtitle: settings_customize_legacy_color_switch_subtitle
+  icon: history
+  default: false
+classes_card_style:
+  type: select
+  display_id: settings_home_classes_card_style
+  default: linear_below
+  entries:
+    - value: linear_below
+      display_id: settings_home_classes_card_style_1
+    - value: linear_above
+      display_id: settings_home_classes_card_style_2
+    - value: circular_right
+      display_id: settings_home_classes_card_style_3
+class_inspector_switch:
+  type: switch
+  display_id: settings_classes_time_inspector_switch
+  display_id_subtitle: settings_classes_time_inspector_switch_subtitle
+  default: true
+class_inspector_alpha:
+  type: slider
+  display_id: settings_classes_time_inspector_alpha
+  default: 0.6
+  max: 1.0
+  min: 0.0
+date_inspector_switch:
+  type: switch
+  display_id: settings_classes_date_inspector_switch
+  display_id_subtitle: settings_classes_date_inspector_switch_subtitle
+  default: true
+date_inspector_alpha:
+  type: slider
+  display_id: settings_classes_date_inspector_alpha
+  default: 0.1
+  max: 1.0
+  min: 0.0
+class_data_source:
+  type: select
+  display_id: settings_classes_data_source
+  default: default
+  entries:
+    - value: default
+      display_id: settings_classes_data_source_1
+    - value: date
+      display_id: settings_classes_data_source_2
+refresh_frequency:
+  type: select
+  display_id: settings_software_refresh_frequency
+  default: always
+  entries:
+    - value: always
+      display_id: settings_software_refresh_frequency_1
+    - value: 5min
+      display_id: settings_software_refresh_frequency_2
+    - value: 10min
+      display_id: settings_software_refresh_frequency_3
+    - value: 30min
+      display_id: settings_software_refresh_frequency_4
+    - value: never
+      display_id: settings_software_refresh_frequency_5
+update_checking:
+  type: switch
+  display_id: settings_software_update_checking_switch
+  display_id_subtitle: settings_software_update_checking_switch_subtitle
+  default: true
