@@ -194,7 +194,8 @@ jobs:
             ./artifacts/android/app-armeabi-v7a-release.apk,
             ./artifacts/android/app-x86_64-release.apk,
             ./artifacts/android/app-universal-release.apk,
-            ./artifacts/ios-unsigned/ios-unsigned.ipa,
+            ./artifacts/ios-unsigned/ios-unsigned.ipa
+
             ./artifacts/windows-x64/windows-x64.zip
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
