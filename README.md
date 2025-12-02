@@ -1,16 +1,23 @@
 # corrupt
 
-A new Flutter project.
+A small toy that reads multiple school APIs for class schedule, grades, and exam dates.
 
-## Getting Started
+## Warning
+This project is still under developing, it may crash, make mistakes, or even RUIN YOUR ACCOUNT! Think twice before install and use it!
 
-This project is a starting point for a Flutter application.
+## Introduction
+This repository is just refactored from Kotlin to Dart. This is a fan made toy, which read information from school APIs, and show them in the app. While corrupt provides limited customization settings.
 
-A few resources to get you started if this is your first Flutter project:
+## Install
+See [release page](https://github.com/nofyso/corrupt/releases)  
+__Notice that package for iOS(ipa) is NOT signed, you have to sign it yourself__
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Feature
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+✅ = Supported  
+❌ = Not supported  
+| |FAFU|MJU|
+|-:|:-:|:-:|
+|Class table|✅|✅|
+|Exams|✅|✅|
+|Scores|✅|❌|
