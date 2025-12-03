@@ -74,13 +74,14 @@ class MjuClassEntry {
         })
         .map((it) => it - 1)
         .toList(growable: false);
+    final dow = DayOfWeek.valueOf(int.parse(dayOfWeek) % 7)!;
     return ClassEntity(
       name,
       teacher,
-      DayOfWeek.valueOf(int.parse(dayOfWeek) - 1)!,
+      dow,
       fromTime - 1,
       toTime - fromTime + 1,
-      weeksArray,
+      weeksArray.map((it) => dow == DayOfWeek.sun ? it + 1 : it).toList(),
       "$place $classroom",
       false,
     );

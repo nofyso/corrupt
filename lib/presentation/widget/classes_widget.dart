@@ -305,14 +305,14 @@ class _ClassesWidgetState extends ConsumerState<ClassesWidget> with SingleTicker
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(switch (dayIndex) {
-                  0 => i18n.common_mon,
-                  1 => i18n.common_tue,
-                  2 => i18n.common_wed,
-                  3 => i18n.common_thu,
-                  4 => i18n.common_fri,
-                  5 => i18n.common_sat,
-                  6 || _ => i18n.common_sun,
+                Text(switch (DayOfWeek.valueOf(dayIndex)) {
+                  DayOfWeek.mon => i18n.common_mon,
+                  DayOfWeek.tue => i18n.common_tue,
+                  DayOfWeek.wed => i18n.common_wed,
+                  DayOfWeek.thu => i18n.common_thu,
+                  DayOfWeek.fri => i18n.common_fri,
+                  DayOfWeek.sat => i18n.common_sat,
+                  DayOfWeek.sun || _ => i18n.common_sun,
                 }),
                 if (targetDay != null)
                   Text(

@@ -307,7 +307,7 @@ class FafuAnalyzer {
       final (time, duration, dow) = $<(int, int, DayOfWeek)>(
         primaryTimeMatch.match(
           () {
-            final dow = DayOfWeek.valueOf(optionDow);
+            final dow = DayOfWeek.valueOf((optionDow + 1) % 7);
             if (dow == null) {
               return Either.left(
                 data_fetch_failure.OtherFailure(
@@ -365,7 +365,16 @@ class FafuAnalyzer {
               .filter((it) => !(singleWeek && it % 2 == 0) && !(doubleWeek && it % 2 != 0))
               .map((it) => it - 1)
               .toList();
-      return ClassEntity(name, teacher, dow, time, duration, weeks, place, false);
+      return ClassEntity(
+        name,
+        teacher,
+        dow,
+        time,
+        duration,
+        weeks.map((it) => dow == DayOfWeek.sun ? it + 1 : it).toList(),
+        place,
+        false,
+      );
     });
   }
 }
