@@ -50,18 +50,27 @@ class _ClassesPageState extends ConsumerState<ClassesPage> with SingleTickerProv
     ];
     return loadWaitingMask(
       values: neededValue,
-      requiredValues: neededValue,
+      requiredValues: [isLoggedResult, dataSource],
       context: context,
       child: (list) {
-        final classTable = list[0] as ClassTable;
-        final termDataList = list[1] as List<TermData>;
-        final classTime = list[2] as ClassTime;
-        final showTimeInspector = list[3] as bool;
-        final showDateInspector = list[4] as bool;
-        final timeInspectorAlpha = list[5] as double;
-        final dateInspectorAlpha = list[6] as double;
+        final classTable = list[0] as ClassTable?;
+        final termDataList = list[1] as List<TermData>?;
+        final classTime = list[2] as ClassTime?;
+        final showTimeInspector = list[3] as bool?;
+        final showDateInspector = list[4] as bool?;
+        final timeInspectorAlpha = list[5] as double?;
+        final dateInspectorAlpha = list[6] as double?;
         final dataSource = list[7] as String;
         final isLogged = list[8] as bool;
+        if (classTime == null ||
+            termDataList == null ||
+            classTable == null ||
+            showTimeInspector == null ||
+            showDateInspector == null ||
+            timeInspectorAlpha == null ||
+            dateInspectorAlpha == null) {
+          return isLogged ? _noClassesPage(context, dataSource) : _notLoggedPage(context);
+        }
         final time = DateTime.timestamp().toLocal();
         final termData = ClassTimeUtil.selectCurrentTermData(time, termDataList);
         final initialPageIndex = termData == null
@@ -78,9 +87,7 @@ class _ClassesPageState extends ConsumerState<ClassesPage> with SingleTickerProv
                 dateInspectorAlpha: dateInspectorAlpha,
                 initialPageIndex: initialPageIndex,
               )
-            : isLogged
-            ? _noClassesPage(context, dataSource)
-            : _notLoggedPage(context));
+            : _noClassesPage(context, dataSource));
       },
     );
   }

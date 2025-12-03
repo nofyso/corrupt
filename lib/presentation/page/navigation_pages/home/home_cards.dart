@@ -135,28 +135,32 @@ Widget _cardClassTime(BuildContext context, DateTime time, WidgetRef ref) {
             final classTime = result[2] as ClassTime?;
             final isLogged = result[4] as bool;
             if (classTable == null || termDataList == null || classTime == null) {
-              return isLogged
-                  ? iconTitleAndSubtitle(
-                      context: context,
-                      icon: Icons.key_off,
-                      title: i18n.page_home_class_error_no_content_title,
-                      subtitle: i18n.page_home_class_error_no_content_not_logged,
-                    )
-                  : iconTitleAndSubtitle(
-                      context: context,
-                      icon: Icons.circle_outlined,
-                      title: i18n.page_home_class_error_no_content_title,
-                      subtitle: i18n.page_home_class_error_no_content_empty,
-                    );
+              return Center(
+                child: !isLogged
+                    ? iconTitleAndSubtitle(
+                        context: context,
+                        icon: Icons.key_off,
+                        title: i18n.page_home_class_error_no_content_title,
+                        subtitle: i18n.page_home_class_error_no_content_not_logged,
+                      )
+                    : iconTitleAndSubtitle(
+                        context: context,
+                        icon: Icons.circle_outlined,
+                        title: i18n.page_home_class_error_no_content_title,
+                        subtitle: i18n.page_home_class_error_no_content_empty,
+                      ),
+              );
             }
             final cardStyle = result[3] as String;
             final classStatus = getClassStatus(classTable, termDataList, classTime);
             if (classStatus == null) {
-              return iconTitleAndSubtitle(
-                context: context,
-                icon: Icons.error_outline,
-                title: i18n.page_home_class_error_wrong_data_title,
-                subtitle: i18n.page_home_class_error_wrong_data_content_term,
+              return Center(
+                child: iconTitleAndSubtitle(
+                  context: context,
+                  icon: Icons.error_outline,
+                  title: i18n.page_home_class_error_wrong_data_title,
+                  subtitle: i18n.page_home_class_error_wrong_data_content_term,
+                ),
               );
             }
             final (

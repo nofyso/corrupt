@@ -47,6 +47,7 @@ Widget iconTitleAndSubtitle({
 }) {
   final textTheme = Theme.of(context).textTheme;
   return Column(
+    mainAxisSize: MainAxisSize.min,
     children: [
       Icon(icon, size: 32),
       Text(title, style: textTheme.titleMedium),
