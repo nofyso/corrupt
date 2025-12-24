@@ -21,7 +21,6 @@ Widget commonSchoolDataFailureWidget({
   }
   if (failures.isEmpty) return SizedBox.shrink();
   final i18n = AppLocalizations.of(context)!;
-  final textTheme = Theme.of(context).textTheme;
   final (icon, errorTitle, errorSubtitle) = _getDisplayTriple(failures.first, i18n);
   final isNotSingleFailureNorUnknown = _tryMerge(rawFailures: failures).isNone();
   return SizedBox.expand(
@@ -75,19 +74,19 @@ Option<data_fetch_failure.SchoolDataFetchFailure> _tryMerge({
       : Option.none();
 }
 
-bool _isUnknown(data_fetch_failure.SchoolDataFetchFailure failure) => switch (failure) {
-  data_fetch_failure.NetworkFailure() ||
-  data_fetch_failure.LoopbackFailure() ||
-  data_fetch_failure.NotImplementedFailure() ||
-  data_fetch_failure.NotLoggedFailure() => false,
-  data_fetch_failure.OtherFailure() => true,
-  data_fetch_failure.LoginFailure(loginFailure: final x) => switch (x) {
-    login_failure.NetworkFailure() ||
-    login_failure.BadDataFailure() ||
-    login_failure.CaptchaFailure() => false,
-    login_failure.OtherFailure() => true,
-  },
-};
+// bool _isUnknown(data_fetch_failure.SchoolDataFetchFailure failure) => switch (failure) {
+//   data_fetch_failure.NetworkFailure() ||
+//   data_fetch_failure.LoopbackFailure() ||
+//   data_fetch_failure.NotImplementedFailure() ||
+//   data_fetch_failure.NotLoggedFailure() => false,
+//   data_fetch_failure.OtherFailure() => true,
+//   data_fetch_failure.LoginFailure(loginFailure: final x) => switch (x) {
+//     login_failure.NetworkFailure() ||
+//     login_failure.BadDataFailure() ||
+//     login_failure.CaptchaFailure() => false,
+//     login_failure.OtherFailure() => true,
+//   },
+// };
 
 Widget _multiFailuresWidget(BuildContext context, AppLocalizations i18n) => iconTitleAndSubtitle(
   context: context,
