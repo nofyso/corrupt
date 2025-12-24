@@ -30,9 +30,9 @@ class LocalDataKey {
     Option<List<TermData>>.none(),
     TermData.fromJson,
   );
-  static final localExamData = "common:exam_data".toEnhancedKeyJsonList(
-    Option<List<ExamEntity>>.none(),
-    ExamEntity.fromJson,
+  static final localExamData = "common:exam_data".toEnhancedKeyJson(
+    Option<ExamsEntity>.none(),
+    ExamsEntity.fromJson,
   );
   static final localScoreData = "common:score_data".toEnhancedKeyJsonList(
     Option<List<ScoreEntity>>.none(),

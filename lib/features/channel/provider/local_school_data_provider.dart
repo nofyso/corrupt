@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:corrupt/features/channel/domain/entity/class_table_entity.dart';
 import 'package:corrupt/features/channel/domain/entity/data_fetch_type.dart';
+import 'package:corrupt/features/channel/domain/entity/exam_entity.dart';
 import 'package:corrupt/features/pref/domain/abstract_repository/abstract_local_data.dart';
 import 'package:corrupt/features/pref/domain/entity/local_data_key.dart';
 import 'package:corrupt/infrastructure/di.dart';
@@ -14,6 +15,15 @@ class ClassTableNotifier extends AsyncNotifier<Option<ClassTable>> {
   FutureOr<Option<ClassTable>> build() async {
     final rawClassTable = await LocalDataKey.localClassTable.readRaw(null);
     final x = jsonDecodeSafeDirect(rawClassTable, ClassTable.fromJson);
+    return x;
+  }
+}
+
+class ExamsNotifier extends AsyncNotifier<Option<ExamsEntity>> {
+  @override
+  FutureOr<Option<ExamsEntity>> build() async {
+    final rawExams = await LocalDataKey.localExamData.readRaw(null);
+    final x = jsonDecodeSafeDirect(rawExams, ExamsEntity.fromJson);
     return x;
   }
 }
@@ -32,9 +42,12 @@ final classLocalProviderMap = {
   DataFetchType.classes: _classTableNotifierProvider,
   DataFetchType.classTime: _classTimeNotifierProvider,
   DataFetchType.termData: _termDataNotifierProvider,
+  DataFetchType.exam: _examsNotifierProvider
 };
 
 final _classTableNotifierProvider = AsyncNotifierProvider(() => ClassTableNotifier());
+
+final _examsNotifierProvider = AsyncNotifierProvider(() => ExamsNotifier());
 
 final _termDataNotifierProvider = AsyncNotifierProvider(
   () => _BaseSchoolDataNotifier(DataFetchType.termData),

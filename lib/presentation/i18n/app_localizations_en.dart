@@ -180,23 +180,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get page_home_class_empty => 'No classes today';
 
   @override
-  String get page_home_class_error_no_content_title =>
-      'Here\'s nothing but the void';
-
-  @override
-  String get page_home_class_error_no_content_not_logged =>
-      'You\'re not logged in';
-
-  @override
-  String get page_home_class_error_no_content_empty => 'Try refresh?';
-
-  @override
   String get page_home_class_error_wrong_data_title =>
       'Something went wrong...?';
 
   @override
   String get page_home_class_error_wrong_data_content_term =>
       'Contact to nofyso then let it add term data';
+
+  @override
+  String get page_home_exams_title => 'Exams';
+
+  @override
+  String get page_home_exams_empty => 'No exams upcoming';
+
+  @override
+  String get page_home_exams_upcoming => 'Upcoming';
+
+  @override
+  String get page_home_error_no_content_title => 'Here\'s nothing but the void';
+
+  @override
+  String get page_home_error_no_content_not_logged => 'You\'re not logged in';
+
+  @override
+  String get page_home_error_no_content_empty => 'Try refresh?';
 
   @override
   String get page_home_req_title => 'Login';

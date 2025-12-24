@@ -400,24 +400,6 @@ abstract class AppLocalizations {
   /// **'No classes today'**
   String get page_home_class_empty;
 
-  /// No description provided for @page_home_class_error_no_content_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Here\'s nothing but the void'**
-  String get page_home_class_error_no_content_title;
-
-  /// No description provided for @page_home_class_error_no_content_not_logged.
-  ///
-  /// In en, this message translates to:
-  /// **'You\'re not logged in'**
-  String get page_home_class_error_no_content_not_logged;
-
-  /// No description provided for @page_home_class_error_no_content_empty.
-  ///
-  /// In en, this message translates to:
-  /// **'Try refresh?'**
-  String get page_home_class_error_no_content_empty;
-
   /// No description provided for @page_home_class_error_wrong_data_title.
   ///
   /// In en, this message translates to:
@@ -429,6 +411,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Contact to nofyso then let it add term data'**
   String get page_home_class_error_wrong_data_content_term;
+
+  /// No description provided for @page_home_exams_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Exams'**
+  String get page_home_exams_title;
+
+  /// No description provided for @page_home_exams_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No exams upcoming'**
+  String get page_home_exams_empty;
+
+  /// No description provided for @page_home_exams_upcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming'**
+  String get page_home_exams_upcoming;
+
+  /// No description provided for @page_home_error_no_content_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Here\'s nothing but the void'**
+  String get page_home_error_no_content_title;
+
+  /// No description provided for @page_home_error_no_content_not_logged.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re not logged in'**
+  String get page_home_error_no_content_not_logged;
+
+  /// No description provided for @page_home_error_no_content_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Try refresh?'**
+  String get page_home_error_no_content_empty;
 
   /// No description provided for @page_home_req_title.
   ///

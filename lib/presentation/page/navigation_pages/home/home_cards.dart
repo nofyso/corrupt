@@ -140,14 +140,14 @@ Widget _cardClassTime(BuildContext context, DateTime time, WidgetRef ref) {
                     ? iconTitleAndSubtitle(
                         context: context,
                         icon: Icons.key_off,
-                        title: i18n.page_home_class_error_no_content_title,
-                        subtitle: i18n.page_home_class_error_no_content_not_logged,
+                        title: i18n.page_home_error_no_content_title,
+                        subtitle: i18n.page_home_error_no_content_not_logged,
                       )
                     : iconTitleAndSubtitle(
                         context: context,
                         icon: Icons.circle_outlined,
-                        title: i18n.page_home_class_error_no_content_title,
-                        subtitle: i18n.page_home_class_error_no_content_empty,
+                        title: i18n.page_home_error_no_content_title,
+                        subtitle: i18n.page_home_error_no_content_empty,
                       ),
               );
             }
@@ -270,6 +270,111 @@ Widget _cardClassTime(BuildContext context, DateTime time, WidgetRef ref) {
       ],
     ),
   );
+}
+
+Widget _cardExams(BuildContext context, DateTime time, WidgetRef ref) {
+  final i18n = AppLocalizations.of(context)!;
+  final isLoggedResult = ref.watch(prefProvider(LocalDataKey.logged));
+  final neededValue = <AsyncValue<Option<dynamic>>>[
+    isLoggedResult,
+    ref.watch(classLocalProviderMap[DataFetchType.exam]!),
+  ];
+  final textTheme = Theme.of(context).textTheme;
+  return cardWithPadding(
+    child: Column(
+      children: [
+        cardHead(context, Icons.school, i18n.page_home_exams_title),
+        SizedBox(height: 8),
+        loadWaitingMask(
+          values: neededValue,
+          requiredValues: [isLoggedResult],
+          context: context,
+          child: (values) {
+            final isLogged = values[0] as bool;
+            final exams = values[1] as ExamsEntity?;
+            if (exams == null) {
+              return Center(
+                child: !isLogged
+                    ? iconTitleAndSubtitle(
+                        context: context,
+                        icon: Icons.key_off,
+                        title: i18n.page_home_error_no_content_title,
+                        subtitle: i18n.page_home_error_no_content_not_logged,
+                      )
+                    : iconTitleAndSubtitle(
+                        context: context,
+                        icon: Icons.circle_outlined,
+                        title: i18n.page_home_error_no_content_title,
+                        subtitle: i18n.page_home_error_no_content_empty,
+                      ),
+              );
+            }
+            final upcomingExams = exams.entities
+                .filter((it) => it.fromTime != null && it.toTime != null)
+                .filter((it) => it.fromTime!.isAfter(DateTime.now()))
+                .sortWith((it) => it.fromTime!.millisecondsSinceEpoch, Order.orderInt);
+            if (upcomingExams.isEmpty) {
+              return Text(i18n.page_home_exams_empty);
+            }
+            return Padding(
+              padding: EdgeInsetsGeometry.directional(start: 8),
+              child: Column(
+                spacing: 24,
+                children: [
+                  ...upcomingExams.map(
+                    (it) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          spacing: 4,
+                          children: [
+                            Icon(Icons.circle, size: 16),
+                            Text(it.name, style: textTheme.titleMedium),
+                          ],
+                        ),
+                        SizedBox(height: 4),
+                        Padding(
+                          padding: EdgeInsetsGeometry.directional(start: 4),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              textIconWidget(
+                                icon: Icons.calendar_month,
+                                text:
+                                    "${dateFormat.format(it.fromTime!)} ${timeFormat.format(it.fromTime!)}-${timeFormat.format(it.toTime!)}",
+                              ),
+                              textIconWidget(icon: Icons.location_on, text: it.campus),
+                              textIconWidget(
+                                icon: Icons.grid_view,
+                                text: "${it.place} - ${it.seat}",
+                              ),
+                              textIconWidget(
+                                icon: Icons.timelapse,
+                                text: _formatDuration(it.fromTime!.difference(time)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox.shrink(),
+                ],
+              ),
+            );
+          },
+        ),
+      ],
+    ),
+  );
+}
+
+String _formatDuration(Duration duration) {
+  String days = duration.inDays.toString();
+  String hours = duration.inHours.remainder(24).toString().padLeft(0, '2');
+  String minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+  String seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+  return "${days.let((it) => days == "0" ? "" : (days == "1" ? "1 day" : "$days days "))}${hours}h ${minutes}m ${seconds}s";
 }
 
 Widget _cardUpdate(BuildContext context, WidgetRef ref) {
