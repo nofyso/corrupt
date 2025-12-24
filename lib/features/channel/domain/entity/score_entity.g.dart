@@ -14,11 +14,12 @@ ScoresEntity _$ScoresEntityFromJson(Map<String, dynamic> json) => ScoresEntity(
       .toList(),
 );
 
-Map<String, dynamic> _$ScoresEntityToJson(ScoresEntity instance) => <String, dynamic>{
-  'academicYear': instance.academicYear,
-  'semester': instance.semester,
-  'entities': instance.entities,
-};
+Map<String, dynamic> _$ScoresEntityToJson(ScoresEntity instance) =>
+    <String, dynamic>{
+      'academicYear': instance.academicYear,
+      'semester': instance.semester,
+      'entities': instance.entities,
+    };
 
 ScoreEntity _$ScoreEntityFromJson(Map<String, dynamic> json) => ScoreEntity(
   year: json['year'] as String,
@@ -35,17 +36,18 @@ ScoreEntity _$ScoreEntityFromJson(Map<String, dynamic> json) => ScoreEntity(
   elective: json['elective'] as bool,
 );
 
-Map<String, dynamic> _$ScoreEntityToJson(ScoreEntity instance) => <String, dynamic>{
-  'year': instance.year,
-  'term': instance.term,
-  'classId': instance.classId,
-  'name': instance.name,
-  'type': instance.type,
-  'belong': instance.belong,
-  'score': instance.score,
-  'credit': instance.credit,
-  'gp': instance.gp,
-  'place': instance.place,
-  'note': instance.note,
-  'elective': instance.elective,
-};
+Map<String, dynamic> _$ScoreEntityToJson(ScoreEntity instance) =>
+    <String, dynamic>{
+      'year': instance.year,
+      'term': instance.term,
+      'classId': instance.classId,
+      'name': instance.name,
+      'type': instance.type,
+      'belong': instance.belong,
+      'score': instance.score,
+      'credit': instance.credit,
+      'gp': instance.gp,
+      'place': instance.place,
+      'note': instance.note,
+      'elective': instance.elective,
+    };

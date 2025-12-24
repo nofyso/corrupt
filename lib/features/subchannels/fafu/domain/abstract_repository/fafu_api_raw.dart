@@ -114,7 +114,19 @@ abstract class FafuApiRaw {
     @Field(_semesterInScore) required String semester,
     @Field(_eventTarget) String eventTarget = "",
     @Field(_eventTArgument) String eventTArgument = "",
+    @Field("btnCx") String queryButton="+%B2%E9++%D1%AF+",
     @Header(_referer) required String referer,
+  });
+
+  @POST("/({$_token})/xscjcx_dq_fafu.aspx?$_functionModuleCode=N121605")
+  @DioResponseType(ResponseType.bytes)
+  @FormUrlEncoded()
+  Future<HttpResponse<dynamic>> getScorePageManually({
+    @Path(_token) required String token,
+    @Query(_studentId) required String studentId,
+    @Query(_studentName) required String studentName,
+    @Header(_referer) required String referer,
+    @Body() required String body
   });
 
   @POST("/({$_token})/default2.aspx")

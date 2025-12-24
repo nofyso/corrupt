@@ -700,6 +700,60 @@ abstract class AppLocalizations {
   /// **'Work hard anyway, please'**
   String get page_exams_empty_subtitle;
 
+  /// No description provided for @page_scores_card_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get page_scores_card_time;
+
+  /// No description provided for @page_scores_card_place.
+  ///
+  /// In en, this message translates to:
+  /// **'Place'**
+  String get page_scores_card_place;
+
+  /// No description provided for @page_scores_card_category.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get page_scores_card_category;
+
+  /// No description provided for @page_scores_card_credit.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit'**
+  String get page_scores_card_credit;
+
+  /// No description provided for @page_scores_card_gp.
+  ///
+  /// In en, this message translates to:
+  /// **'Grade point'**
+  String get page_scores_card_gp;
+
+  /// No description provided for @page_scores_card_note.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get page_scores_card_note;
+
+  /// No description provided for @page_scores_card_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Class code'**
+  String get page_scores_card_code;
+
+  /// No description provided for @page_scores_card_score.
+  ///
+  /// In en, this message translates to:
+  /// **'Score'**
+  String get page_scores_card_score;
+
+  /// No description provided for @page_scores_card_elective.
+  ///
+  /// In en, this message translates to:
+  /// **'[Elective]'**
+  String get page_scores_card_elective;
+
   /// No description provided for @widget_load_not_fully_loaded.
   ///
   /// In en, this message translates to:
@@ -724,6 +778,18 @@ abstract class AppLocalizations {
   /// **'Considering change your network environment?'**
   String get widget_error_network_subtitle;
 
+  /// No description provided for @widget_error_network_bad_response_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Network error'**
+  String get widget_error_network_bad_response_title;
+
+  /// No description provided for @widget_error_network_bad_response_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The server returned a bad response...\nLogs may help'**
+  String get widget_error_network_bad_response_subtitle;
+
   /// No description provided for @widget_error_login_title.
   ///
   /// In en, this message translates to:
@@ -733,7 +799,7 @@ abstract class AppLocalizations {
   /// No description provided for @widget_error_login_subtitle.
   ///
   /// In en, this message translates to:
-  /// **'Are you changed your password? Re-login if necessary, please'**
+  /// **'Were you changed your password? Re-login if necessary, please'**
   String get widget_error_login_subtitle;
 
   /// No description provided for @widget_error_loopback_title.
@@ -745,7 +811,7 @@ abstract class AppLocalizations {
   /// No description provided for @widget_error_loopback_subtitle.
   ///
   /// In en, this message translates to:
-  /// **'Oh no... try again?'**
+  /// **'I\'ve tried many times for you... but you can also try it again?'**
   String get widget_error_loopback_subtitle;
 
   /// No description provided for @widget_error_captcha_title.
@@ -760,12 +826,6 @@ abstract class AppLocalizations {
   /// **'What a bad tensor... try again?'**
   String get widget_error_captcha_subtitle;
 
-  /// No description provided for @widget_error_unknown.
-  ///
-  /// In en, this message translates to:
-  /// **'Unknown error'**
-  String get widget_error_unknown;
-
   /// No description provided for @widget_error_unimplemented_title.
   ///
   /// In en, this message translates to:
@@ -778,11 +838,59 @@ abstract class AppLocalizations {
   /// **'Well, you just rua nofyso, then you\'ll get the implementation'**
   String get widget_error_unimplemented_subtitle;
 
-  /// No description provided for @widget_error_other.
+  /// No description provided for @widget_error_other_title.
   ///
   /// In en, this message translates to:
   /// **'Other error'**
-  String get widget_error_other;
+  String get widget_error_other_title;
+
+  /// No description provided for @widget_error_other_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Oh no... An unarchived failure...\nFor more information, view logs'**
+  String get widget_error_other_subtitle;
+
+  /// No description provided for @widget_error_other_fafu_teaching_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Teaching evaluation is not completed'**
+  String get widget_error_other_fafu_teaching_title;
+
+  /// No description provided for @widget_error_other_fafu_teaching_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'I knew it makes no sense to block students from accessing anything before they complete that...'**
+  String get widget_error_other_fafu_teaching_subtitle;
+
+  /// No description provided for @widget_error_other_fafu_analyzing_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing failed'**
+  String get widget_error_other_fafu_analyzing_title;
+
+  /// No description provided for @widget_error_other_fafu_analyzing_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s a bad software... Please, I need your logs...'**
+  String get widget_error_other_fafu_analyzing_subtitle;
+
+  /// No description provided for @widget_error_multi_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sounds bad...'**
+  String get widget_error_multi_title;
+
+  /// No description provided for @widget_error_multi_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'More than one failures in processing...\nFor more information, view logs'**
+  String get widget_error_multi_subtitle;
+
+  /// No description provided for @widget_error_copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy detail to clipboard'**
+  String get widget_error_copy;
 
   /// No description provided for @widget_error_retry.
   ///

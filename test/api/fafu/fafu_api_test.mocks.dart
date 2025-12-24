@@ -368,6 +368,7 @@ class MockFafuApiRaw extends _i1.Mock implements _i4.FafuApiRaw {
     required String? semester,
     String? eventTarget = '',
     String? eventTArgument = '',
+    String? queryButton = '+%B2%E9++%D1%AF+',
     required String? referer,
   }) =>
       (super.noSuchMethod(
@@ -380,6 +381,7 @@ class MockFafuApiRaw extends _i1.Mock implements _i4.FafuApiRaw {
               #semester: semester,
               #eventTarget: eventTarget,
               #eventTArgument: eventTArgument,
+              #queryButton: queryButton,
               #referer: referer,
             }),
             returnValue: _i3.Future<_i2.HttpResponse<dynamic>>.value(
@@ -394,6 +396,7 @@ class MockFafuApiRaw extends _i1.Mock implements _i4.FafuApiRaw {
                   #semester: semester,
                   #eventTarget: eventTarget,
                   #eventTArgument: eventTArgument,
+                  #queryButton: queryButton,
                   #referer: referer,
                 }),
               ),
@@ -411,7 +414,52 @@ class MockFafuApiRaw extends _i1.Mock implements _i4.FafuApiRaw {
                       #semester: semester,
                       #eventTarget: eventTarget,
                       #eventTArgument: eventTArgument,
+                      #queryButton: queryButton,
                       #referer: referer,
+                    }),
+                  ),
+                ),
+          )
+          as _i3.Future<_i2.HttpResponse<dynamic>>);
+
+  @override
+  _i3.Future<_i2.HttpResponse<dynamic>> getScorePageManually({
+    required String? token,
+    required String? studentId,
+    required String? studentName,
+    required String? referer,
+    required String? body,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#getScorePageManually, [], {
+              #token: token,
+              #studentId: studentId,
+              #studentName: studentName,
+              #referer: referer,
+              #body: body,
+            }),
+            returnValue: _i3.Future<_i2.HttpResponse<dynamic>>.value(
+              _FakeHttpResponse_0<dynamic>(
+                this,
+                Invocation.method(#getScorePageManually, [], {
+                  #token: token,
+                  #studentId: studentId,
+                  #studentName: studentName,
+                  #referer: referer,
+                  #body: body,
+                }),
+              ),
+            ),
+            returnValueForMissingStub:
+                _i3.Future<_i2.HttpResponse<dynamic>>.value(
+                  _FakeHttpResponse_0<dynamic>(
+                    this,
+                    Invocation.method(#getScorePageManually, [], {
+                      #token: token,
+                      #studentId: studentId,
+                      #studentName: studentName,
+                      #referer: referer,
+                      #body: body,
                     }),
                   ),
                 ),

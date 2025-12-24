@@ -353,6 +353,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get page_exams_empty_subtitle => 'Work hard anyway, please';
 
   @override
+  String get page_scores_card_time => 'Time';
+
+  @override
+  String get page_scores_card_place => 'Place';
+
+  @override
+  String get page_scores_card_category => 'Category';
+
+  @override
+  String get page_scores_card_credit => 'Credit';
+
+  @override
+  String get page_scores_card_gp => 'Grade point';
+
+  @override
+  String get page_scores_card_note => 'Note';
+
+  @override
+  String get page_scores_card_code => 'Class code';
+
+  @override
+  String get page_scores_card_score => 'Score';
+
+  @override
+  String get page_scores_card_elective => '[Elective]';
+
+  @override
   String get widget_load_not_fully_loaded =>
       'Some of data have not loaded yet, try to refresh';
 
@@ -369,26 +396,31 @@ class AppLocalizationsEn extends AppLocalizations {
       'Considering change your network environment?';
 
   @override
+  String get widget_error_network_bad_response_title => 'Network error';
+
+  @override
+  String get widget_error_network_bad_response_subtitle =>
+      'The server returned a bad response...\nLogs may help';
+
+  @override
   String get widget_error_login_title => 'Login error';
 
   @override
   String get widget_error_login_subtitle =>
-      'Are you changed your password? Re-login if necessary, please';
+      'Were you changed your password? Re-login if necessary, please';
 
   @override
   String get widget_error_loopback_title => 'Login looped back';
 
   @override
-  String get widget_error_loopback_subtitle => 'Oh no... try again?';
+  String get widget_error_loopback_subtitle =>
+      'I\'ve tried many times for you... but you can also try it again?';
 
   @override
   String get widget_error_captcha_title => 'Captcha error';
 
   @override
   String get widget_error_captcha_subtitle => 'What a bad tensor... try again?';
-
-  @override
-  String get widget_error_unknown => 'Unknown error';
 
   @override
   String get widget_error_unimplemented_title =>
@@ -399,7 +431,36 @@ class AppLocalizationsEn extends AppLocalizations {
       'Well, you just rua nofyso, then you\'ll get the implementation';
 
   @override
-  String get widget_error_other => 'Other error';
+  String get widget_error_other_title => 'Other error';
+
+  @override
+  String get widget_error_other_subtitle =>
+      'Oh no... An unarchived failure...\nFor more information, view logs';
+
+  @override
+  String get widget_error_other_fafu_teaching_title =>
+      'Teaching evaluation is not completed';
+
+  @override
+  String get widget_error_other_fafu_teaching_subtitle =>
+      'I knew it makes no sense to block students from accessing anything before they complete that...';
+
+  @override
+  String get widget_error_other_fafu_analyzing_title => 'Analyzing failed';
+
+  @override
+  String get widget_error_other_fafu_analyzing_subtitle =>
+      'What\'s a bad software... Please, I need your logs...';
+
+  @override
+  String get widget_error_multi_title => 'Sounds bad...';
+
+  @override
+  String get widget_error_multi_subtitle =>
+      'More than one failures in processing...\nFor more information, view logs';
+
+  @override
+  String get widget_error_copy => 'Copy detail to clipboard';
 
   @override
   String get widget_error_retry => 'Retry';

@@ -36,7 +36,13 @@ Widget textIconButton({
 
 Widget textIconWidget({required IconData icon, required String text}) => Row(
   mainAxisSize: MainAxisSize.min,
-  children: [Icon(icon, size: 24), SizedBox(width: 8), Text(text)],
+  crossAxisAlignment: CrossAxisAlignment.center,
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: [
+    SizedBox(width: 24, height: 24, child: Icon(icon, size: 24)),
+    SizedBox(width: 8),
+    Text(text),
+  ],
 );
 
 Widget iconTitleAndSubtitle({
@@ -50,8 +56,8 @@ Widget iconTitleAndSubtitle({
     mainAxisSize: MainAxisSize.min,
     children: [
       Icon(icon, size: 32),
-      Text(title, style: textTheme.titleMedium),
-      if (subtitle != null) Text(subtitle),
+      Text(title, style: textTheme.titleMedium, textAlign: TextAlign.center),
+      if (subtitle != null) Text(subtitle, textAlign: TextAlign.center),
     ],
   );
 }

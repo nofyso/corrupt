@@ -96,7 +96,7 @@ class FafuApi {
                     .asGbkString()
                     .matchFirst(_alertRegex)
                     .toTaskOption()
-                    .toTaskEither(() => Exception("alert not found")),
+                    .toTaskEither(() => login_failure.OtherFailure("No alert but looped back???")),
               );
               await $(switch (alert) {
                 final s when s.contains("验证码") => TaskEither.left(login_failure.CaptchaFailure()),
@@ -176,6 +176,7 @@ class FafuApi {
           await $(TaskEither.left(data_fetch_failure.LoopbackFailure()));
         }
         final defaultPage = defaultPageResult.asGbkString();
+        await $(_checkIsInTeachingEvaluation(defaultPage).toTaskEither());
         final (academicYearDefault, semesterDefault) = await $(
           FafuAnalyzer.getSelectedTime(defaultPage).toTaskOption().toTaskEither(
             () => data_fetch_failure.OtherFailure(
@@ -230,6 +231,7 @@ class FafuApi {
           await $(TaskEither.left(data_fetch_failure.LoopbackFailure()));
         }
         final defaultPage = defaultPageResult.asGbkString();
+        await $(_checkIsInTeachingEvaluation(defaultPage).toTaskEither());
         final (academicYearDefault, semesterDefault) = await $(
           FafuAnalyzer.getSelectedTime(defaultPage).toTaskOption().toTaskEither(
             () => data_fetch_failure.OtherFailure(
@@ -283,6 +285,7 @@ class FafuApi {
           await $(TaskEither.left(data_fetch_failure.LoopbackFailure()));
         }
         final defaultPage = defaultPageResult.asGbkString();
+        await $(_checkIsInTeachingEvaluation(defaultPage).toTaskEither());
         final (academicYearDefault, semesterDefault) = await $(
           FafuAnalyzer.getSelectedTime(
             defaultPage,
@@ -294,14 +297,35 @@ class FafuApi {
             ),
           ),
         );
-        //TODO add scores
-        return await $(FafuAnalyzer.analyzeScores(defaultPage).toTaskEither());
+        if (dataPair == null ||
+            (dataPair.$1 == academicYearDefault && dataPair.$2 == semesterDefault)) {
+          return await $(FafuAnalyzer.analyzeScores(defaultPage).toTaskEither());
+        }
+        final referer = _getReferer(token: token, studentId: studentId);
+        final viewState = _getViewState(defaultPage);
+        final (academicYear, semester) = dataPair;
+        final selectedClassPageResult = await $(
+          submitScore(
+            token: token,
+            studentId: studentId,
+            studentName: studentName,
+            viewState: viewState,
+            academicYear: academicYear,
+            semester: semester,
+            referer: referer,
+          ).wrapNetworkSafeTask(),
+        );
+        if (_isLoopback(selectedClassPageResult.response.realUri)) {
+          await $(TaskEither.left(data_fetch_failure.LoopbackFailure()));
+        }
+        final selectedScorePage = selectedClassPageResult.asGbkString();
+        return await $(FafuAnalyzer.analyzeScores(selectedScorePage).toTaskEither());
       }).mapLeft(_defaultErrorMapper).run();
 
   data_fetch_failure.SchoolDataFetchFailure _defaultErrorMapper(dynamic error) => switch (error) {
     wrapper.RequestFailure() => error.asDataFetchFailure(),
     data_fetch_failure.SchoolDataFetchFailure() => error,
-    _ => data_fetch_failure.OtherFailure("Unknown failure"),
+    _ => data_fetch_failure.OtherFailure("Unknown failure, please beat nofyso: $error"),
   };
 
   String _getViewState(String htmlString) => (_viewStateRegex.firstMatch(htmlString)?.group(0))!;
@@ -328,9 +352,26 @@ class FafuApi {
     referer: "http://jwgl.fafu.edu.cn/($token)/default2.aspx",
   );
 
+  Future<HttpResponse<dynamic>> submitScore({
+    required String token,
+    required String studentId,
+    required String studentName,
+    required String viewState,
+    required String academicYear,
+    required String semester,
+    required String referer,
+  }) async => _raw.getScorePageManually(
+    token: token,
+    referer: referer,
+    studentId: studentId,
+    studentName: studentName,
+    body:
+        "__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE=${Uri.encodeComponent(viewState)}&ddlxn=${academicYear.encodeToGbkUri()}&ddlxq=${semester.encodeToGbkUri()}&btnCx=+%B2%E9++%D1%AF+",
+  );
+
   Future<Either<data_fetch_failure.SchoolDataFetchFailure, T>> loopBackSafe<T>(
     Future<Either<data_fetch_failure.SchoolDataFetchFailure, T>> Function() function,
-  ) async => function().loopbackSafe(() async => login(null));
+  ) async => (() => function()).loopbackSafe(() async => login(null));
 
   String _getReferer({required String token, required String studentId}) =>
       "http://jwgl.fafu.edu.cn/($token)/xs_main.aspx?xh=$studentId";
@@ -338,8 +379,35 @@ class FafuApi {
   bool _isLoopback(Uri uri) =>
       uri.pathSegments.lastOrNull == "default2.aspx" ||
       uri.pathSegments.lastOrNull?.isEmpty == true;
+
+  Either<data_fetch_failure.SchoolDataFetchFailure, void> _checkIsInTeachingEvaluation(
+    String pageString,
+  ) => pageString.contains("评价")
+      ? Either.left(
+          data_fetch_failure.OtherFailure.fromPresets(data_fetch_failure.Preset.fafuTeaching),
+        )
+      : Either.right(null);
 }
 
 extension on HttpResponse<dynamic> {
   String asGbkString() => gbk.decode(data as Uint8List);
+}
+
+final _reservedChar = [
+  ..."abcdefghijklmnopqrstuvwxyz1234567890-_.~".let(
+    (a) => [
+      ...a.split("").map((it) => it.toUpperCase()),
+      ...a.split("").map((it) => it.toLowerCase()),
+    ],
+  ),
+];
+
+extension on String {
+  String encodeToGbkUri() => split("")
+      .map(
+        (c) => _reservedChar.contains(c)
+            ? c
+            : gbk.encode(c).map((it) => "%${it.toRadixString(16).toUpperCase()}").join(),
+      )
+      .join();
 }

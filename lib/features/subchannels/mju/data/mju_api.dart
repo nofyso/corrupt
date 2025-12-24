@@ -34,7 +34,7 @@ class MjuApi {
 
   Future<Either<data_fetch_failure.SchoolDataFetchFailure, T>> loopBackSafe<T>(
     Future<Either<data_fetch_failure.SchoolDataFetchFailure, T>> Function() function,
-  ) async => function().loopbackSafe(() async => login(null));
+  ) async => (()=>function()).loopbackSafe(() async => login(null));
 
   Future<Either<login_failure.SchoolLoginFailure, MjuLoginResult>> login(
     MjuLoginParameter? newParameter,
