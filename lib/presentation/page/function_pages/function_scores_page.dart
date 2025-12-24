@@ -141,7 +141,6 @@ class _ScoreCardState extends State<_ScoreCard> {
     final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
     final it = widget.it;
-    String emptyCheck(String ori) => ori.isEmpty ? i18n.page_exams_undeclared : ori;
     return Card(
       clipBehavior: Clip.hardEdge,
       child: InkWell(
@@ -153,7 +152,14 @@ class _ScoreCardState extends State<_ScoreCard> {
         child: Stack(
           children: [
             it.score.toDoubleOption.match(
-              () => SizedBox.shrink(),
+              () => switch (it.score) {
+                "优秀" => LinearProgressIndicator(value: 1, color: Color.fromARGB(255, 76, 175, 80)),
+                "不及格" => LinearProgressIndicator(
+                  value: 1,
+                  color: it.elective ? Color.fromARGB(50, 127, 127, 127) : colorScheme.error,
+                ),
+                _ => SizedBox.shrink(),
+              },
               (score) => LinearProgressIndicator(
                 value: score / 100.0,
                 color: switch (score) {
@@ -231,7 +237,12 @@ class _ScoreCardState extends State<_ScoreCard> {
                     flex: 0,
                     child: it.score.toDoubleOption
                         .match(
-                          () => null,
+                          () => switch (it.score) {
+                            "优秀" => Color.fromARGB(255, 76, 175, 80),
+                            "不及格" =>
+                              it.elective ? Color.fromARGB(255, 127, 127, 127) : colorScheme.error,
+                            _ => colorScheme.primary,
+                          },
                           (score) => switch (score) {
                             final s when s < 60.0 =>
                               it.elective ? Color.fromARGB(255, 127, 127, 127) : colorScheme.error,

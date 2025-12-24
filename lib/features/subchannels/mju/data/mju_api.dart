@@ -7,6 +7,7 @@ import 'package:corrupt/features/channel/domain/entity/failure/school_data_fetch
     as data_fetch_failure;
 import 'package:corrupt/features/channel/domain/entity/failure/school_login_failure.dart'
     as login_failure;
+import 'package:corrupt/features/channel/domain/entity/score_entity.dart';
 import 'package:corrupt/features/pref/domain/use_case/prefs_usecase.dart';
 import 'package:corrupt/features/subchannels/mju/data/mju_analyzer.dart';
 import 'package:corrupt/features/subchannels/mju/data/mju_encrypt_util.dart';
@@ -34,7 +35,7 @@ class MjuApi {
 
   Future<Either<data_fetch_failure.SchoolDataFetchFailure, T>> loopBackSafe<T>(
     Future<Either<data_fetch_failure.SchoolDataFetchFailure, T>> Function() function,
-  ) async => (()=>function()).loopbackSafe(() async => login(null));
+  ) async => (() => function()).loopbackSafe(() async => login(null));
 
   Future<Either<login_failure.SchoolLoginFailure, MjuLoginResult>> login(
     MjuLoginParameter? newParameter,
@@ -164,95 +165,127 @@ class MjuApi {
   Future<Either<data_fetch_failure.SchoolDataFetchFailure, (AvailableTermTime, ClassTable)>>
   fetchClassTable({(String academicYear, String semester)? dataPair}) async =>
       TaskEither<dynamic, (AvailableTermTime, ClassTable)>.Do(($) async {
-            await $(
-              login(null).wrapToTaskEither().mapLeft((it) => data_fetch_failure.LoginFailure(it)),
-            );
-            final defaultPageResult = await $(_eduRaw.getClassesPage().wrapNetworkSafeTask());
-            final document = BeautifulSoup(defaultPageResult.data);
-            final (availableTime, academicIndex, semesterIndex) =
-                MjuAnalyzer.getClassAvailableTermTimeAndSelected(document, "xnm", "xqm");
-            final defaultAcademicYear = availableTime.availableAcademicYear[academicIndex];
-            final defaultSemester = availableTime.availableSemester[semesterIndex];
-            final (selectedAcademicYearRaw, selectedSemesterRaw) = dataPair ?? (null, null);
-            final selectedAcademicYear = (selectedAcademicYearRaw ?? defaultAcademicYear.$1).let(
-              (it) => availableTime.availableAcademicYear.filter((x) => x.$1 == it).first,
-            );
-            final selectedSemester = (selectedSemesterRaw ?? defaultSemester.$1).let(
-              (it) => availableTime.availableSemester.filter((x) => x.$1 == it).first,
-            );
-            final realAcademicYear = selectedAcademicYear.$2;
-            final realSemester = selectedSemester.$2;
-            final classesDataResult = await $(
-              _eduRaw
-                  .getClassesData(academicYear: realAcademicYear, semester: realSemester)
-                  .wrapNetworkSafeTask(),
-            );
-            final jsonData = classesDataResult.data;
-            final classTable = await $(
-              MjuAnalyzer.analyzeClassTable(
-                jsonData,
-                selectedAcademicYear.$1,
-                selectedSemester.$1,
-              ).toTaskEither(),
-            );
-            return (availableTime, classTable);
-          })
-          .mapLeft(
-            (error) => switch (error) {
-              wrapper.RequestFailure() => error.asDataFetchFailure(),
-              data_fetch_failure.SchoolDataFetchFailure() => error,
-              _ => data_fetch_failure.OtherFailure("Unknown failure"),
-            },
-          )
-          .run();
+        await $(
+          login(null).wrapToTaskEither().mapLeft((it) => data_fetch_failure.LoginFailure(it)),
+        );
+        final defaultPageResult = await $(_eduRaw.getClassesPage().wrapNetworkSafeTask());
+        final document = BeautifulSoup(defaultPageResult.data);
+        final (availableTime, academicIndex, semesterIndex) =
+            MjuAnalyzer.getClassAvailableTermTimeAndSelected(document, "xnm", "xqm");
+        final defaultAcademicYear = availableTime.availableAcademicYear[academicIndex];
+        final defaultSemester = availableTime.availableSemester[semesterIndex];
+        final (selectedAcademicYearRaw, selectedSemesterRaw) = dataPair ?? (null, null);
+        final selectedAcademicYear = (selectedAcademicYearRaw ?? defaultAcademicYear.$1).let(
+          (it) => availableTime.availableAcademicYear.filter((x) => x.$1 == it).first,
+        );
+        final selectedSemester = (selectedSemesterRaw ?? defaultSemester.$1).let(
+          (it) => availableTime.availableSemester.filter((x) => x.$1 == it).first,
+        );
+        final realAcademicYear = selectedAcademicYear.$2;
+        final realSemester = selectedSemester.$2;
+        final classesDataResult = await $(
+          _eduRaw
+              .getClassesData(academicYear: realAcademicYear, semester: realSemester)
+              .wrapNetworkSafeTask(),
+        );
+        final jsonData = classesDataResult.data;
+        final classTable = await $(
+          MjuAnalyzer.analyzeClassTable(
+            jsonData,
+            selectedAcademicYear.$1,
+            selectedSemester.$1,
+          ).toTaskEither(),
+        );
+        return (availableTime, classTable);
+      }).mapLeft(_defaultFailureMapper).run();
 
   Future<Either<data_fetch_failure.SchoolDataFetchFailure, (AvailableTermTime, ExamsEntity)>>
   fetchExams({(String academicYear, String semester)? dataPair}) async =>
       TaskEither<dynamic, (AvailableTermTime, ExamsEntity)>.Do(($) async {
-            await $(
-              login(null).wrapToTaskEither().mapLeft((it) => data_fetch_failure.LoginFailure(it)),
-            );
-            final defaultPageResult = await $(_eduRaw.getExamPage().wrapNetworkSafeTask());
-            final document = BeautifulSoup(defaultPageResult.data);
-            final (availableTime, academicIndex, semesterIndex) =
-                MjuAnalyzer.getClassAvailableTermTimeAndSelected(document, "cx_xnm", "cx_xqm");
-            final defaultAcademicYear = availableTime.availableAcademicYear[academicIndex];
-            final defaultSemester = availableTime.availableSemester[semesterIndex];
-            final (selectedAcademicYearRaw, selectedSemesterRaw) = dataPair ?? (null, null);
-            final selectedAcademicYear = (selectedAcademicYearRaw ?? defaultAcademicYear.$1).let(
-              (it) => availableTime.availableAcademicYear.filter((x) => x.$1 == it).first,
-            );
-            final selectedSemester = (selectedSemesterRaw ?? defaultSemester.$1).let(
-              (it) => availableTime.availableSemester.filter((x) => x.$1 == it).first,
-            );
-            final realAcademicYear = selectedAcademicYear.$2;
-            final realSemester = selectedSemester.$2;
-            final timestamp = DateTime.timestamp().millisecondsSinceEpoch;
-            final classesDataResult = await $(
-              _eduRaw
-                  .getExamData(
-                    academicYear: realAcademicYear,
-                    semester: realSemester,
-                    timestamp: "$timestamp",
-                  )
-                  .wrapNetworkSafeTask(),
-            );
-            final jsonData = classesDataResult.data;
-            final classTable = await $(
-              MjuAnalyzer.analyzeExams(
-                jsonData,
-                selectedAcademicYear.$1,
-                selectedSemester.$1,
-              ).toTaskEither(),
-            );
-            return (availableTime, classTable);
-          })
-          .mapLeft(
-            (error) => switch (error) {
-              wrapper.RequestFailure() => error.asDataFetchFailure(),
-              data_fetch_failure.SchoolDataFetchFailure() => error,
-              _ => data_fetch_failure.OtherFailure("Unknown failure"),
-            },
-          )
-          .run();
+        await $(
+          login(null).wrapToTaskEither().mapLeft((it) => data_fetch_failure.LoginFailure(it)),
+        );
+        final defaultPageResult = await $(_eduRaw.getExamPage().wrapNetworkSafeTask());
+        final document = BeautifulSoup(defaultPageResult.data);
+        final (availableTime, academicIndex, semesterIndex) =
+            MjuAnalyzer.getClassAvailableTermTimeAndSelected(document, "cx_xnm", "cx_xqm");
+        final defaultAcademicYear = availableTime.availableAcademicYear[academicIndex];
+        final defaultSemester = availableTime.availableSemester[semesterIndex];
+        final (selectedAcademicYearRaw, selectedSemesterRaw) = dataPair ?? (null, null);
+        final selectedAcademicYear = (selectedAcademicYearRaw ?? defaultAcademicYear.$1).let(
+          (it) => availableTime.availableAcademicYear.filter((x) => x.$1 == it).first,
+        );
+        final selectedSemester = (selectedSemesterRaw ?? defaultSemester.$1).let(
+          (it) => availableTime.availableSemester.filter((x) => x.$1 == it).first,
+        );
+        final realAcademicYear = selectedAcademicYear.$2;
+        final realSemester = selectedSemester.$2;
+        final timestamp = DateTime.timestamp().millisecondsSinceEpoch;
+        final examsDataResult = await $(
+          _eduRaw
+              .getExamData(
+                academicYear: realAcademicYear,
+                semester: realSemester,
+                timestamp: "$timestamp",
+              )
+              .wrapNetworkSafeTask(),
+        );
+        final jsonData = examsDataResult.data;
+        final classTable = await $(
+          MjuAnalyzer.analyzeExams(
+            jsonData,
+            selectedAcademicYear.$1,
+            selectedSemester.$1,
+          ).toTaskEither(),
+        );
+        return (availableTime, classTable);
+      }).mapLeft(_defaultFailureMapper).run();
+
+  Future<Either<data_fetch_failure.SchoolDataFetchFailure, (AvailableTermTime, ScoresEntity)>>
+  fetchScores({(String academicYear, String semester)? dataPair}) async =>
+      TaskEither<dynamic, (AvailableTermTime, ScoresEntity)>.Do(($) async {
+        await $(
+          login(null).wrapToTaskEither().mapLeft((it) => data_fetch_failure.LoginFailure(it)),
+        );
+        final defaultPageResult = await $(_eduRaw.getScorePage().wrapNetworkSafeTask());
+        final document = BeautifulSoup(defaultPageResult.data);
+        final (availableTime, academicIndex, semesterIndex) =
+            MjuAnalyzer.getClassAvailableTermTimeAndSelected(document, "xnm", "xqm");
+        final defaultAcademicYear = availableTime.availableAcademicYear[academicIndex];
+        final defaultSemester = availableTime.availableSemester[semesterIndex];
+        final (selectedAcademicYearRaw, selectedSemesterRaw) = dataPair ?? (null, null);
+        final selectedAcademicYear = (selectedAcademicYearRaw ?? defaultAcademicYear.$1).let(
+          (it) => availableTime.availableAcademicYear.filter((x) => x.$1 == it).first,
+        );
+        final selectedSemester = (selectedSemesterRaw ?? defaultSemester.$1).let(
+          (it) => availableTime.availableSemester.filter((x) => x.$1 == it).first,
+        );
+        final realAcademicYear = selectedAcademicYear.$2;
+        final realSemester = selectedSemester.$2;
+        final timestamp = DateTime.timestamp().millisecondsSinceEpoch;
+        final scoresDataResult = await $(
+          _eduRaw
+              .getScoreData(
+                academicYear: realAcademicYear,
+                semester: realSemester,
+                timestamp: "$timestamp",
+              )
+              .wrapNetworkSafeTask(),
+        );
+        final jsonData = scoresDataResult.data;
+        final scores = await $(
+          MjuAnalyzer.analyzeScores(
+            jsonData,
+            selectedAcademicYear.$1,
+            selectedSemester.$1,
+          ).toTaskEither(),
+        );
+        return (availableTime, scores);
+      }).mapLeft(_defaultFailureMapper).run();
+
+  data_fetch_failure.SchoolDataFetchFailure _defaultFailureMapper(dynamic error) => switch (error) {
+    wrapper.RequestFailure() => error.asDataFetchFailure(),
+    data_fetch_failure.SchoolDataFetchFailure() => error,
+    _ => data_fetch_failure.OtherFailure("Unknown failure"),
+  };
 }

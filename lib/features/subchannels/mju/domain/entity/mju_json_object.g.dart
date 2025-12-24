@@ -60,3 +60,35 @@ Map<String, dynamic> _$MjuExamEntityToJson(MjuExamEntity instance) =>
       'cdxqmc': instance.campus,
       'ksfs': instance.form,
     };
+
+MjuScoreEntity _$MjuScoreEntityFromJson(Map<String, dynamic> json) =>
+    MjuScoreEntity(
+      json['xnmmc'] as String?,
+      json['xqmmc'] as String?,
+      json['jxbmc'] as String?,
+      json['kcmc'] as String,
+      json['kclbmc'] as String?,
+      json['kcgsmc'] as String?,
+      json['cj'] as String?,
+      json['xf'] as String?,
+      json['kkbmmc'] as String?,
+      json['cjbz'] as String?,
+      json['jd'] as String?,
+      json['kcxzmc'] as String?,
+    );
+
+Map<String, dynamic> _$MjuScoreEntityToJson(MjuScoreEntity instance) =>
+    <String, dynamic>{
+      'xnmmc': instance.year,
+      'xqmmc': instance.term,
+      'jxbmc': instance.classId,
+      'kcmc': instance.name,
+      'kclbmc': instance.type,
+      'kcgsmc': instance.belong,
+      'cj': instance.score,
+      'xf': instance.credit,
+      'kkbmmc': instance.place,
+      'cjbz': instance.note,
+      'jd': instance.gp,
+      'kcxzmc': instance.property,
+    };

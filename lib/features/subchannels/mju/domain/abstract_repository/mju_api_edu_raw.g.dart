@@ -215,6 +215,103 @@ class _MjuEduApiRaw implements MjuEduApiRaw {
     return httpResponse;
   }
 
+  @override
+  Future<HttpResponse<String>> getScorePage({
+    String functionModuleCode = "N305005",
+    String layout = "default",
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'gnmkdm': functionModuleCode,
+      r'layout': layout,
+    };
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<HttpResponse<String>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/jwglxt/cjcx/cjcx_cxDgXscj.html',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<String>(_options);
+    late String _value;
+    try {
+      _value = _result.data!;
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<String>> getScoreData({
+    String doType = "query",
+    String functionModuleCode = "N305005",
+    required String academicYear,
+    required String semester,
+    String reserved1 = "",
+    String reserved2 = "",
+    String reserved3 = "false",
+    required String timestamp,
+    String reserved4 = "5000",
+    String reserved5 = "1",
+    String reserved6 = "",
+    String reserved7 = "asc",
+    String reserved8 = "0",
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'doType': doType,
+      r'gnmkdm': functionModuleCode,
+    };
+    final _headers = <String, dynamic>{};
+    final _data = {
+      'xnm': academicYear,
+      'xqm': semester,
+      'sfzgcj': reserved1,
+      'kcbj': reserved2,
+      '_search': reserved3,
+      'nd': timestamp,
+      'queryModel.showCount': reserved4,
+      'queryModel.currentPage': reserved5,
+      'queryModel.sortName': reserved6,
+      'queryModel.sortOrder': reserved7,
+      'time': reserved8,
+    };
+    final _options = _setStreamType<HttpResponse<String>>(
+      Options(
+            method: 'POST',
+            headers: _headers,
+            extra: _extra,
+            contentType: 'application/x-www-form-urlencoded',
+            responseType: ResponseType.plain,
+          )
+          .compose(
+            _dio.options,
+            '/jwglxt/cjcx/cjcx_cxXsgrcj.html',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<String>(_options);
+    late String _value;
+    try {
+      _value = _result.data!;
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

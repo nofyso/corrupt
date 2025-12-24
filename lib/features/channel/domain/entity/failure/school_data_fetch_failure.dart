@@ -35,7 +35,7 @@ class NotLoggedFailure extends SchoolDataFetchFailure {}
 
 class OtherFailure extends SchoolDataFetchFailure {
   late Exception exception;
-  late Preset? preset;
+  Preset? preset;
 
   OtherFailure.fromException(this.exception);
 

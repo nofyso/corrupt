@@ -58,7 +58,15 @@ class MjuSchoolRepositoryImpl extends MjuSchoolRepository {
         );
         return result as Either<data_fetch_failure.SchoolDataFetchFailure, V>;
       case DataFetchType.score:
-        return Either.left(data_fetch_failure.NotImplementedFailure());
+        final (academicYear, semester) =
+        (DataFetchType.exam.castP(p)?.let((it) => (it.academicYear, it.semester)) ??
+            (null, null));
+        final result = await _mjuApi.loopBackSafe(
+              () => _mjuApi.fetchScores(
+            dataPair: semester == null || academicYear == null ? null : (academicYear, semester),
+          ),
+        );
+        return result as Either<data_fetch_failure.SchoolDataFetchFailure, V>;
       case DataFetchType.termData:
         return Either.right(_termData as V);
       case DataFetchType.classTime:
