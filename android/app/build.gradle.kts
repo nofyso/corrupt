@@ -50,7 +50,7 @@ android {
                 "app_icon" to "@mipmap/ic_launcher_debug",
                 "app_roundIcon" to "@mipmap/ic_launcher_debug_round",
                 "debug" to "debug."
-            ));
+            ))
         }
     }
 
