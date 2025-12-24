@@ -35,6 +35,19 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
+
+            manifestPlaceholders.putAll (mapOf(
+                "app_label" to "corrupt",
+                "app_icon" to "@mipmap/ic_launcher",
+                "app_roundIcon" to "@mipmap/ic_launcher"
+            ))
+        }
+        debug {
+            manifestPlaceholders.putAll(mapOf(
+                "app_label" to "dorrupt",
+                "app_icon" to "@mipmap/ic_launcher_debug",
+                "app_roundIcon" to "@mipmap/ic_launcher_debug_round"
+            ));
         }
     }
 

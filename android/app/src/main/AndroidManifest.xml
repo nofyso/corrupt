@@ -3,9 +3,10 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:enableOnBackInvokedCallback="true"
-        android:label="corrupt"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="${app_icon}"
+        android:label="${app_label}"
+        android:roundIcon="${app_roundIcon}"
         tools:targetApi="33">
         <activity
             android:name=".MainActivity"
