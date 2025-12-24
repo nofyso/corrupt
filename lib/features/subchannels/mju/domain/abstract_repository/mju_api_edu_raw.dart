@@ -60,4 +60,29 @@ abstract class MjuEduApiRaw {
     @Field("queryModel.sortOrder") String reserved10 = "asc",
     @Field("time") String reserved11 = "0",
   });
+
+  @GET("/jwglxt/cjcx/cjcx_cxDgXscj.html")
+  Future<HttpResponse<String>> getScorePage({
+    @Query(_functionModuleCode) String functionModuleCode = "N305005",
+    @Query(_layout) String layout = "default",
+  });
+  
+  @POST("/jwglxt/cjcx/cjcx_cxXsgrcj.html")
+  @FormUrlEncoded()
+  @DioResponseType(ResponseType.plain)
+  Future<HttpResponse<String>> getScoreData({
+    @Query(_doType) String doType = "query",
+    @Query(_functionModuleCode) String functionModuleCode = "N305005",
+    @Field(_academicYear) required String academicYear,
+    @Field(_semester) required String semester,
+    @Field("sfzgcj") String reserved1 = "",
+    @Field("kcbj") String reserved2 = "",
+    @Field("_search") String reserved3 = "false",
+    @Field("nd") required String timestamp,
+    @Field("queryModel.showCount") String reserved4 = "5000",
+    @Field("queryModel.currentPage") String reserved5 = "1",
+    @Field("queryModel.sortName") String reserved6 = "",
+    @Field("queryModel.sortOrder") String reserved7 = "asc",
+    @Field("time") String reserved8 = "0",
+  });
 }

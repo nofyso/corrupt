@@ -175,7 +175,3 @@ Future<HttpResponse<dynamic>> _getFafuMockFile(
         ),
       ),
     );
-
-extension on HttpResponse<dynamic> {
-  String decode() => gbk.decode(data as Uint8List);
-}

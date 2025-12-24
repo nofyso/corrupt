@@ -151,6 +151,9 @@ jobs:
       - name: Build Windows
         run: flutter build windows --release
 
+      - name: Add TensorFlow library
+        run: Copy-Item -Path "windows/external/blobs/*" -Destination "build/windows/x64/runner/Release/blobs/"
+
       - name: Packing Windows app
         run: Compress-Archive -Path build/windows/x64/runner/Release -DestinationPath windows-x64.zip
 

@@ -25,6 +25,12 @@ class RefreshUseCase {
       (it) => Option.of(it.$2),
     ),
     CommonDataFetchPhase(
+      DataFetchType.exam,
+      LocalDataKey.localExamData,
+      (i18n) => i18n.screen_main_refresh_exams,
+      (it) => Option.of(it.$2),
+    ),
+    CommonDataFetchPhase(
       DataFetchType.termData,
       LocalDataKey.localTermData,
       (i18n) => i18n.screen_main_refresh_terms,

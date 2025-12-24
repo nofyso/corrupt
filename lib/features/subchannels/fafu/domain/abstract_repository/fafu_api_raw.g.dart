@@ -29,17 +29,17 @@ class _FafuApiRaw implements FafuApiRaw {
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(
-        method: 'GET',
-        headers: _headers,
-        extra: _extra,
-        responseType: ResponseType.bytes,
-      )
+            method: 'GET',
+            headers: _headers,
+            extra: _extra,
+            responseType: ResponseType.bytes,
+          )
           .compose(
-        _dio.options,
-        '/',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch(_options);
@@ -56,17 +56,17 @@ class _FafuApiRaw implements FafuApiRaw {
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(
-        method: 'GET',
-        headers: _headers,
-        extra: _extra,
-        responseType: ResponseType.bytes,
-      )
+            method: 'GET',
+            headers: _headers,
+            extra: _extra,
+            responseType: ResponseType.bytes,
+          )
           .compose(
-        _dio.options,
-        '/(${token})/CheckCode.aspx',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/(${token})/CheckCode.aspx',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch(_options);
@@ -86,17 +86,17 @@ class _FafuApiRaw implements FafuApiRaw {
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(
-        method: 'GET',
-        headers: _headers,
-        extra: _extra,
-        responseType: ResponseType.bytes,
-      )
+            method: 'GET',
+            headers: _headers,
+            extra: _extra,
+            responseType: ResponseType.bytes,
+          )
           .compose(
-        _dio.options,
-        '/(${token})/xs_main.aspx',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/(${token})/xs_main.aspx',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch(_options);
@@ -122,17 +122,17 @@ class _FafuApiRaw implements FafuApiRaw {
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(
-        method: 'GET',
-        headers: _headers,
-        extra: _extra,
-        responseType: ResponseType.bytes,
-      )
+            method: 'GET',
+            headers: _headers,
+            extra: _extra,
+            responseType: ResponseType.bytes,
+          )
           .compose(
-        _dio.options,
-        '/(${token})/xskbcx.aspx?gnmkdm=N121603',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/(${token})/xskbcx.aspx?gnmkdm=N121603',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch(_options);
@@ -169,18 +169,18 @@ class _FafuApiRaw implements FafuApiRaw {
     };
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(
-        method: 'POST',
-        headers: _headers,
-        extra: _extra,
-        contentType: 'application/x-www-form-urlencoded',
-        responseType: ResponseType.bytes,
-      )
+            method: 'POST',
+            headers: _headers,
+            extra: _extra,
+            contentType: 'application/x-www-form-urlencoded',
+            responseType: ResponseType.bytes,
+          )
           .compose(
-        _dio.options,
-        '/(${token})/xskbcx.aspx?gnmkdm=N121603',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/(${token})/xskbcx.aspx?gnmkdm=N121603',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch(_options);
@@ -206,17 +206,17 @@ class _FafuApiRaw implements FafuApiRaw {
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(
-        method: 'GET',
-        headers: _headers,
-        extra: _extra,
-        responseType: ResponseType.bytes,
-      )
+            method: 'GET',
+            headers: _headers,
+            extra: _extra,
+            responseType: ResponseType.bytes,
+          )
           .compose(
-        _dio.options,
-        '/(${token})/xskscx.aspx?gnmkdm=N121604',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/(${token})/xskscx.aspx?gnmkdm=N121604',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch(_options);
@@ -253,18 +253,18 @@ class _FafuApiRaw implements FafuApiRaw {
     };
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(
-        method: 'POST',
-        headers: _headers,
-        extra: _extra,
-        contentType: 'application/x-www-form-urlencoded',
-        responseType: ResponseType.bytes,
-      )
+            method: 'POST',
+            headers: _headers,
+            extra: _extra,
+            contentType: 'application/x-www-form-urlencoded',
+            responseType: ResponseType.bytes,
+          )
           .compose(
-        _dio.options,
-        '/(${token})/xskscx.aspx?gnmkdm=N121604',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/(${token})/xskscx.aspx?gnmkdm=N121604',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch(_options);
@@ -290,17 +290,17 @@ class _FafuApiRaw implements FafuApiRaw {
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(
-        method: 'GET',
-        headers: _headers,
-        extra: _extra,
-        responseType: ResponseType.bytes,
-      )
+            method: 'GET',
+            headers: _headers,
+            extra: _extra,
+            responseType: ResponseType.bytes,
+          )
           .compose(
-        _dio.options,
-        '/(${token})/xscjcx_dq_fafu.aspx?gnmkdm=N121605',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/(${token})/xscjcx_dq_fafu.aspx?gnmkdm=N121605',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch(_options);
@@ -319,6 +319,7 @@ class _FafuApiRaw implements FafuApiRaw {
     required String semester,
     String eventTarget = "",
     String eventTArgument = "",
+    String queryButton = "+%B2%E9++%D1%AF+",
     required String referer,
   }) async {
     final _extra = <String, dynamic>{};
@@ -334,20 +335,59 @@ class _FafuApiRaw implements FafuApiRaw {
       'ddlxq': semester,
       '__EVENTTARGET': eventTarget,
       '__EVENTARGUMENT': eventTArgument,
+      'btnCx': queryButton,
     };
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(
-        method: 'POST',
-        headers: _headers,
-        extra: _extra,
-        responseType: ResponseType.bytes,
-      )
+            method: 'POST',
+            headers: _headers,
+            extra: _extra,
+            responseType: ResponseType.bytes,
+          )
           .compose(
-        _dio.options,
-        '/(${token})/xscjcx_dq_fafu.aspx?gnmkdm=N121605',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/(${token})/xscjcx_dq_fafu.aspx?gnmkdm=N121605',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<dynamic>> getScorePageManually({
+    required String token,
+    required String studentId,
+    required String studentName,
+    required String referer,
+    required String body,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'xh': studentId,
+      r'xm': studentName,
+    };
+    final _headers = <String, dynamic>{r'Referer': referer};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = body;
+    final _options = _setStreamType<HttpResponse<dynamic>>(
+      Options(
+            method: 'POST',
+            headers: _headers,
+            extra: _extra,
+            contentType: 'application/x-www-form-urlencoded',
+            responseType: ResponseType.bytes,
+          )
+          .compose(
+            _dio.options,
+            '/(${token})/xscjcx_dq_fafu.aspx?gnmkdm=N121605',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch(_options);
@@ -369,18 +409,18 @@ class _FafuApiRaw implements FafuApiRaw {
     final _data = body;
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(
-        method: 'POST',
-        headers: _headers,
-        extra: _extra,
-        contentType: 'application/x-www-form-urlencoded',
-        responseType: ResponseType.bytes,
-      )
+            method: 'POST',
+            headers: _headers,
+            extra: _extra,
+            contentType: 'application/x-www-form-urlencoded',
+            responseType: ResponseType.bytes,
+          )
           .compose(
-        _dio.options,
-        '/(${token})/default2.aspx',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/(${token})/default2.aspx',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch(_options);
@@ -403,9 +443,7 @@ class _FafuApiRaw implements FafuApiRaw {
   }
 
   String _combineBaseUrls(String dioBaseUrl, String? baseUrl) {
-    if (baseUrl == null || baseUrl
-        .trim()
-        .isEmpty) {
+    if (baseUrl == null || baseUrl.trim().isEmpty) {
       return dioBaseUrl;
     }
 

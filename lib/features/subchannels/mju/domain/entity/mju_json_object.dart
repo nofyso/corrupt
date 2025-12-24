@@ -1,5 +1,6 @@
 import 'package:corrupt/features/channel/domain/entity/class_table_entity.dart';
 import 'package:corrupt/features/channel/domain/entity/exam_entity.dart';
+import 'package:corrupt/features/channel/domain/entity/score_entity.dart';
 import 'package:dartlin/collections.dart';
 import 'package:dartlin/control_flow.dart';
 import 'package:fpdart/fpdart.dart';
@@ -74,13 +75,14 @@ class MjuClassEntry {
         })
         .map((it) => it - 1)
         .toList(growable: false);
+    final dow = DayOfWeek.valueOf(int.parse(dayOfWeek) % 7)!;
     return ClassEntity(
       name,
       teacher,
-      DayOfWeek.valueOf(int.parse(dayOfWeek) - 1)!,
+      dow,
       fromTime - 1,
       toTime - fromTime + 1,
-      weeksArray,
+      weeksArray.map((it) => dow == DayOfWeek.sun ? it + 1 : it).toList(),
       "$place $classroom",
       false,
     );
@@ -152,6 +154,70 @@ class MjuExamEntity {
       form: form ?? "/",
       seat: seat ?? "/",
       campus: campus ?? "/",
+    );
+  }
+}
+
+@JsonSerializable()
+class MjuScoreEntity {
+  @JsonKey(name: "xnmmc")
+  final String? year;
+  @JsonKey(name: "xqmmc")
+  final String? term;
+  @JsonKey(name: "jxbmc")
+  final String? classId;
+  @JsonKey(name: "kcmc")
+  final String name;
+  @JsonKey(name: "kclbmc")
+  final String? type;
+  @JsonKey(name: "kcgsmc")
+  final String? belong;
+  @JsonKey(name: "cj")
+  final String? score;
+  @JsonKey(name: "xf")
+  final String? credit;
+  @JsonKey(name: "kkbmmc")
+  final String? place;
+  @JsonKey(name: "cjbz")
+  final String? note;
+  @JsonKey(name: "jd")
+  final String? gp;
+  @JsonKey(name: "kcxzmc")
+  final String? property;
+
+  MjuScoreEntity(
+    this.year,
+    this.term,
+    this.classId,
+    this.name,
+    this.type,
+    this.belong,
+    this.score,
+    this.credit,
+    this.place,
+    this.note,
+    this.gp,
+    this.property,
+  );
+
+  factory MjuScoreEntity.fromJson(Map<String, dynamic> json) => _$MjuScoreEntityFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MjuScoreEntityToJson(this);
+
+  ScoreEntity toScoreEntity() {
+    return ScoreEntity(
+      year: year ?? "",
+      term: term ?? "",
+      classId: classId ?? "",
+      name: name,
+      type: type ?? "",
+      belong: belong ?? "",
+      score: score ?? "",
+      credit: credit ?? "",
+      gp: gp ?? "",
+      place: place ?? "",
+      note: note ?? "",
+      elective: property?.contains("选修") == true,
     );
   }
 }

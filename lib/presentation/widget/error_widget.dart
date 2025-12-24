@@ -6,6 +6,7 @@ import 'package:corrupt/presentation/i18n/app_localizations.dart';
 import 'package:corrupt/presentation/widget/simple_widget.dart';
 import 'package:dartlin/collections.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fpdart/fpdart.dart';
 
 Widget commonSchoolDataFailureWidget({
@@ -20,81 +21,45 @@ Widget commonSchoolDataFailureWidget({
   }
   if (failures.isEmpty) return SizedBox.shrink();
   final i18n = AppLocalizations.of(context)!;
-  final textTheme = Theme.of(context).textTheme;
   final (icon, errorTitle, errorSubtitle) = _getDisplayTriple(failures.first, i18n);
-  final isNotSingleFailureNorUnknown = _tryMerge(
-    rawFailures: failures,
-  ).match(() => false, _isUnknown);
-  final o=["",1];
-
+  final isNotSingleFailureNorUnknown = _tryMerge(rawFailures: failures).isNone();
   return SizedBox.expand(
-    child: Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ...isNotSingleFailureNorUnknown
-              ? [] //TODO
-              : [
-                  iconTitleAndSubtitle(
-                    context: context,
-                    icon: icon,
-                    title: errorTitle,
-                    subtitle: errorSubtitle,
-                  ),
-                ],
-          /*Icon(
-            size: 32,
-            types.length == 1 && failures.first is! data_fetch_failure.OtherFailure
-                ? switch (failures.first) {
-              data_fetch_failure.NetworkFailure() =>
-              Icons.signal_wifi_connected_no_internet_4,
-              data_fetch_failure.LoginFailure(loginFailure: final x) =>
-              switch (x) {
-                login_failure.NetworkFailure() => Icons.signal_wifi_connected_no_internet_4,
-                login_failure.BadDataFailure() => Icons.key_off,
-                login_failure.CaptchaFailure() => Icons.error,
-                login_failure.OtherFailure() => Icons.error,
+    child: Padding(
+      padding: EdgeInsetsGeometry.directional(start: 32, end: 32),
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ...isNotSingleFailureNorUnknown
+                ? [_multiFailuresWidget(context, i18n)]
+                : [
+                    iconTitleAndSubtitle(
+                      context: context,
+                      icon: icon,
+                      title: errorTitle,
+                      subtitle: errorSubtitle,
+                    ),
+                  ],
+            SizedBox(height: 8),
+            textIconButton(
+              onPressed: () {
+                final error = failures
+                    .map((it) => "$it: ${it.asException().toString()}\n${it.stackTrace.toString()}")
+                    .join("\n\n====I'm a divider====\n\n");
+                Clipboard.setData(ClipboardData(text: error));
               },
-              data_fetch_failure.LoopbackFailure() => Icons.error,
-              data_fetch_failure.NotImplementedFailure() => Icons.not_interested,
-              _ => Icons.error,
-            }
-                : Icons.error,
-          ),
-          ...types.length == 1 &&
-              failures.first is! data_fetch_failure.OtherFailure &&
-              failures.first is! data_fetch_failure.LoginFailure
-              ? [
-            Text(switch (failures.first) {
-              data_fetch_failure.NetworkFailure() => i18n.widget_error_network,
-              data_fetch_failure.LoginFailure(loginFailure: final x) =>
-              switch (x) {
-                login_failure.NetworkFailure() => i18n.widget_error_network,
-                login_failure.BadDataFailure() => i18n.widget_error_login,
-                login_failure.CaptchaFailure() => i18n.widget_error_captcha,
-                login_failure.OtherFailure() => i18n.widget_error_other,
-              },
-              data_fetch_failure.NotImplementedFailure() => i18n.widget_error_unimplemented,
-              data_fetch_failure.LoopbackFailure() => i18n.widget_error_loopback,
-              _ => i18n.widget_error_unknown,
-            }),
-          ]
-              : [
-            Text(i18n.widget_error_unknown),
-            ...failures.mapNotNull((it) => Text(it.asException().toString())),
-          ],*/
-          if (onRefresh != null) SizedBox(height: 8),
-          if (onRefresh != null)
-            SizedBox(
-              height: 32,
-              child: textIconButton(
+              icon: Icons.copy,
+              text: i18n.widget_error_copy,
+            ),
+            if (onRefresh != null)
+              textIconButton(
                 onPressed: onRefresh,
                 icon: Icons.refresh,
                 text: i18n.widget_error_retry,
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     ),
   );
@@ -109,19 +74,26 @@ Option<data_fetch_failure.SchoolDataFetchFailure> _tryMerge({
       : Option.none();
 }
 
-bool _isUnknown(data_fetch_failure.SchoolDataFetchFailure failure) => switch (failure) {
-  data_fetch_failure.NetworkFailure() ||
-  data_fetch_failure.LoopbackFailure() ||
-  data_fetch_failure.NotImplementedFailure() ||
-  data_fetch_failure.NotLoggedFailure() => false,
-  data_fetch_failure.OtherFailure() => true,
-  data_fetch_failure.LoginFailure(loginFailure: final x) => switch (x) {
-    login_failure.NetworkFailure() ||
-    login_failure.BadDataFailure() ||
-    login_failure.CaptchaFailure() => false,
-    login_failure.OtherFailure() => true,
-  },
-};
+// bool _isUnknown(data_fetch_failure.SchoolDataFetchFailure failure) => switch (failure) {
+//   data_fetch_failure.NetworkFailure() ||
+//   data_fetch_failure.LoopbackFailure() ||
+//   data_fetch_failure.NotImplementedFailure() ||
+//   data_fetch_failure.NotLoggedFailure() => false,
+//   data_fetch_failure.OtherFailure() => true,
+//   data_fetch_failure.LoginFailure(loginFailure: final x) => switch (x) {
+//     login_failure.NetworkFailure() ||
+//     login_failure.BadDataFailure() ||
+//     login_failure.CaptchaFailure() => false,
+//     login_failure.OtherFailure() => true,
+//   },
+// };
+
+Widget _multiFailuresWidget(BuildContext context, AppLocalizations i18n) => iconTitleAndSubtitle(
+  context: context,
+  icon: Icons.error,
+  title: i18n.widget_error_multi_title,
+  subtitle: i18n.widget_error_multi_subtitle,
+);
 
 (IconData, String, String) _getDisplayTriple(
   data_fetch_failure.SchoolDataFetchFailure failure,
@@ -133,11 +105,18 @@ bool _isUnknown(data_fetch_failure.SchoolDataFetchFailure failure) => switch (fa
     i18n.widget_error_network_subtitle,
   ),
   data_fetch_failure.LoginFailure(loginFailure: final x) => switch (x) {
-    login_failure.NetworkFailure() => (
-      Icons.signal_wifi_connected_no_internet_4,
-      i18n.widget_error_network_title,
-      i18n.widget_error_network_subtitle,
-    ),
+    login_failure.NetworkFailure(badResponse: final badResponse) =>
+      badResponse != null
+          ? (
+              Icons.signal_wifi_statusbar_connected_no_internet_4,
+              i18n.widget_error_network_bad_response_title,
+              i18n.widget_error_network_bad_response_subtitle,
+            )
+          : (
+              Icons.signal_wifi_connected_no_internet_4,
+              i18n.widget_error_network_title,
+              i18n.widget_error_network_subtitle,
+            ),
     login_failure.BadDataFailure() => (
       Icons.key_off,
       i18n.widget_error_login_title,
@@ -148,7 +127,7 @@ bool _isUnknown(data_fetch_failure.SchoolDataFetchFailure failure) => switch (fa
       i18n.widget_error_captcha_title,
       i18n.widget_error_captcha_subtitle,
     ),
-    _ => (Icons.error, i18n.widget_error_unknown, i18n.widget_error_unknown),
+    _ => (Icons.error, i18n.widget_error_other_title, i18n.widget_error_other_subtitle),
   },
   data_fetch_failure.LoopbackFailure() => (
     Icons.error,
@@ -165,5 +144,22 @@ bool _isUnknown(data_fetch_failure.SchoolDataFetchFailure failure) => switch (fa
     i18n.widget_error_unimplemented_title,
     i18n.widget_error_unimplemented_subtitle,
   ),
-  _ => (Icons.error, i18n.widget_error_unknown, i18n.widget_error_unknown),
+  data_fetch_failure.OtherFailure() => _geDataFetchUnknownDisplayTriple(failure, i18n),
+};
+
+(IconData, String, String) _geDataFetchUnknownDisplayTriple(
+  data_fetch_failure.OtherFailure failure,
+  AppLocalizations i18n,
+) => switch (failure.preset) {
+  null => (Icons.error, i18n.widget_error_other_title, i18n.widget_error_other_subtitle),
+  data_fetch_failure.Preset.fafuTeaching => (
+    Icons.no_accounts,
+    i18n.widget_error_other_fafu_teaching_title,
+    i18n.widget_error_other_fafu_teaching_subtitle,
+  ),
+  data_fetch_failure.Preset.fafuAnalyzing => (
+    Icons.running_with_errors,
+    i18n.widget_error_other_fafu_analyzing_title,
+    i18n.widget_error_other_fafu_analyzing_subtitle,
+  ),
 };

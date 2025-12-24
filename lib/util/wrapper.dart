@@ -17,13 +17,14 @@ Option<String> jsonEncodeSafe(dynamic object) =>
 Option<T> jsonDecodeSafeDirect<T>(String text, T Function(Map<String, dynamic>) fromJson) =>
     tryy(() => Option.of(fromJson(jsonDecode(text)))).orElse(() => Option.none());
 
-extension LoopbackWrapper<T, LR> on Future<Either<data_fetch_failure.SchoolDataFetchFailure, T>> {
+extension LoopbackWrapper<T, LR>
+    on Future<Either<data_fetch_failure.SchoolDataFetchFailure, T>> Function() {
   Future<Either<data_fetch_failure.SchoolDataFetchFailure, T>> loopbackSafe(
     Future<Either<login_failure.SchoolLoginFailure, LR>> Function() loginFunction,
   ) async {
     data_fetch_failure.SchoolDataFetchFailure? lastError;
     for (final _ in 1.to(5)) {
-      final trial = await this;
+      final trial = await this();
       switch (trial) {
         case Right<data_fetch_failure.SchoolDataFetchFailure, T>(value: final value):
           return Either.right(value);
@@ -45,7 +46,12 @@ extension LoopbackWrapper<T, LR> on Future<Either<data_fetch_failure.SchoolDataF
                 case Left<login_failure.SchoolLoginFailure, LR>(value: final error):
                   lastError = data_fetch_failure.LoginFailure(error);
                   switch (error) {
-                    case login_failure.NetworkFailure() || login_failure.CaptchaFailure():
+                    case login_failure.NetworkFailure(badResponse: final badResponse):
+                      if (badResponse != null) {
+                        return Either.left(data_fetch_failure.LoginFailure(error));
+                      }
+                      continue;
+                    case login_failure.CaptchaFailure():
                       continue;
                     case login_failure.BadDataFailure():
                     case login_failure.OtherFailure():
@@ -65,7 +71,7 @@ extension Wrapper<T> on Future<T> {
       return Either.right(await this);
     } on DioException catch (e) {
       return switch (e.type) {
-        DioExceptionType.badResponse => Either.left(NetworkFailure(badRequest: e.response)),
+        DioExceptionType.badResponse => Either.left(NetworkFailure(badResponse: e.response)),
         DioExceptionType.connectionError ||
         DioExceptionType.connectionTimeout ||
         DioExceptionType.receiveTimeout ||
@@ -86,20 +92,22 @@ extension WrapTaskEither<L, R> on Future<Either<L, R>> {
 
 sealed class RequestFailure {
   login_failure.SchoolLoginFailure asLoginFailure() => switch (this) {
-    NetworkFailure(badRequest: final badRequest) => login_failure.NetworkFailure(badRequest),
+    NetworkFailure(badResponse: final badResponse) => login_failure.NetworkFailure(badResponse),
     OtherFailure(error: final error) => login_failure.OtherFailure.fromException(error),
   };
 
   data_fetch_failure.SchoolDataFetchFailure asDataFetchFailure() => switch (this) {
-    NetworkFailure(badRequest: final badRequest) => data_fetch_failure.NetworkFailure(badRequest),
+    NetworkFailure(badResponse: final badResponse) => data_fetch_failure.NetworkFailure(
+      badResponse,
+    ),
     OtherFailure(error: final error) => data_fetch_failure.OtherFailure.fromException(error),
   };
 }
 
 class NetworkFailure extends RequestFailure {
-  Response<dynamic>? badRequest;
+  Response<dynamic>? badResponse;
 
-  NetworkFailure({this.badRequest});
+  NetworkFailure({this.badResponse});
 }
 
 class OtherFailure extends RequestFailure {

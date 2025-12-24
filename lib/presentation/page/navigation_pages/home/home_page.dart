@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:corrupt/features/channel/domain/entity/class_table_entity.dart';
 import 'package:corrupt/features/channel/domain/entity/common_school_data_entity.dart';
 import 'package:corrupt/features/channel/domain/entity/data_fetch_type.dart';
+import 'package:corrupt/features/channel/domain/entity/exam_entity.dart';
 import 'package:corrupt/features/channel/domain/use_case/school_impl_select_usecase.dart';
 import 'package:corrupt/features/channel/provider/local_school_data_provider.dart';
 import 'package:corrupt/features/pref/domain/entity/local_data_key.dart';
@@ -88,6 +89,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     return <Widget>[
       _cardUpdate(context, ref),
       _cardClassTime(context, _time, ref),
+      _cardExams(context, _time, ref),
       _cardFunctions(context, ref),
     ];
   }
@@ -97,6 +99,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       _cardRequestLogin(context),
       _cardUpdate(context, ref),
       _cardClassTime(context, _time, ref),
+      _cardExams(context, _time, ref),
       _cardFunctions(context, ref),
     ];
   }

@@ -9,6 +9,7 @@ import 'package:corrupt/presentation/widget/simple_widget.dart';
 import 'package:dartlin/control_flow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart' hide State;
 import 'package:intl/intl.dart';
 
 class FunctionScoresPage extends ConsumerStatefulWidget {
@@ -47,6 +48,10 @@ class _FunctionScoresPageState extends ConsumerState<FunctionScoresPage> {
         final scoresGroup = result[0] as (AvailableTermTime, ScoresEntity);
         final availableSemester = scoresGroup.$1;
         final scores = scoresGroup.$2;
+        setState(() {
+          selectedAcademicYear = scores.academicYear;
+          selectedSemester = scores.semester;
+        });
         return Column(
           children: [
             Flexible(
@@ -56,7 +61,7 @@ class _FunctionScoresPageState extends ConsumerState<FunctionScoresPage> {
                 children: [
                   DropdownButton(
                     items: availableSemester.availableAcademicYear
-                        .map((it) => DropdownMenuItem<String>(value: it.$2, child: Text(it.$1)))
+                        .map((it) => DropdownMenuItem<String>(value: it.$1, child: Text(it.$1)))
                         .toList(),
                     value: scores.academicYear,
                     onChanged: (v) {
@@ -71,7 +76,7 @@ class _FunctionScoresPageState extends ConsumerState<FunctionScoresPage> {
                   ),
                   DropdownButton(
                     items: availableSemester.availableSemester
-                        .map((it) => DropdownMenuItem<String>(value: it.$2, child: Text(it.$1)))
+                        .map((it) => DropdownMenuItem<String>(value: it.$1, child: Text(it.$1)))
                         .toList(),
                     value: scores.semester,
                     onChanged: (v) {
@@ -93,6 +98,7 @@ class _FunctionScoresPageState extends ConsumerState<FunctionScoresPage> {
                       child: Padding(
                         padding: EdgeInsetsGeometry.directional(start: 8, end: 8),
                         child: Column(
+                          spacing: 4,
                           children: scores.entities.map((it) => _ScoreCard(it)).toList(),
                         ),
                       ),
@@ -131,9 +137,10 @@ class _ScoreCardState extends State<_ScoreCard> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context)!;
-    final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
     final it = widget.it;
-    String emptyCheck(String ori) => ori.isEmpty ? i18n.page_exams_undeclared : ori;
     return Card(
       clipBehavior: Clip.hardEdge,
       child: InkWell(
@@ -142,31 +149,133 @@ class _ScoreCardState extends State<_ScoreCard> {
             isExpanded = !isExpanded;
           });
         },
-        child: Padding(
-          padding: EdgeInsetsGeometry.all(16),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
+          children: [
+            it.score.toDoubleOption.match(
+              () => switch (it.score) {
+                "优秀" => LinearProgressIndicator(value: 1, color: Color.fromARGB(255, 76, 175, 80)),
+                "不及格" => LinearProgressIndicator(
+                  value: 1,
+                  color: it.elective ? Color.fromARGB(50, 127, 127, 127) : colorScheme.error,
+                ),
+                _ => SizedBox.shrink(),
+              },
+              (score) => LinearProgressIndicator(
+                value: score / 100.0,
+                color: switch (score) {
+                  final s when s < 60.0 =>
+                    it.elective ? Color.fromARGB(255, 127, 127, 127) : colorScheme.error,
+                  final s when s == 100.0 => Color.fromARGB(255, 76, 175, 80),
+                  _ => colorScheme.primary.withValues(alpha: 0.4),
+                },
+                backgroundColor: score == 0
+                    ? (it.elective
+                          ? Color.fromARGB(50, 127, 127, 127)
+                          : colorScheme.error.withValues(alpha: 0.4))
+                    : Color.fromARGB(0, 0, 0, 0),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsetsGeometry.all(16),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
                 children: [
-                  Text(it.name, style: textTheme.titleMedium),
-                  simpleAnimatedSize(
-                    show: isExpanded,
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [_textWithIcon(it.classId, Icons.numbers)],
+                      children: [
+                        Text(it.name, style: textTheme.titleMedium),
+                        if (it.elective)
+                          Text(i18n.page_scores_card_elective, style: textTheme.labelMedium),
+                        simpleAnimatedSize(
+                          show: isExpanded,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: 8),
+                                  _textWithIcon(i18n.page_scores_card_time, Icons.date_range),
+                                  _textWithIcon(i18n.page_scores_card_place, Icons.location_on),
+                                  _textWithIcon(i18n.page_scores_card_category, Icons.category),
+                                  _textWithIcon(
+                                    i18n.page_scores_card_credit,
+                                    Icons.incomplete_circle,
+                                  ),
+                                  _textWithIcon(i18n.page_scores_card_gp, Icons.grade),
+                                  if (it.note.trim() != ":" && it.note.isNotEmpty)
+                                    _textWithIcon(i18n.page_scores_card_note, Icons.note),
+                                  _textWithIcon(i18n.page_scores_card_code, Icons.numbers),
+                                ],
+                              ),
+                              SizedBox(width: 8),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: 8),
+                                  _textWithIcon("${it.year} - ${it.term}"),
+                                  _textWithIcon(it.place),
+                                  _textWithIcon(
+                                    "${it.type}${it.belong.let((s) => s.isEmpty ? "" : " $s")}",
+                                  ),
+                                  _textWithIcon(it.credit),
+                                  _textWithIcon(it.gp),
+                                  if (it.note.trim() != ":" && it.note.isNotEmpty)
+                                    _textWithIcon(it.note),
+                                  _textWithIcon(it.classId),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
+                  ),
+                  Flexible(
+                    flex: 0,
+                    child: it.score.toDoubleOption
+                        .match(
+                          () => switch (it.score) {
+                            "优秀" => Color.fromARGB(255, 76, 175, 80),
+                            "不及格" =>
+                              it.elective ? Color.fromARGB(255, 127, 127, 127) : colorScheme.error,
+                            _ => colorScheme.primary,
+                          },
+                          (score) => switch (score) {
+                            final s when s < 60.0 =>
+                              it.elective ? Color.fromARGB(255, 127, 127, 127) : colorScheme.error,
+                            final s when s == 100.0 => Color.fromARGB(255, 76, 175, 80),
+                            _ => colorScheme.primary,
+                          },
+                        )
+                        .let(
+                          (color) => Column(
+                            children: [
+                              Text(it.score, style: textTheme.titleLarge?.copyWith(color: color)),
+                              simpleAnimatedSize(
+                                show: isExpanded,
+                                child: Text(
+                                  i18n.page_scores_card_score,
+                                  style: textTheme.labelLarge?.copyWith(color: color),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _textWithIcon(String text, IconData iconData) =>
-      Row(spacing: 8, children: [Icon(iconData), Text(text)]);
+  Widget _textWithIcon(String text, [IconData? iconData]) => Row(
+    spacing: 8,
+    children: [if (iconData != null) Icon(iconData), Text(text), if (iconData == null) Icon(null)],
+  );
 }

@@ -6,6 +6,7 @@ import 'package:corrupt/features/channel/domain/entity/class_table_entity.dart';
 import 'package:corrupt/features/channel/domain/entity/exam_entity.dart';
 import 'package:corrupt/features/channel/domain/entity/failure/school_data_fetch_failure.dart'
     as data_fetch_failure;
+import 'package:corrupt/features/channel/domain/entity/score_entity.dart';
 import 'package:corrupt/features/subchannels/mju/domain/entity/mju_json_object.dart';
 import 'package:fpdart/fpdart.dart';
 
@@ -80,4 +81,22 @@ class MjuAnalyzer {
       ExamsEntity(academicYear: academicYear, semester: semester, entities: exams),
     );
   }
+
+  static Either<data_fetch_failure.SchoolDataFetchFailure, ScoresEntity> analyzeScores(
+    String jsonObject,
+    String academicYear,
+    String semester,
+  ) => Either.Do(($) {
+    final rootJsonRaw = $(
+      jsonDecodeSafe(jsonObject).toEither(
+        () => data_fetch_failure.OtherFailure("error in analyzing class table (bad json data)"),
+      ),
+    );
+    final rootJson = rootJsonRaw as Map<String, dynamic>;
+    final scoreItemsJsonList = rootJson["items"] as List<dynamic>;
+    final scores = scoreItemsJsonList
+        .map((it) => MjuScoreEntity.fromJson(it).toScoreEntity())
+        .toList(growable: false);
+    return ScoresEntity(academicYear: academicYear, semester: semester, entities: scores);
+  });
 }

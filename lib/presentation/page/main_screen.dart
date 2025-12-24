@@ -107,6 +107,7 @@ class MainScreen extends ConsumerWidget {
                     ref.invalidate(refreshNotifierProvider);
                   },
                   child: AppBar(
+                    surfaceTintColor: Color.fromARGB(0, 0, 0, 0),
                     backgroundColor: theme.canvasColor.withAlpha((appbarAlpha * 255).toInt()),
                     toolbarHeight: 64,
                     title: Row(
