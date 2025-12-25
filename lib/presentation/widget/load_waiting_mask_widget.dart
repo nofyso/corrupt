@@ -7,6 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 
+Widget emptyLoadWaitingMask({
+  required List<AsyncValue<Option<dynamic>>> values,
+  required Widget Function(List<dynamic> finishedValuess) child,
+}) {
+  return child(values.map((it) => it.value?.toNullable()).toList());
+}
+
 Widget loadWaitingMask({
   required List<AsyncValue<Option<dynamic>>> values,
   required List<AsyncValue<Option<dynamic>>> requiredValues,

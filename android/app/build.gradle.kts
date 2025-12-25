@@ -39,15 +39,18 @@ android {
             manifestPlaceholders.putAll (mapOf(
                 "app_label" to "corrupt",
                 "app_icon" to "@mipmap/ic_launcher",
-                "app_roundIcon" to "@mipmap/ic_launcher"
+                "app_roundIcon" to "@mipmap/ic_launcher",
+                "debug" to ""
             ))
         }
         debug {
+            applicationIdSuffix=".oxalis"
             manifestPlaceholders.putAll(mapOf(
                 "app_label" to "dorrupt",
                 "app_icon" to "@mipmap/ic_launcher_debug",
-                "app_roundIcon" to "@mipmap/ic_launcher_debug_round"
-            ));
+                "app_roundIcon" to "@mipmap/ic_launcher_debug_round",
+                "debug" to "debug."
+            ))
         }
     }
 

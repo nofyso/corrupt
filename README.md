@@ -20,4 +20,4 @@ __Notice that package for iOS(ipa) is NOT signed, you have to sign it yourself__
 |-:|:-:|:-:|
 |Class table|✅|✅|
 |Exams|✅|✅|
-|Scores|✅|❌|
+|Scores|✅|✅|

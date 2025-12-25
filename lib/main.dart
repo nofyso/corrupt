@@ -4,6 +4,8 @@ import 'package:corrupt/infrastructure/di.dart';
 import 'package:corrupt/infrastructure/event_bus.dart';
 import 'package:corrupt/presentation/i18n/app_localizations.dart';
 import 'package:corrupt/presentation/page/main_screen.dart';
+import 'package:corrupt/presentation/widget/load_waiting_mask_widget.dart';
+import 'package:dartlin/control_flow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,129 +14,159 @@ void main() async {
   setupDependencies();
   await getIt.allReady();
   setupEventListener();
-  final app = MyApp();
+  final app = Corrupt();
   runApp(UncontrolledProviderScope(container: getIt<ProviderContainer>(), child: app));
 }
 
-class MyApp extends ConsumerWidget {
-  const MyApp({super.key}); //
+class Corrupt extends ConsumerWidget {
+  const Corrupt({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final color = 0xFF5E18AB;
-    // final color=0x03A9F4;
-    final lightColorTheme = ColorScheme.fromSeed(
-      seedColor: Color(color),
-      brightness: Brightness.light,
-      dynamicSchemeVariant: DynamicSchemeVariant.fidelity,
-    );
-    final darkColorTheme = ColorScheme.fromSeed(
-      seedColor: Color(color),
-      brightness: Brightness.dark,
-      dynamicSchemeVariant: DynamicSchemeVariant.fidelity,
-    );
-    final themeSetting = ref.watch(prefProvider(SettingKeysGen.themeSwitch));
-    final themeMode = switch (themeSetting.when(
-      data: (d) => d.toNullable()!,
-      error: (_, _) => SettingKeysGen.themeSwitchValue0,
-      loading: () => SettingKeysGen.themeSwitchValue0,
-    )) {
-      SettingKeysGen.themeSwitchValue1 => ThemeMode.light,
-      SettingKeysGen.themeSwitchValue2 => ThemeMode.dark,
-      SettingKeysGen.themeSwitchValue0 || _ => ThemeMode.system,
-    };
-    return MaterialApp(
-      title: 'corrupt',
-      theme: ThemeData(colorScheme: lightColorTheme),
-      darkTheme: ThemeData(colorScheme: darkColorTheme),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      themeMode: themeMode,
-      home: MainScreen(),
+    final neededValue = [
+      ref.watch(prefProvider(SettingKeysGen.colorScheme)),
+      ref.watch(prefProvider(SettingKeysGen.settingsCustomizeLegacyColorSwitch)),
+    ];
+    return Material(
+      child: emptyLoadWaitingMask(
+        values: neededValue,
+        child: (value) {
+          final theme = value[0] as String?;
+          final legacyColor = value[1] as bool?;
+          final (lightTheme, darkTheme) = getThemeData(theme, legacyColor == true);
+          final themeSetting = ref.watch(prefProvider(SettingKeysGen.themeSwitch));
+          final themeMode = switch (themeSetting.when(
+            data: (d) => d.toNullable()!,
+            error: (_, _) => SettingKeysGen.themeSwitchValue0,
+            loading: () => SettingKeysGen.themeSwitchValue0,
+          )) {
+            SettingKeysGen.themeSwitchValue1 => ThemeMode.light,
+            SettingKeysGen.themeSwitchValue2 => ThemeMode.dark,
+            SettingKeysGen.themeSwitchValue0 || _ => ThemeMode.system,
+          };
+          return MaterialApp(
+            title: 'corrupt',
+            theme: lightTheme,
+            darkTheme: darkTheme,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            themeMode: themeMode,
+            home: MainScreen(),
+          );
+        },
+      ),
     );
   }
+
+  (ThemeData, ThemeData) getThemeData(String? theme, bool legacy) => switch (theme) {
+    SettingKeysGen.colorSchemeValue1 => (
+      ThemeData.from(colorScheme: ColorScheme.fromSwatch(), useMaterial3: true),
+      ThemeData.dark(useMaterial3: true),
+    ),
+    SettingKeysGen.colorSchemeValue3 => (
+      ThemeData(
+        colorScheme:
+            ColorScheme.fromSwatch(
+                  primarySwatch: Colors.blue,
+                  accentColor: Colors.cyan.shade200,
+                  brightness: Brightness.light,
+                  cardColor: Color.fromARGB(255, 250, 250, 250),
+                  backgroundColor: Color.fromARGB(255, 250, 250, 250),
+                )
+                .copyWith(surfaceContainerHighest: Color.fromARGB(255, 200, 200, 200))
+                .let((it) => legacy ? it.legacyTransform() : it),
+      ),
+      ThemeData(
+        colorScheme:
+            ColorScheme.fromSwatch(
+                  primarySwatch: Colors.blue,
+                  accentColor: Colors.cyan.shade900,
+                  brightness: Brightness.dark,
+                  backgroundColor: Color.fromARGB(255, 20, 20, 20),
+                  cardColor: Color.fromARGB(255, 20, 20, 20),
+                )
+                .copyWith(surfaceContainerHighest: Color.fromARGB(255, 77, 77, 77))
+                .let((it) => legacy ? it.legacyTransform() : it),
+      ),
+    ),
+    SettingKeysGen.colorSchemeValue4 => (
+      ThemeData(
+        colorScheme:
+            ColorScheme.fromSwatch(
+                  primarySwatch: _mikuGreen,
+                  accentColor: Colors.pink.shade200,
+                  brightness: Brightness.light,
+                  cardColor: Color.fromARGB(255, 250, 250, 250),
+                  backgroundColor: Color.fromARGB(255, 250, 250, 250),
+                )
+                .copyWith(surfaceContainerHighest: Color.fromARGB(255, 200, 200, 200))
+                .let((it) => legacy ? it.legacyTransform() : it),
+      ),
+      ThemeData(
+        colorScheme:
+            ColorScheme.fromSwatch(
+                  primarySwatch: _mikuGreen,
+                  accentColor: Colors.pink.shade900,
+                  brightness: Brightness.dark,
+                  backgroundColor: Color.fromARGB(255, 20, 20, 20),
+                  cardColor: Color.fromARGB(255, 20, 20, 20),
+                )
+                .copyWith(surfaceContainerHighest: Color.fromARGB(255, 77, 77, 77))
+                .let((it) => legacy ? it.legacyTransform() : it),
+      ),
+    ),
+    _ => (
+      ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Color(0xFF5E18AB),
+          brightness: Brightness.light,
+          dynamicSchemeVariant: DynamicSchemeVariant.fidelity,
+        ).let((it) => legacy ? it.legacyTransform() : it),
+      ),
+      ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Color(0xFF5E18AB),
+          brightness: Brightness.dark,
+          dynamicSchemeVariant: DynamicSchemeVariant.fidelity,
+        ).let((it) => legacy ? it.legacyTransform() : it),
+      ),
+    ),
+  };
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+const Map<int, Color> _mikuGreenSwatch = {
+  50:  Color(0xFFE0F8F6),
+  100: Color(0xFFB3EBE6),
+  200: Color(0xFF80DDD5),
+  300: Color(0xFF4DCFC4),
+  400: Color(0xFF26C5B9),
+  500: Color(0xFF39C5BB),
+  600: Color(0xFF33B3A9),
+  700: Color(0xFF2DA094),
+  800: Color(0xFF278C80),
+  900: Color(0xFF1D6A5D),
+};
+const MaterialColor _mikuGreen = MaterialColor(0xFF39C5BB, _mikuGreenSwatch);
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
+extension on ColorScheme {
+  ColorScheme legacyTransform() => copyWith(
+    errorContainer: errorContainer.legacyTransform(),
+    primaryContainer: primaryContainer.legacyTransform(),
+    secondaryContainer: secondaryContainer.legacyTransform(),
+    surfaceContainer: surfaceContainer.legacyTransform(),
+    tertiaryContainer: tertiaryContainer.legacyTransform(),
+    surface: surface.legacyTransform(),
+    surfaceBright: surfaceBright.legacyTransform(),
+    surfaceContainerHigh: surfaceContainerHigh.legacyTransform(),
+    surfaceContainerHighest: surfaceContainerHighest.legacyTransform(),
+    surfaceContainerLow: surfaceContainerLow.legacyTransform(),
+    surfaceContainerLowest: surfaceContainerLowest.legacyTransform(),
+    surfaceDim: surfaceDim.legacyTransform(),
+    surfaceTint: surfaceTint.legacyTransform(),
+  );
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text('$_counter', style: Theme.of(context).textTheme.headlineMedium),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
-  }
+extension on Color {
+  Color legacyTransform() =>
+      ((r + g + b) / 3.0).let((it) => Color.from(alpha: a, red: it, green: it, blue: it));
 }
