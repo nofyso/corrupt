@@ -10,7 +10,7 @@ import 'package:corrupt/features/pref/provider/local_pref_provider.dart';
 import 'package:corrupt/features/refresh/provider/refresh_provider.dart';
 import 'package:corrupt/infrastructure/di.dart';
 import 'package:corrupt/presentation/i18n/app_localizations.dart';
-import 'package:corrupt/presentation/util/class_time_util.dart';
+import 'package:corrupt/util/class_time_util.dart';
 import 'package:corrupt/presentation/widget/classes_widget.dart';
 import 'package:corrupt/presentation/widget/load_waiting_mask_widget.dart';
 import 'package:corrupt/presentation/widget/simple_widget.dart';
@@ -73,14 +73,12 @@ class _ClassesPageState extends ConsumerState<ClassesPage> with SingleTickerProv
         }
         final time = DateTime.timestamp().toLocal();
         final termData = ClassTimeUtil.selectCurrentTermData(time, termDataList);
-        final initialPageIndex = termData == null
-            ? 0
-            : ClassTimeUtil.getCurrentWeek(time, termData);
+        final initialPageIndex = termData.match(()=>0, (td)=>ClassTimeUtil.getCurrentWeek(time, td));
         return (classTable.classes.isNotEmpty || false
             ? ClassesWidget(
                 classTable: classTable,
                 classTime: classTime,
-                termData: termData,
+                termData: termData.toNullable(),
                 showTimeInspector: showTimeInspector,
                 showDateInspector: showDateInspector,
                 timeInspectorAlpha: timeInspectorAlpha,

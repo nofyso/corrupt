@@ -14,7 +14,7 @@ import 'package:corrupt/presentation/i18n/app_localizations.dart';
 import 'package:corrupt/presentation/page/login_screen.dart';
 import 'package:corrupt/presentation/page/main_screen.dart';
 import 'package:corrupt/presentation/page/navigation_pages/home/home_update_card.dart';
-import 'package:corrupt/presentation/util/class_time_util.dart';
+import 'package:corrupt/util/class_time_util.dart';
 import 'package:corrupt/presentation/widget/load_waiting_mask_widget.dart';
 import 'package:corrupt/presentation/widget/simple_widget.dart';
 import 'package:dartlin/collections.dart';

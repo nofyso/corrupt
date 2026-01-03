@@ -8,7 +8,7 @@ class ClassTimeUtil {
     return (-difference.inDays / 7.0).floor().clamp(0, 19);
   }
 
-  static TermData? selectCurrentTermData(
+  static Option<TermData> selectCurrentTermData(
     DateTime time,
     List<TermData> termDataList,
   ) {
@@ -33,6 +33,6 @@ class ClassTimeUtil {
         .filter(
           (it) => it.semester == semester && it.academicYear == academicYear,
         )
-        .firstOrNull();
+        .firstOption;
   }
 }

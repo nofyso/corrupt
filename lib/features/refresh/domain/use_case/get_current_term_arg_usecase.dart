@@ -4,6 +4,7 @@ import 'package:corrupt/features/channel/domain/entity/data_fetch_type.dart';
 import 'package:corrupt/features/channel/domain/entity/failure/school_data_fetch_failure.dart';
 import 'package:corrupt/features/channel/domain/entity/school_enum.dart';
 import 'package:corrupt/features/channel/domain/use_case/school_impl_select_usecase.dart';
+import 'package:corrupt/util/class_time_util.dart';
 import 'package:dartlin/collections.dart';
 import 'package:fpdart/fpdart.dart';
 
@@ -39,17 +40,6 @@ class GetCurrentTermArgUseCase {
   //Experimental
   Option<TermData> _selectCurrentTerm(List<TermData> termDataList) {
     final time = DateTime.timestamp().toLocal();
-    final semester = DateTime.february.to(DateTime.july).contains(time.month)
-        ? "2"
-        : "1";
-    final year = time.year;
-    final academicYear = semester == "1"
-        ? "$year-${year + 1}"
-        : "${year - 1}-$year";
-    return termDataList
-        .filter(
-          (it) => it.semester == semester && it.academicYear == academicYear,
-        )
-        .firstOption;
+    return ClassTimeUtil.selectCurrentTermData(time, termDataList);
   }
 }

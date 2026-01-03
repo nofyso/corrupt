@@ -58,7 +58,7 @@ Widget _cardRequestLogin(BuildContext context) {
 Widget _cardClassTime(BuildContext context, DateTime time, WidgetRef ref) {
   (ClassEntity? current, ClassEntity? previous, ClassEntity? next, int msLeft, bool inClass)?
   getClassStatus(ClassTable classTable, List<TermData> termDataList, ClassTime classTime) {
-    final currentTerm = ClassTimeUtil.selectCurrentTermData(time, termDataList);
+    final currentTerm = ClassTimeUtil.selectCurrentTermData(time, termDataList).toNullable();
     if (currentTerm == null) return null;
     final currentWeek = ClassTimeUtil.getCurrentWeek(time, currentTerm);
     final classes = classTable.classes
