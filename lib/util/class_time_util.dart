@@ -1,5 +1,4 @@
 import 'package:corrupt/features/channel/domain/entity/common_school_data_entity.dart';
-import 'package:dartlin/collections.dart';
 import 'package:fpdart/fpdart.dart';
 
 class ClassTimeUtil {

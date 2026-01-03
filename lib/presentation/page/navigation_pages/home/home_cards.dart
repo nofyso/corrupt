@@ -112,8 +112,9 @@ Widget _cardClassTime(BuildContext context, DateTime time, WidgetRef ref) {
     final classTimeMap = classTime.times;
     for (final (i, it) in classes.indexed) {
       final (fromMs, toMs) = classTimeMap[it.time];
-      if (currentMillisecondOffset > fromMs && currentMillisecondOffset > toMs)
+      if (currentMillisecondOffset > fromMs && currentMillisecondOffset > toMs) {
         continue;
+      }
       if (currentMillisecondOffset < fromMs) {
         return (
           null,

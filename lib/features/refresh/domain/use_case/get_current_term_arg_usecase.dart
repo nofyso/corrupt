@@ -5,7 +5,6 @@ import 'package:corrupt/features/channel/domain/entity/failure/school_data_fetch
 import 'package:corrupt/features/channel/domain/entity/school_enum.dart';
 import 'package:corrupt/features/channel/domain/use_case/school_impl_select_usecase.dart';
 import 'package:corrupt/util/class_time_util.dart';
-import 'package:dartlin/collections.dart';
 import 'package:fpdart/fpdart.dart';
 
 class GetCurrentTermArgUseCase {

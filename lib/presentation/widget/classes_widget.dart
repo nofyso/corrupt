@@ -4,8 +4,8 @@ import 'dart:math';
 import 'package:corrupt/features/channel/domain/entity/class_table_entity.dart';
 import 'package:corrupt/features/channel/domain/entity/common_school_data_entity.dart';
 import 'package:corrupt/presentation/i18n/app_localizations.dart';
-import 'package:corrupt/util/class_time_util.dart';
 import 'package:corrupt/presentation/util/platform_util.dart';
+import 'package:corrupt/util/class_time_util.dart';
 import 'package:dartlin/dartlin.dart';
 import 'package:flutter/material.dart' hide State;
 import 'package:flutter/widgets.dart';
@@ -123,8 +123,9 @@ class _ClassesWidgetState extends ConsumerState<ClassesWidget>
     );
     final classesLength = classTime.times.length;
     for (final (i, (fromMs, toMs)) in classTime.times.indexed) {
-      if (fromMs < currentMillisecondOffset && toMs < currentMillisecondOffset)
+      if (fromMs < currentMillisecondOffset && toMs < currentMillisecondOffset) {
         continue;
+      }
       if (fromMs > currentMillisecondOffset) {
         return i.toDouble() / classesLength;
       }

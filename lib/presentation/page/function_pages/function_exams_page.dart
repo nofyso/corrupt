@@ -74,8 +74,9 @@ class _FunctionExamsPageState extends ConsumerState<FunctionExamsPage> {
                         if (v == selectedAcademicYear) return;
                         selectedAcademicYear = v;
                         selectedSemester.let((it) {
-                          if (it != null && v != null)
+                          if (it != null && v != null) {
                             _argument = TermBasedFetchArgument(v, it);
+                          }
                         });
                       });
                     },
@@ -95,8 +96,9 @@ class _FunctionExamsPageState extends ConsumerState<FunctionExamsPage> {
                       setState(() {
                         selectedSemester = v;
                         selectedAcademicYear.let((it) {
-                          if (it != null && v != null)
+                          if (it != null && v != null) {
                             _argument = TermBasedFetchArgument(it, v);
+                          }
                         });
                       });
                     },
