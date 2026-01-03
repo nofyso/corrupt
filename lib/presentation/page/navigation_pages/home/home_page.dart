@@ -55,7 +55,9 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final needValues = <AsyncValue<Option<dynamic>>>[ref.watch(prefProvider(LocalDataKey.logged))];
+    final needValues = <AsyncValue<Option<dynamic>>>[
+      ref.watch(prefProvider(LocalDataKey.logged)),
+    ];
     return loadWaitingMask(
       values: needValues,
       requiredValues: needValues,
@@ -71,12 +73,20 @@ class _HomePageState extends ConsumerState<HomePage> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Flexible(fit: FlexFit.tight, child: _cardGreeting(context,_time)),
-                      Flexible(fit: FlexFit.tight, child: _cardTime(context,_time)),
+                      Flexible(
+                        fit: FlexFit.tight,
+                        child: _cardGreeting(context, _time),
+                      ),
+                      Flexible(
+                        fit: FlexFit.tight,
+                        child: _cardTime(context, _time),
+                      ),
                     ],
                   ),
                 ),
-                ...isLogged ? _loggedWidget(context) : _notLoggedWidget(context),
+                ...isLogged
+                    ? _loggedWidget(context)
+                    : _notLoggedWidget(context),
               ],
             ),
           ),

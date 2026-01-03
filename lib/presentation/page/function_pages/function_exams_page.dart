@@ -15,7 +15,8 @@ class FunctionExamsPage extends ConsumerStatefulWidget {
   const FunctionExamsPage({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _FunctionExamsPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _FunctionExamsPageState();
 }
 
 class _FunctionExamsPageState extends ConsumerState<FunctionExamsPage> {
@@ -60,7 +61,12 @@ class _FunctionExamsPageState extends ConsumerState<FunctionExamsPage> {
                 children: [
                   DropdownButton(
                     items: availableSemester.availableAcademicYear
-                        .map((it) => DropdownMenuItem<String>(value: it.$1, child: Text(it.$1)))
+                        .map(
+                          (it) => DropdownMenuItem<String>(
+                            value: it.$1,
+                            child: Text(it.$1),
+                          ),
+                        )
                         .toList(),
                     value: exams.academicYear,
                     onChanged: (v) {
@@ -68,14 +74,20 @@ class _FunctionExamsPageState extends ConsumerState<FunctionExamsPage> {
                         if (v == selectedAcademicYear) return;
                         selectedAcademicYear = v;
                         selectedSemester.let((it) {
-                          if (it != null && v != null) _argument = TermBasedFetchArgument(v, it);
+                          if (it != null && v != null)
+                            _argument = TermBasedFetchArgument(v, it);
                         });
                       });
                     },
                   ),
                   DropdownButton(
                     items: availableSemester.availableSemester
-                        .map((it) => DropdownMenuItem<String>(value: it.$1, child: Text(it.$1)))
+                        .map(
+                          (it) => DropdownMenuItem<String>(
+                            value: it.$1,
+                            child: Text(it.$1),
+                          ),
+                        )
                         .toList(),
                     value: exams.semester,
                     onChanged: (v) {
@@ -83,7 +95,8 @@ class _FunctionExamsPageState extends ConsumerState<FunctionExamsPage> {
                       setState(() {
                         selectedSemester = v;
                         selectedAcademicYear.let((it) {
-                          if (it != null && v != null) _argument = TermBasedFetchArgument(it, v);
+                          if (it != null && v != null)
+                            _argument = TermBasedFetchArgument(it, v);
                         });
                       });
                     },
@@ -95,15 +108,25 @@ class _FunctionExamsPageState extends ConsumerState<FunctionExamsPage> {
               child: exams.entities.isNotEmpty
                   ? SingleChildScrollView(
                       child: Padding(
-                        padding: EdgeInsetsGeometry.directional(start: 8, end: 8),
-                        child: Column(children: exams.entities.map((it) => _ExamCard(it)).toList()),
+                        padding: EdgeInsetsGeometry.directional(
+                          start: 8,
+                          end: 8,
+                        ),
+                        child: Column(
+                          children: exams.entities
+                              .map((it) => _ExamCard(it))
+                              .toList(),
+                        ),
                       ),
                     )
                   : Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.circle_outlined, size: 32),
-                        Text(i18n.page_exams_empty_title, style: textTheme.titleMedium),
+                        Text(
+                          i18n.page_exams_empty_title,
+                          style: textTheme.titleMedium,
+                        ),
                         Text(i18n.page_exams_empty_subtitle),
                       ],
                     ),
@@ -135,7 +158,8 @@ class _ExamCardState extends State<_ExamCard> {
     final i18n = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
     final it = widget.it;
-    String emptyCheck(String ori) => ori.isEmpty ? i18n.page_exams_undeclared : ori;
+    String emptyCheck(String ori) =>
+        ori.isEmpty ? i18n.page_exams_undeclared : ori;
     return Card(
       clipBehavior: Clip.hardEdge,
       child: InkWell(
@@ -155,7 +179,8 @@ class _ExamCardState extends State<_ExamCard> {
                   Text(it.name, style: textTheme.titleMedium),
                   SizedBox(height: 4),
                   _textWithIcon(
-                    it.fromTime?.let((it) => dateFormat.format(it)) ?? i18n.page_exams_undeclared,
+                    it.fromTime?.let((it) => dateFormat.format(it)) ??
+                        i18n.page_exams_undeclared,
                     Icons.calendar_month,
                   ),
                   _textWithIcon(

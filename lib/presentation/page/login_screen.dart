@@ -14,16 +14,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 
-enum _TextControllerId {
-  name,
-  password;
-}
+enum _TextControllerId { name, password }
 
-final _textControllers = Provider.family<TextEditingController, _TextControllerId>((ref, field) {
-  final controller = TextEditingController();
-  ref.onDispose(controller.dispose);
-  return controller;
-});
+final _textControllers =
+    Provider.family<TextEditingController, _TextControllerId>((ref, field) {
+      final controller = TextEditingController();
+      ref.onDispose(controller.dispose);
+      return controller;
+    });
 final _selectedSchool = StateProvider.autoDispose((_) => School.fafu);
 final _pageIndex = StateProvider.autoDispose<int>((_) => 0);
 final _isLogging = StateProvider.autoDispose((_) => false);
@@ -37,15 +35,22 @@ class LoginController {
     final loginUseCase = getIt<SchoolLoginUseCase>();
     final implType = ref.read(_selectedSchool);
     final studentId = ref.read(_textControllers(_TextControllerId.name)).text;
-    final password = ref.read(_textControllers(_TextControllerId.password)).text;
+    final password = ref
+        .read(_textControllers(_TextControllerId.password))
+        .text;
     var credits = 5;
     while (credits >= 0) {
-      final loginResult = await loginUseCase.firstLogin(implType, (studentId, password));
+      final loginResult = await loginUseCase.firstLogin(implType, (
+        studentId,
+        password,
+      ));
       switch (loginResult) {
         case Right<login_failure.SchoolLoginFailure, dynamic>():
           await _schoolDataRepository.setData(LocalDataKey.logged, true);
           return Option.none();
-        case Left<login_failure.SchoolLoginFailure, dynamic>(value: final error):
+        case Left<login_failure.SchoolLoginFailure, dynamic>(
+          value: final error,
+        ):
           switch (error) {
             case login_failure.NetworkFailure(badResponse: final badResponse):
               if (badResponse == null) {
@@ -65,18 +70,24 @@ class LoginController {
               switch (dataType) {
                 case login_failure.BadDataType.username:
                   return Option.of(
-                    isEmpty ? i18n.error_data_empty_id : i18n.error_data_incorrect_id,
+                    isEmpty
+                        ? i18n.error_data_empty_id
+                        : i18n.error_data_incorrect_id,
                   );
                 case login_failure.BadDataType.password:
                   return Option.of(
                     isEmpty
                         ? i18n.error_data_empty_password
                         : (extra != null
-                              ? i18n.error_data_incorrect_password_with_time(extra)
+                              ? i18n.error_data_incorrect_password_with_time(
+                                  extra,
+                                )
                               : i18n.error_data_incorrect_password),
                   );
                 case login_failure.BadDataType.other:
-                  return Option.of(i18n.error_data_bad_data(extra ?? "[empty]"));
+                  return Option.of(
+                    i18n.error_data_bad_data(extra ?? "[empty]"),
+                  );
                 case login_failure.BadDataType.both:
                   return Option.of(
                     isEmpty
@@ -103,7 +114,8 @@ class LoginScreen extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProviderStateMixin {
+class _LoginScreenState extends ConsumerState<LoginScreen>
+    with SingleTickerProviderStateMixin {
   final _loginController = getIt.get<LoginController>();
   late final TabController _tabController;
 
@@ -128,7 +140,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
             TabBarView(
               controller: _tabController,
               physics: NeverScrollableScrollPhysics(),
-              children: [_schoolSelectPage(context, ref), _schoolLoginPage(context, ref)],
+              children: [
+                _schoolSelectPage(context, ref),
+                _schoolLoginPage(context, ref),
+              ],
             ),
             if (PlatformUtils.isDesktop)
               IconButton(
@@ -161,7 +176,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
               RadioGroup<School>(
                 groupValue: ref.watch(_selectedSchool),
                 onChanged: (final school) {
-                  ref.read(_selectedSchool.notifier).state = school ?? School.fafu;
+                  ref.read(_selectedSchool.notifier).state =
+                      school ?? School.fafu;
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,7 +218,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
               AnimatedSize(
                 duration: MaterialDurations.short,
                 curve: Curves.easeInOutQuad,
-                child: isLogging ? LinearProgressIndicator() : SizedBox.shrink(),
+                child: isLogging
+                    ? LinearProgressIndicator()
+                    : SizedBox.shrink(),
               ),
               Padding(
                 padding: EdgeInsetsGeometry.all(16.0),
@@ -239,7 +257,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         SizedBox(height: 8.0),
-                        Text(i18n.screen_login_page2_title, style: textTheme.titleLarge),
+                        Text(
+                          i18n.screen_login_page2_title,
+                          style: textTheme.titleLarge,
+                        ),
                         Text(i18n.screen_login_page2_subtitle_fafu),
                         Padding(
                           padding: EdgeInsetsGeometry.all(8.0),
@@ -250,9 +271,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
                                 enabled: !isLogging,
                                 enableSuggestions: false,
                                 decoration: InputDecoration(
-                                  label: Text(i18n.screen_login_page2_studentId),
+                                  label: Text(
+                                    i18n.screen_login_page2_studentId,
+                                  ),
                                 ),
-                                controller: ref.read(_textControllers(_TextControllerId.name)),
+                                controller: ref.read(
+                                  _textControllers(_TextControllerId.name),
+                                ),
                               ),
                               TextField(
                                 enabled: !isLogging,
@@ -261,7 +286,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
                                 decoration: InputDecoration(
                                   label: Text(i18n.screen_login_page2_password),
                                 ),
-                                controller: ref.read(_textControllers(_TextControllerId.password)),
+                                controller: ref.read(
+                                  _textControllers(_TextControllerId.password),
+                                ),
                               ),
                             ],
                           ),
@@ -277,12 +304,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
                                 if (!isLogging)
                                   FilledButton(
                                     onPressed: () async {
-                                      ref.read(_loggingErrorStatus.notifier).state = null;
-                                      final result = await _loginController.login(ref, i18n);
+                                      ref
+                                              .read(
+                                                _loggingErrorStatus.notifier,
+                                              )
+                                              .state =
+                                          null;
+                                      final result = await _loginController
+                                          .login(ref, i18n);
                                       result.match(() {}, (some) {
-                                        ref.read(_loggingErrorStatus.notifier).state = some;
+                                        ref
+                                                .read(
+                                                  _loggingErrorStatus.notifier,
+                                                )
+                                                .state =
+                                            some;
                                       });
-                                      ref.read(_isLogging.notifier).state = false;
+                                      ref.read(_isLogging.notifier).state =
+                                          false;
                                       if (result.isNone() && context.mounted) {
                                         Navigator.pop(context);
                                       }
@@ -292,7 +331,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
                                     },
                                     child: Text(i18n.screen_login_page2_login),
                                   ),
-                                if (isLogging) Text(i18n.screen_login_page2_hint),
+                                if (isLogging)
+                                  Text(i18n.screen_login_page2_hint),
                                 if (loginError != null) Text(loginError),
                               ],
                             ),

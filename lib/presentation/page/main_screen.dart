@@ -52,10 +52,18 @@ class MainScreen extends ConsumerWidget {
         icon: Icon(Icons.class_),
         label: i18n.page_home_functions_classes,
       ),
-      _CustomNavigationDestination(icon: Icon(Icons.school), label: i18n.page_home_functions_exams),
-      _CustomNavigationDestination(icon: Icon(Icons.star), label: i18n.page_home_functions_scores),
+      _CustomNavigationDestination(
+        icon: Icon(Icons.school),
+        label: i18n.page_home_functions_exams,
+      ),
+      _CustomNavigationDestination(
+        icon: Icon(Icons.star),
+        label: i18n.page_home_functions_scores,
+      ),
     ];
-    final showedDestinations = navigationDestinations.filter((it) => it.showOnNavigator).toList();
+    final showedDestinations = navigationDestinations
+        .filter((it) => it.showOnNavigator)
+        .toList();
     final navigationScreen = <Widget>[
       const HomePage(),
       ClassesPage(),
@@ -68,10 +76,18 @@ class MainScreen extends ConsumerWidget {
     final refreshState = ref.watch(refreshNotifierProvider);
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-    final enableBackgroundSetting = ref.watch(prefProvider(SettingKeysGen.backgroundSwitch));
-    final backgroundAlphaSetting = ref.watch(prefProvider(SettingKeysGen.backgroundAlpha));
-    final appbarAlphaSetting = ref.watch(prefProvider(SettingKeysGen.appbarAlpha));
-    final navigationBarSetting = ref.watch(prefProvider(SettingKeysGen.navigationBarAlpha));
+    final enableBackgroundSetting = ref.watch(
+      prefProvider(SettingKeysGen.backgroundSwitch),
+    );
+    final backgroundAlphaSetting = ref.watch(
+      prefProvider(SettingKeysGen.backgroundAlpha),
+    );
+    final appbarAlphaSetting = ref.watch(
+      prefProvider(SettingKeysGen.appbarAlpha),
+    );
+    final navigationBarSetting = ref.watch(
+      prefProvider(SettingKeysGen.navigationBarAlpha),
+    );
     final backgroundPath = ref.watch(applicationSupportPathProvider);
     final isLoggedResult = ref.watch(prefProvider(LocalDataKey.logged));
     final neededValue = <AsyncValue<Option<dynamic>>>[
@@ -99,16 +115,22 @@ class MainScreen extends ConsumerWidget {
           return Stack(
             children: [
               if (enableBackground && backgroundFile.existsSync())
-                SizedBox.expand(child: Image.file(backgroundFile, fit: BoxFit.cover)),
+                SizedBox.expand(
+                  child: Image.file(backgroundFile, fit: BoxFit.cover),
+                ),
               Scaffold(
-                backgroundColor: theme.canvasColor.withAlpha(((1 - backgroundAlpha) * 255).toInt()),
+                backgroundColor: theme.canvasColor.withAlpha(
+                  ((1 - backgroundAlpha) * 255).toInt(),
+                ),
                 appBar: _AppbarInkwell(
                   onTap: () {
                     ref.invalidate(refreshNotifierProvider);
                   },
                   child: AppBar(
                     surfaceTintColor: Color.fromARGB(0, 0, 0, 0),
-                    backgroundColor: theme.canvasColor.withAlpha((appbarAlpha * 255).toInt()),
+                    backgroundColor: theme.canvasColor.withAlpha(
+                      (appbarAlpha * 255).toInt(),
+                    ),
                     toolbarHeight: 64,
                     title: Row(
                       mainAxisSize: MainAxisSize.max,
@@ -124,7 +146,12 @@ class MainScreen extends ConsumerWidget {
                                   children: [
                                     IconButton(
                                       onPressed: () {
-                                        ref.read(mainStateCurrentPage.notifier).state = 0;
+                                        ref
+                                                .read(
+                                                  mainStateCurrentPage.notifier,
+                                                )
+                                                .state =
+                                            0;
                                       },
                                       icon: Icon(Icons.arrow_back),
                                     ),
@@ -138,9 +165,13 @@ class MainScreen extends ConsumerWidget {
                                   Row(
                                     children: [
                                       simpleAnimatedSize(
-                                        show: !currentDestination.showOnNavigator,
+                                        show:
+                                            !currentDestination.showOnNavigator,
                                         child: Row(
-                                          children: [currentDestination.icon, SizedBox(width: 16)],
+                                          children: [
+                                            currentDestination.icon,
+                                            SizedBox(width: 16),
+                                          ],
                                         ),
                                       ),
                                       Text(currentDestination.label),
@@ -154,22 +185,28 @@ class MainScreen extends ConsumerWidget {
                                     ),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         SizedBox(width: 2.0),
                                         SizedBox(
                                           width: 12.0,
                                           height: 12.0,
-                                          child: CircularProgressIndicator(strokeWidth: 2.0),
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2.0,
+                                          ),
                                         ),
                                         SizedBox(width: 8.0),
                                         Text(
                                           refreshState.when(
-                                            data: (it) => it.displayFunction(i18n),
+                                            data: (it) =>
+                                                it.displayFunction(i18n),
                                             error: (a, b) {
-                                              return i18n.screen_main_refresh_error;
+                                              return i18n
+                                                  .screen_main_refresh_error;
                                             },
-                                            loading: () => i18n.screen_main_refresh_waiting,
+                                            loading: () => i18n
+                                                .screen_main_refresh_waiting,
                                           ),
                                           style: textTheme.labelLarge,
                                         ),
@@ -191,7 +228,8 @@ class MainScreen extends ConsumerWidget {
                               waitDuration: Duration.zero,
                               child: IconButton(
                                 onPressed: () {
-                                  tooltipKey.currentState?.ensureTooltipVisible();
+                                  tooltipKey.currentState
+                                      ?.ensureTooltipVisible();
                                 },
                                 icon: Icon(Icons.key_off_outlined),
                               ),
@@ -212,7 +250,9 @@ class MainScreen extends ConsumerWidget {
                   ),
                 ),
                 bottomNavigationBar: simpleAnimatedSize(
-                  show: !(currentDestination.isFullScreen || !currentDestination.showOnNavigator),
+                  show:
+                      !(currentDestination.isFullScreen ||
+                          !currentDestination.showOnNavigator),
                   child: NavigationBar(
                     backgroundColor: theme.canvasColor.withAlpha(
                       (navigationBarAlpha * 255).toInt(),

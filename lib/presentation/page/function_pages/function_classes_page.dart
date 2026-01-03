@@ -14,7 +14,8 @@ class FunctionClassesPage extends ConsumerStatefulWidget {
   const FunctionClassesPage({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _FunctionClassesPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _FunctionClassesPageState();
 }
 
 class _FunctionClassesPageState extends ConsumerState<FunctionClassesPage> {
@@ -63,7 +64,12 @@ class _FunctionClassesPageState extends ConsumerState<FunctionClassesPage> {
                   children: [
                     DropdownButton(
                       items: availableSemester.availableAcademicYear
-                          .map((it) => DropdownMenuItem<String>(value: it.$1, child: Text(it.$1)))
+                          .map(
+                            (it) => DropdownMenuItem<String>(
+                              value: it.$1,
+                              child: Text(it.$1),
+                            ),
+                          )
                           .toList(),
                       value: classTable.academicYear,
                       onChanged: (v) {
@@ -80,7 +86,12 @@ class _FunctionClassesPageState extends ConsumerState<FunctionClassesPage> {
                     ),
                     DropdownButton(
                       items: availableSemester.availableSemester
-                          .map((it) => DropdownMenuItem<String>(value: it.$1, child: Text(it.$1)))
+                          .map(
+                            (it) => DropdownMenuItem<String>(
+                              value: it.$1,
+                              child: Text(it.$1),
+                            ),
+                          )
                           .toList(),
                       value: classTable.semester,
                       onChanged: (v) {
@@ -114,7 +125,10 @@ class _FunctionClassesPageState extends ConsumerState<FunctionClassesPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.circle_outlined, size: 32),
-                          Text(i18n.page_classes_error_empty_title, style: textTheme.titleMedium),
+                          Text(
+                            i18n.page_classes_error_empty_title,
+                            style: textTheme.titleMedium,
+                          ),
                           Text(i18n.page_classes_error_empty_subtitle),
                         ],
                       ),
