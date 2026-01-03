@@ -48,7 +48,8 @@ class MjuClassEntry {
     this.classTime,
   );
 
-  factory MjuClassEntry.fromJson(Map<String, dynamic> json) => _$MjuClassEntryFromJson(json);
+  factory MjuClassEntry.fromJson(Map<String, dynamic> json) =>
+      _$MjuClassEntryFromJson(json);
 
   Map<String, dynamic> toJson() => _$MjuClassEntryToJson(this);
 
@@ -67,8 +68,9 @@ class MjuClassEntry {
               .replaceAll("周", "")
               .split("-")
               .let(
-                (s) =>
-                    s.length == 1 ? [int.parse(s.first)] : int.parse(s.first).to(int.parse(s.last)),
+                (s) => s.length == 1
+                    ? [int.parse(s.first)]
+                    : int.parse(s.first).to(int.parse(s.last)),
               )
               .filter((it) => !(singleWeeks && it % 2 == 0))
               .filter((it) => !(doubleWeeks && it % 2 != 0));
@@ -108,7 +110,8 @@ class MjuExamEntity {
   @JsonKey(name: "ksfs")
   final String? form;
 
-  factory MjuExamEntity.fromJson(Map<String, dynamic> json) => _$MjuExamEntityFromJson(json);
+  factory MjuExamEntity.fromJson(Map<String, dynamic> json) =>
+      _$MjuExamEntityFromJson(json);
 
   Map<String, dynamic> toJson() => _$MjuExamEntityToJson(this);
 
@@ -133,7 +136,9 @@ class MjuExamEntity {
     final (fromTime, toTime) = timeRaw!
         .substring(11, 22)
         .split("-")
-        .map((it) => it.split(":").let((a) => (int.parse(a[0]), int.parse(a[1]))))
+        .map(
+          (it) => it.split(":").let((a) => (int.parse(a[0]), int.parse(a[1]))),
+        )
         .toList()
         .let((it) => (it[0], it[1]));
     return (
@@ -200,7 +205,8 @@ class MjuScoreEntity {
     this.property,
   );
 
-  factory MjuScoreEntity.fromJson(Map<String, dynamic> json) => _$MjuScoreEntityFromJson(json);
+  factory MjuScoreEntity.fromJson(Map<String, dynamic> json) =>
+      _$MjuScoreEntityFromJson(json);
 
   Map<String, dynamic> toJson() => _$MjuScoreEntityToJson(this);
 

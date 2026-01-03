@@ -15,11 +15,18 @@ class GetCurrentTermArgUseCase {
   Future<Option<TermData>> getCurrentTermData() async {
     final schoolOption = await _implSelectUseCase.select();
     switch (schoolOption) {
-      case Some<(School, AbstractSchoolRepository<dynamic, dynamic>)>(value: final school):
+      case Some<(School, AbstractSchoolRepository<dynamic, dynamic>)>(
+        value: final school,
+      ):
         final (_, impl) = school;
-        final termDataListResult = await impl.fetchData(DataFetchType.termData, null);
+        final termDataListResult = await impl.fetchData(
+          DataFetchType.termData,
+          null,
+        );
         switch (termDataListResult) {
-          case Right<SchoolDataFetchFailure, List<TermData>>(value: final termDataList):
+          case Right<SchoolDataFetchFailure, List<TermData>>(
+            value: final termDataList,
+          ):
             return _selectCurrentTerm(termDataList);
           case Left<SchoolDataFetchFailure, List<TermData>>():
             return Option.none();
@@ -32,11 +39,17 @@ class GetCurrentTermArgUseCase {
   //Experimental
   Option<TermData> _selectCurrentTerm(List<TermData> termDataList) {
     final time = DateTime.timestamp().toLocal();
-    final semester = DateTime.february.to(DateTime.july).contains(time.month) ? "2" : "1";
+    final semester = DateTime.february.to(DateTime.july).contains(time.month)
+        ? "2"
+        : "1";
     final year = time.year;
-    final academicYear = semester == "1" ? "$year-${year + 1}" : "${year - 1}-$year";
+    final academicYear = semester == "1"
+        ? "$year-${year + 1}"
+        : "${year - 1}-$year";
     return termDataList
-        .filter((it) => it.semester == semester && it.academicYear == academicYear)
+        .filter(
+          (it) => it.semester == semester && it.academicYear == academicYear,
+        )
         .firstOption;
   }
 }

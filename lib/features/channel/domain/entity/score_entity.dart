@@ -8,9 +8,14 @@ class ScoresEntity {
   final String semester;
   final List<ScoreEntity> entities;
 
-  ScoresEntity({required this.academicYear, required this.semester, required this.entities});
+  ScoresEntity({
+    required this.academicYear,
+    required this.semester,
+    required this.entities,
+  });
 
-  factory ScoresEntity.fromJson(Map<String, dynamic> json) => _$ScoresEntityFromJson(json);
+  factory ScoresEntity.fromJson(Map<String, dynamic> json) =>
+      _$ScoresEntityFromJson(json);
 
   Map<String, dynamic> toJson() => _$ScoresEntityToJson(this);
 }
@@ -45,7 +50,8 @@ class ScoreEntity {
     required this.elective,
   });
 
-  factory ScoreEntity.fromJson(Map<String, dynamic> json) => _$ScoreEntityFromJson(json);
+  factory ScoreEntity.fromJson(Map<String, dynamic> json) =>
+      _$ScoreEntityFromJson(json);
 
   Map<String, dynamic> toJson() => _$ScoreEntityToJson(this);
 }

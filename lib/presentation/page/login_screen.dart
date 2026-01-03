@@ -15,16 +15,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 
 enum _TextControllerId {
-  name(),
-  password();
-
-  final String? defaultText;
-
-  const _TextControllerId([this.defaultText]);
+  name,
+  password;
 }
 
 final _textControllers = Provider.family<TextEditingController, _TextControllerId>((ref, field) {
-  final controller = TextEditingController(text: field.defaultText);
+  final controller = TextEditingController();
   ref.onDispose(controller.dispose);
   return controller;
 });

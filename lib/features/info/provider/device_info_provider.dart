@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 
 final androidInfoProvider = FutureProvider(
-  (_) async =>
-      Option.fromNullable(Platform.isAndroid ? await getIt<DeviceInfoPlugin>().androidInfo : null),
+  (_) async => Option.fromNullable(
+    Platform.isAndroid ? await getIt<DeviceInfoPlugin>().androidInfo : null,
+  ),
 );

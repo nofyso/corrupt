@@ -11,6 +11,9 @@ abstract class GithubApiRepository {
   factory GithubApiRepository() => _GithubApiRepository(_dio);
 
   @GET("/repos/nofyso/corrupt/releases/latest")
-  @Headers({"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"})
+  @Headers({
+    "Accept": "application/vnd.github+json",
+    "X-GitHub-Api-Version": "2022-11-28",
+  })
   Future<GithubRelease> getLatestRelease();
 }

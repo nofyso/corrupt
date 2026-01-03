@@ -15,7 +15,8 @@ class MjuSchoolRepositoryImpl extends MjuSchoolRepository {
   static final _mjuApi = MjuApi();
 
   static final _termData = [
-    TermData("2025-2026", "1", DateTime(2025, DateTime.august, 31)), //TODO network fetch
+    TermData("2025-2026", "1", DateTime(2025, DateTime.august, 31)),
+    //TODO network fetch
   ];
 
   static final _classTime = ClassTime.of([
@@ -40,30 +41,41 @@ class MjuSchoolRepositoryImpl extends MjuSchoolRepository {
       case DataFetchType.classes:
         final terms = DataFetchType.classes.castP(p);
         final (academicYear, semester) =
-            (terms?.let((it) => (it.academicYear, it.semester)) ?? (null, null));
+            (terms?.let((it) => (it.academicYear, it.semester)) ??
+            (null, null));
         final result = await _mjuApi.loopBackSafe(
           () => _mjuApi.fetchClassTable(
-            dataPair: semester == null || academicYear == null ? null : (academicYear, semester),
+            dataPair: semester == null || academicYear == null
+                ? null
+                : (academicYear, semester),
           ),
         );
         return result as Either<data_fetch_failure.SchoolDataFetchFailure, V>;
       case DataFetchType.exam:
         final (academicYear, semester) =
-            (DataFetchType.exam.castP(p)?.let((it) => (it.academicYear, it.semester)) ??
+            (DataFetchType.exam
+                .castP(p)
+                ?.let((it) => (it.academicYear, it.semester)) ??
             (null, null));
         final result = await _mjuApi.loopBackSafe(
           () => _mjuApi.fetchExams(
-            dataPair: semester == null || academicYear == null ? null : (academicYear, semester),
+            dataPair: semester == null || academicYear == null
+                ? null
+                : (academicYear, semester),
           ),
         );
         return result as Either<data_fetch_failure.SchoolDataFetchFailure, V>;
       case DataFetchType.score:
         final (academicYear, semester) =
-        (DataFetchType.exam.castP(p)?.let((it) => (it.academicYear, it.semester)) ??
+            (DataFetchType.exam
+                .castP(p)
+                ?.let((it) => (it.academicYear, it.semester)) ??
             (null, null));
         final result = await _mjuApi.loopBackSafe(
-              () => _mjuApi.fetchScores(
-            dataPair: semester == null || academicYear == null ? null : (academicYear, semester),
+          () => _mjuApi.fetchScores(
+            dataPair: semester == null || academicYear == null
+                ? null
+                : (academicYear, semester),
           ),
         );
         return result as Either<data_fetch_failure.SchoolDataFetchFailure, V>;
@@ -75,6 +87,7 @@ class MjuSchoolRepositoryImpl extends MjuSchoolRepository {
   }
 
   @override
-  Future<Either<SchoolLoginFailure, MjuLoginResult>> login(MjuLoginParameter newParameter) async =>
-      await _mjuApi.login(newParameter);
+  Future<Either<SchoolLoginFailure, MjuLoginResult>> login(
+    MjuLoginParameter newParameter,
+  ) async => await _mjuApi.login(newParameter);
 }

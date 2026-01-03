@@ -8,9 +8,14 @@ class ExamsEntity {
   final String semester;
   final List<ExamEntity> entities;
 
-  ExamsEntity({required this.academicYear, required this.semester, required this.entities});
+  ExamsEntity({
+    required this.academicYear,
+    required this.semester,
+    required this.entities,
+  });
 
-  factory ExamsEntity.fromJson(Map<String, dynamic> json) => _$ExamsEntityFromJson(json);
+  factory ExamsEntity.fromJson(Map<String, dynamic> json) =>
+      _$ExamsEntityFromJson(json);
 
   Map<String, dynamic> toJson() => _$ExamsEntityToJson(this);
 }
@@ -39,7 +44,8 @@ class ExamEntity {
     required this.campus,
   });
 
-  factory ExamEntity.fromJson(Map<String, dynamic> json) => _$ExamEntityFromJson(json);
+  factory ExamEntity.fromJson(Map<String, dynamic> json) =>
+      _$ExamEntityFromJson(json);
 
   Map<String, dynamic> toJson() => _$ExamEntityToJson(this);
 }

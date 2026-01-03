@@ -2,7 +2,9 @@ import 'package:dio/dio.dart';
 
 sealed class SchoolLoginFailure {
   Exception asException() => switch (this) {
-    final NetworkFailure x => Exception("Network failure: ${x.badResponse?.toString()}"),
+    final NetworkFailure x => Exception(
+      "Network failure: ${x.badResponse?.toString()}",
+    ),
     final BadDataFailure x => Exception(
       "Bad data: type: ${x.dataType}, empty: ${x.isEmpty}, extra: ${x.extra}",
     ),

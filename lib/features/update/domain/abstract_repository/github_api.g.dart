@@ -34,11 +34,11 @@ class _GithubApiRepository implements GithubApiRepository {
     final _options = _setStreamType<GithubRelease>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
-            _dio.options,
-            '/repos/nofyso/corrupt/releases/latest',
-            queryParameters: queryParameters,
-            data: _data,
-          )
+        _dio.options,
+        '/repos/nofyso/corrupt/releases/latest',
+        queryParameters: queryParameters,
+        data: _data,
+      )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
@@ -66,7 +66,9 @@ class _GithubApiRepository implements GithubApiRepository {
   }
 
   String _combineBaseUrls(String dioBaseUrl, String? baseUrl) {
-    if (baseUrl == null || baseUrl.trim().isEmpty) {
+    if (baseUrl == null || baseUrl
+        .trim()
+        .isEmpty) {
       return dioBaseUrl;
     }
 

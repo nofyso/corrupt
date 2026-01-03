@@ -5,6 +5,8 @@ import 'package:corrupt/infrastructure/di.dart';
 class InfraFjut implements DIRegister {
   @override
   void diRegister() {
-    getIt.registerLazySingleton<FjutSchoolRepository>(() => FjutSchoolRepositoryImpl());
+    getIt.registerLazySingleton<FjutSchoolRepository>(
+      () => FjutSchoolRepositoryImpl(),
+    );
   }
 }

@@ -26,7 +26,8 @@ abstract class FjutVpnApiRaw {
   @FormUrlEncoded()
   Future<HttpResponse<String>> login({
     @Header("Origin") String origin = "https://webvpn.fjut.edu.cn",
-    @Header("Referer") String referer = "https://webvpn.fjut.edu.cn/users/sign_in",
+    @Header("Referer")
+    String referer = "https://webvpn.fjut.edu.cn/users/sign_in",
     @Field(_reserved1) String reserved1 = "✓",
     @Field(_authenticityToken) required String token,
     @Field(_username) required String username,

@@ -66,7 +66,7 @@ abstract class MjuEduApiRaw {
     @Query(_functionModuleCode) String functionModuleCode = "N305005",
     @Query(_layout) String layout = "default",
   });
-  
+
   @POST("/jwglxt/cjcx/cjcx_cxXsgrcj.html")
   @FormUrlEncoded()
   @DioResponseType(ResponseType.plain)

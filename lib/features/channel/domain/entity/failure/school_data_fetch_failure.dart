@@ -3,10 +3,12 @@ import 'package:corrupt/features/channel/domain/entity/failure/school_login_fail
 import 'package:dio/dio.dart';
 
 sealed class SchoolDataFetchFailure {
-  StackTrace stackTrace=StackTrace.current;
+  StackTrace stackTrace = StackTrace.current;
 
   Exception asException() => switch (this) {
-    final NetworkFailure x => Exception("Network failure: ${x.badResponse?.toString()}"),
+    final NetworkFailure x => Exception(
+      "Network failure: ${x.badResponse?.toString()}",
+    ),
     final LoginFailure x => x.loginFailure.asException(),
     LoopbackFailure() => Exception("Loop backed"),
     final OtherFailure x => x.exception,

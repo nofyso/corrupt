@@ -17,16 +17,22 @@ class SchoolLoginUseCase {
     (String studentId, String password)? dataPair,
   ) async {
     switch (await _implSelect.select(implType)) {
-      case Some<(School, AbstractSchoolRepository<dynamic, dynamic>)>(value: final school):
+      case Some<(School, AbstractSchoolRepository<dynamic, dynamic>)>(
+        value: final school,
+      ):
         final (type, impl) = school;
         switch (type) {
           case School.fafu:
             return await impl.login(
-              dataPair != null ? FafuLoginParameter(dataPair.$1, dataPair.$2) : null,
+              dataPair != null
+                  ? FafuLoginParameter(dataPair.$1, dataPair.$2)
+                  : null,
             );
           case School.mju:
             return await impl.login(
-              dataPair != null ? MjuLoginParameter(dataPair.$1, dataPair.$2) : null,
+              dataPair != null
+                  ? MjuLoginParameter(dataPair.$1, dataPair.$2)
+                  : null,
             );
           case School.fjut:
             // TODO: Handle this case.

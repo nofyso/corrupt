@@ -35,17 +35,20 @@ class _BaseSchoolDataNotifier<V> extends AsyncNotifier<Option<V>> {
   _BaseSchoolDataNotifier(this.dataFetchType);
 
   @override
-  FutureOr<Option<V>> build() async => await _repo.fetchLocalData(dataFetchType);
+  FutureOr<Option<V>> build() async =>
+      await _repo.fetchLocalData(dataFetchType);
 }
 
 final classLocalProviderMap = {
   DataFetchType.classes: _classTableNotifierProvider,
   DataFetchType.classTime: _classTimeNotifierProvider,
   DataFetchType.termData: _termDataNotifierProvider,
-  DataFetchType.exam: _examsNotifierProvider
+  DataFetchType.exam: _examsNotifierProvider,
 };
 
-final _classTableNotifierProvider = AsyncNotifierProvider(() => ClassTableNotifier());
+final _classTableNotifierProvider = AsyncNotifierProvider(
+  () => ClassTableNotifier(),
+);
 
 final _examsNotifierProvider = AsyncNotifierProvider(() => ExamsNotifier());
 

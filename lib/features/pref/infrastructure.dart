@@ -13,8 +13,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class InfraPrefs implements DIRegister, EventRegister {
   @override
   void diRegister() {
-    getIt.registerLazySingleton<LocalRawDataRepository>(() => LocalRawDataRepositoryImpl());
-    getIt.registerLazySingleton<LocalDataRepository>(() => LocalDataRepositoryImpl());
+    getIt.registerLazySingleton<LocalRawDataRepository>(
+      () => LocalRawDataRepositoryImpl(),
+    );
+    getIt.registerLazySingleton<LocalDataRepository>(
+      () => LocalDataRepositoryImpl(),
+    );
     getIt.registerFactory<PrefReadUseCase>(() => PrefReadUseCase());
     getIt.registerFactory<PrefWriteUseCase>(() => PrefWriteUseCase());
   }

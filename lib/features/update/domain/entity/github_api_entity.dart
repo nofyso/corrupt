@@ -15,7 +15,8 @@ class GithubRelease {
 
   GithubRelease(this.tagName, this.body, this.prerelease, this.assets);
 
-  factory GithubRelease.fromJson(Map<String, dynamic> json) => _$GithubReleaseFromJson(json);
+  factory GithubRelease.fromJson(Map<String, dynamic> json) =>
+      _$GithubReleaseFromJson(json);
 
   Map<String, dynamic> toJson() => _$GithubReleaseToJson(this);
 }

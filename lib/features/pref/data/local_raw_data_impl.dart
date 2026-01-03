@@ -6,5 +6,6 @@ class LocalRawDataRepositoryImpl extends LocalRawDataRepository {
   Future<T> getData<OT, T>(CirnoPrefKey<OT, T> key) => key.read(null);
 
   @override
-  Future<void> setData<OT, T>(CirnoPrefKey<OT, T> key, T t) => key.write(null, t);
+  Future<void> setData<OT, T>(CirnoPrefKey<OT, T> key, T t) =>
+      key.write(null, t);
 }

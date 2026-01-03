@@ -8,13 +8,18 @@ import '../../../channel/domain/entity/data_fetch_type.dart';
 
 class FjutSchoolRepositoryImpl extends FjutSchoolRepository {
   @override
-  Future<Either<SchoolDataFetchFailure, V>> fetchData<P, V>(DataFetchType<P, V> dataType, P p) {
+  Future<Either<SchoolDataFetchFailure, V>> fetchData<P, V>(
+    DataFetchType<P, V> dataType,
+    P p,
+  ) {
     // TODO: implement fetchData
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<SchoolLoginFailure, FjutLoginResult>> login(FjutLoginParameter parameter) {
+  Future<Either<SchoolLoginFailure, FjutLoginResult>> login(
+    FjutLoginParameter parameter,
+  ) {
     // TODO: implement login
     throw UnimplementedError();
   }

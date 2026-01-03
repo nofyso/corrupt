@@ -34,7 +34,12 @@ class CommonDataFetchPhase<T, U> extends RefreshPhase {
   final String Function(AppLocalizations i18n) displayFunction;
   U Function(T) transform = (t) => t as U;
 
-  CommonDataFetchPhase(this.dataFetchType, this.localDataKey, this.displayFunction, this.transform);
+  CommonDataFetchPhase(
+    this.dataFetchType,
+    this.localDataKey,
+    this.displayFunction,
+    this.transform,
+  );
 
   @override
   late RefreshState state = RefreshState(displayFunction);
@@ -79,14 +84,21 @@ class RefreshCheckPhase extends RefreshPhase {
   final _eventBus = getIt<EventBus>();
 
   @override
-  RefreshState state = RefreshState((i18n) => i18n.screen_main_refresh_update_check);
+  RefreshState state = RefreshState(
+    (i18n) => i18n.screen_main_refresh_update_check,
+  );
 
   @override
   FutureOr<(Exception?, bool)> refresh() async {
-    final checkUpdate = await _localRawDataRepository.getData(SettingKeysGen.updateChecking);
+    final checkUpdate = await _localRawDataRepository.getData(
+      SettingKeysGen.updateChecking,
+    );
     if (!checkUpdate) return (null, true);
     final updateInfo = await _updateCheckUseCase.checkUpdate();
-    updateInfo.match(() {}, (it) => _eventBus.fire(RefreshUpdateStateEvent(it)));
+    updateInfo.match(
+      () {},
+      (it) => _eventBus.fire(RefreshUpdateStateEvent(it)),
+    );
     return (null, true);
   }
 }

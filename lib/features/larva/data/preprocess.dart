@@ -19,8 +19,10 @@ class LarvaImage {
     }
   })._ofImage();
 
-  LarvaImage subImage(int x, int y, int w, int h) =>
-      LarvaImage._newEmpty(w, h)._forEach((i, j, _) => image[i + x][j + y])._ofImage();
+  LarvaImage subImage(int x, int y, int w, int h) => LarvaImage._newEmpty(
+    w,
+    h,
+  )._forEach((i, j, _) => image[i + x][j + y])._ofImage();
 
   LarvaImage convolution(List<List<num>> conv) {
     final cache = _newCache((_, _, p) => p);
@@ -48,7 +50,11 @@ class LarvaImage {
             nb += (b * cp);
           }
         }
-        cache[i + halfConvSize][j + halfConvSize] = (nr.toInt(), ng.toInt(), nb.toInt())._toRgb();
+        cache[i + halfConvSize][j + halfConvSize] = (
+          nr.toInt(),
+          ng.toInt(),
+          nb.toInt(),
+        )._toRgb();
       }
     }
     return cache._ofImage();
@@ -74,7 +80,12 @@ class LarvaImage {
       switch (operation.type) {
         case "clip":
           operation as ClipOperation;
-          image = image.subImage(operation.x, operation.y, operation.width, operation.height);
+          image = image.subImage(
+            operation.x,
+            operation.y,
+            operation.width,
+            operation.height,
+          );
         case "convolution":
           operation as ConvolutionOperation;
           image = image.convolution(operation.kernel);
@@ -106,7 +117,9 @@ class LarvaImage {
     return list;
   }
 
-  static Future<Either<LarvaFailure, LarvaImage>> fromBytes(Uint8List data) async {
+  static Future<Either<LarvaFailure, LarvaImage>> fromBytes(
+    Uint8List data,
+  ) async {
     final image = img.decodeImage(data);
     if (image == null) return Either.left(FileFailure());
     List<List<int>> imagePixels = List.generate(
@@ -145,6 +158,9 @@ extension on (int, int, int) {
 }
 
 extension on int {
-  (int, int, int) _toRgbElement() =>
-      ((this & 0x00ff0000) >> 16, (this & 0x0000ff00) >> 8, (this & 0x000000ff));
+  (int, int, int) _toRgbElement() => (
+    (this & 0x00ff0000) >> 16,
+    (this & 0x0000ff00) >> 8,
+    (this & 0x000000ff),
+  );
 }

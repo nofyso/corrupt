@@ -47,7 +47,8 @@ class FjutApi {
 
   // static final _eduRaw = FjutEduApiRaw(_dio);
 
-  static final _vpnTokenRegex = "(?<=name=\"csrf-token\" content=\").*?(?=\" />)".asRegExp;
+  static final _vpnTokenRegex =
+      "(?<=name=\"csrf-token\" content=\").*?(?=\" />)".asRegExp;
   static final _vpnDataInvalidRegex = "(?<=</button>).*?(?=</div>)".asRegExp;
 
   static const _loopback0 = "jwxt-443.webvpn.fjut.edu.cn";
@@ -67,8 +68,14 @@ class FjutApi {
         );
     final result = await _login(parameter.studentId, parameter.password);
     await result.match((_) {}, (right) async {
-      await _localRawDataRepository.setData(FjutDataKey.studentId, parameter.studentId);
-      await _localRawDataRepository.setData(FjutDataKey.password, parameter.password);
+      await _localRawDataRepository.setData(
+        FjutDataKey.studentId,
+        parameter.studentId,
+      );
+      await _localRawDataRepository.setData(
+        FjutDataKey.password,
+        parameter.password,
+      );
     });
     return result;
   }
@@ -90,7 +97,11 @@ class FjutApi {
               }
               return FjutLoginResult();
             }
-            $(TaskEither.left(login_failure.OtherFailure("Too many trials, unknown error")));
+            $(
+              TaskEither.left(
+                login_failure.OtherFailure("Too many trials, unknown error"),
+              ),
+            );
             throw AssertionError("Unreachable code");
           })
           .mapLeft(
@@ -107,23 +118,25 @@ class FjutApi {
     final initLoginPage = await $(_casRaw.getLoginPage().wrapNetworkSafeTask());
     return await $(switch (initLoginPage.response.realUri.host) {
       _loopback1 =>
-        TaskEither<login_failure.SchoolLoginFailure, (int, HttpResponse<dynamic>)>.right((
-          1,
-          initLoginPage,
-        )),
+        TaskEither<
+          login_failure.SchoolLoginFailure,
+          (int, HttpResponse<dynamic>)
+        >.right((1, initLoginPage)),
       _loopback2 =>
-        TaskEither<login_failure.SchoolLoginFailure, (int, HttpResponse<dynamic>)>.right((
-          2,
-          initLoginPage,
-        )),
+        TaskEither<
+          login_failure.SchoolLoginFailure,
+          (int, HttpResponse<dynamic>)
+        >.right((2, initLoginPage)),
       _loopback0 =>
-        TaskEither<login_failure.SchoolLoginFailure, (int, HttpResponse<dynamic>)>.right((
-          0,
-          initLoginPage,
-        )),
-      final s => TaskEither<login_failure.SchoolLoginFailure, (int, HttpResponse<dynamic>)>.left(
-        login_failure.OtherFailure("Unknown loop back host: $s"),
-      ),
+        TaskEither<
+          login_failure.SchoolLoginFailure,
+          (int, HttpResponse<dynamic>)
+        >.right((0, initLoginPage)),
+      final s =>
+        TaskEither<
+          login_failure.SchoolLoginFailure,
+          (int, HttpResponse<dynamic>)
+        >.left(login_failure.OtherFailure("Unknown loop back host: $s")),
     });
   }
 
@@ -141,7 +154,9 @@ class FjutApi {
           .toTaskEither(() => login_failure.OtherFailure("token not found")),
     );
     final vpnLoginResultResponse = await $(
-      _vpnRaw.login(token: token, username: studentId, password: password).wrapNetworkSafeTask(),
+      _vpnRaw
+          .login(token: token, username: studentId, password: password)
+          .wrapNetworkSafeTask(),
     );
     if (vpnLoginResultResponse.response.realUri.path.contains("sign_in")) {
       final vpnLoginResultPage = vpnLoginResultResponse.data;
@@ -159,7 +174,11 @@ class FjutApi {
           login_failure.BadDataFailure(login_failure.BadDataType.other, false),
         ),
         _ => TaskEither.left(
-          login_failure.BadDataFailure(login_failure.BadDataType.other, false, "Unknown error"),
+          login_failure.BadDataFailure(
+            login_failure.BadDataType.other,
+            false,
+            "Unknown error",
+          ),
         ),
       });
     }
@@ -175,13 +194,21 @@ class FjutApi {
     final document = BeautifulSoup(loginPage);
     final loginForm = document.find("*", id: "pwdLoginDiv");
     if (loginForm == null) {
-      await $(TaskEither.left(login_failure.OtherFailure("login form not found")));
+      await $(
+        TaskEither.left(login_failure.OtherFailure("login form not found")),
+      );
       throw AssertionError("Unreachable code");
     }
-    final loginExecution = loginForm.find("*", id: "execution")?.getAttrValue("value");
-    final loginSalt = loginForm.find("*", id: "pwdEncryptSalt")?.getAttrValue("value");
+    final loginExecution = loginForm
+        .find("*", id: "execution")
+        ?.getAttrValue("value");
+    final loginSalt = loginForm
+        .find("*", id: "pwdEncryptSalt")
+        ?.getAttrValue("value");
     if (loginExecution == null) {
-      await $(TaskEither.left(login_failure.OtherFailure("execution not found")));
+      await $(
+        TaskEither.left(login_failure.OtherFailure("execution not found")),
+      );
       throw AssertionError("Unreachable code");
     }
     if (loginSalt == null) {
@@ -203,22 +230,33 @@ class FjutApi {
           login_failure.BadDataFailure(login_failure.BadDataType.both, false),
         ),
         final s when s.contains("入密码") => TaskEither.left(
-          login_failure.BadDataFailure(login_failure.BadDataType.password, true),
+          login_failure.BadDataFailure(
+            login_failure.BadDataType.password,
+            true,
+          ),
         ),
         final s when s.contains("入用户名") => TaskEither.left(
-          login_failure.BadDataFailure(login_failure.BadDataType.username, true),
+          login_failure.BadDataFailure(
+            login_failure.BadDataType.username,
+            true,
+          ),
         ),
-        _ => TaskEither.left(login_failure.BadDataFailure(login_failure.BadDataType.other, false)),
+        _ => TaskEither.left(
+          login_failure.BadDataFailure(login_failure.BadDataType.other, false),
+        ),
       });
       throw AssertionError("Unreachable code");
     }
   }
 
   String _encryptPassword(String password, String salt) {
-    final plain = "0000000000000000000000000000000000000000000000000000000000000000$password";
+    final plain =
+        "0000000000000000000000000000000000000000000000000000000000000000$password";
     final iv = encrypt.IV.fromUtf8("0000000000000000");
     final key = encrypt.Key.fromUtf8(salt);
-    final encrypter = encrypt.Encrypter(encrypt.AES(key, mode: encrypt.AESMode.cbc));
+    final encrypter = encrypt.Encrypter(
+      encrypt.AES(key, mode: encrypt.AESMode.cbc),
+    );
     final encrypted = encrypter.encrypt(plain, iv: iv);
     return encrypted.base64;
   }
