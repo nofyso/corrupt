@@ -23,8 +23,12 @@ Widget loadWaitingMask({
   final finished = values.all((it) => !it.isLoading);
   final i18n = AppLocalizations.of(context)!;
   final left = values.filter((it) => it.isLoading).length;
-  final valueResults = values.map((it) => it.valueOrNull?.toNullable()).toList();
-  final requiredValueResults = requiredValues.map((it) => it.valueOrNull?.toNullable()).toList();
+  final valueResults = values
+      .map((it) => it.valueOrNull?.toNullable())
+      .toList();
+  final requiredValueResults = requiredValues
+      .map((it) => it.valueOrNull?.toNullable())
+      .toList();
   final requiredFinished = requiredValueResults.all((it) => it != null);
   return Stack(
     children: [
@@ -74,7 +78,11 @@ Widget onlineLoadWaitingMask({
   final errors = values.map(
     (it) => it.hasError
         ? OtherFailure.fromException(
-            it.error.let((e) => e != null && e is Exception ? e : Exception("Unknown failure")),
+            it.error.let(
+              (e) => e != null && e is Exception
+                  ? e
+                  : Exception("Unknown failure"),
+            ),
           )
         : it.value.let((v) => v?.getLeft().toNullable()),
   );
@@ -83,17 +91,24 @@ Widget onlineLoadWaitingMask({
   return Stack(
     children: [
       Center(
-        child: simpleAnimatedOpacity(show: isLoading, child: CircularProgressIndicator()),
+        child: simpleAnimatedOpacity(
+          show: isLoading,
+          child: CircularProgressIndicator(),
+        ),
       ),
       Center(
         child: simpleAnimatedOpacity(
           show: !isLoading && hasError,
-          child: !isLoading && hasError ? failedChild(errors.toList()) : SizedBox.shrink(),
+          child: !isLoading && hasError
+              ? failedChild(errors.toList())
+              : SizedBox.shrink(),
         ),
       ),
       simpleAnimatedOpacity(
         show: !isLoading && !hasError,
-        child: !isLoading && !hasError ? succeedChild(valuesOut.toList()) : SizedBox.shrink(),
+        child: !isLoading && !hasError
+            ? succeedChild(valuesOut.toList())
+            : SizedBox.shrink(),
       ),
     ],
   );

@@ -27,7 +27,10 @@ class MjuAnalyzer {
             it.attributes["selected"] == "selected" ? i : -1,
           ),
         );
-    final academicYearIndex = academicYearResult.filter((it) => it.$3 != -1).firstOrNull!.$3;
+    final academicYearIndex = academicYearResult
+        .filter((it) => it.$3 != -1)
+        .firstOrNull!
+        .$3;
     final semesterResult = document
         .find("select", id: semesterField)!
         .children
@@ -38,7 +41,10 @@ class MjuAnalyzer {
             it.attributes["selected"] == "selected" ? i : -1,
           ),
         );
-    final semesterIndex = semesterResult.filter((it) => it.$3 != -1).firstOrNull!.$3;
+    final semesterIndex = semesterResult
+        .filter((it) => it.$3 != -1)
+        .firstOrNull!
+        .$3;
     return (
       AvailableTermTime(
         academicYearResult.map((it) => (it.$1, it.$2)).toList(),
@@ -56,7 +62,9 @@ class MjuAnalyzer {
   ) => Either.Do(($) {
     final rootJsonRaw = $(
       jsonDecodeSafe(jsonObject).toEither(
-        () => data_fetch_failure.OtherFailure("error in analyzing class table (bad json data)"),
+        () => data_fetch_failure.OtherFailure(
+          "error in analyzing class table (bad json data)",
+        ),
       ),
     );
     final rootJson = rootJsonRaw as Map<String, dynamic>;
@@ -78,25 +86,33 @@ class MjuAnalyzer {
         .map((it) => MjuExamEntity.fromJson(it).toExamEntity())
         .toList(growable: false);
     return Either.right(
-      ExamsEntity(academicYear: academicYear, semester: semester, entities: exams),
+      ExamsEntity(
+        academicYear: academicYear,
+        semester: semester,
+        entities: exams,
+      ),
     );
   }
 
-  static Either<data_fetch_failure.SchoolDataFetchFailure, ScoresEntity> analyzeScores(
-    String jsonObject,
-    String academicYear,
-    String semester,
-  ) => Either.Do(($) {
-    final rootJsonRaw = $(
-      jsonDecodeSafe(jsonObject).toEither(
-        () => data_fetch_failure.OtherFailure("error in analyzing class table (bad json data)"),
-      ),
-    );
-    final rootJson = rootJsonRaw as Map<String, dynamic>;
-    final scoreItemsJsonList = rootJson["items"] as List<dynamic>;
-    final scores = scoreItemsJsonList
-        .map((it) => MjuScoreEntity.fromJson(it).toScoreEntity())
-        .toList(growable: false);
-    return ScoresEntity(academicYear: academicYear, semester: semester, entities: scores);
-  });
+  static Either<data_fetch_failure.SchoolDataFetchFailure, ScoresEntity>
+  analyzeScores(String jsonObject, String academicYear, String semester) =>
+      Either.Do(($) {
+        final rootJsonRaw = $(
+          jsonDecodeSafe(jsonObject).toEither(
+            () => data_fetch_failure.OtherFailure(
+              "error in analyzing class table (bad json data)",
+            ),
+          ),
+        );
+        final rootJson = rootJsonRaw as Map<String, dynamic>;
+        final scoreItemsJsonList = rootJson["items"] as List<dynamic>;
+        final scores = scoreItemsJsonList
+            .map((it) => MjuScoreEntity.fromJson(it).toScoreEntity())
+            .toList(growable: false);
+        return ScoresEntity(
+          academicYear: academicYear,
+          semester: semester,
+          entities: scores,
+        );
+      });
 }

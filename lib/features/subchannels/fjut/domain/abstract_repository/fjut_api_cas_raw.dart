@@ -20,14 +20,16 @@ abstract class FjutCasApiRaw {
   @GET("/authserver/login")
   @DioResponseType(ResponseType.plain)
   Future<HttpResponse<String>> getLoginPage({
-    @Query(_serviceQuery) String service = "https://jwxt-443.webvpn.fjut.edu.cn/sso/jziotlogin",
+    @Query(_serviceQuery)
+    String service = "https://jwxt-443.webvpn.fjut.edu.cn/sso/jziotlogin",
   });
 
   @POST("/authserver/login")
   @FormUrlEncoded()
   @DioResponseType(ResponseType.plain)
   Future<HttpResponse<String>> login({
-    @Query(_serviceQuery) String service = "https://jwxt-443.webvpn.fjut.edu.cn/sso/jziotlogin",
+    @Query(_serviceQuery)
+    String service = "https://jwxt-443.webvpn.fjut.edu.cn/sso/jziotlogin",
     @Field(_username) required String username,
     @Field(_password) required String password,
     @Field(_reserved1) String reserved1 = "",

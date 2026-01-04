@@ -6,7 +6,12 @@ class AndroidUpdateState {
   int received;
   int total;
 
-  AndroidUpdateState(this.isDownloading, this.isComplete, this.received, this.total);
+  AndroidUpdateState(
+    this.isDownloading,
+    this.isComplete,
+    this.received,
+    this.total,
+  );
 }
 
 class UpdateInfo {

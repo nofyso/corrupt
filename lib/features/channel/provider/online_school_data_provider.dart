@@ -32,6 +32,6 @@ final onlineExamsNotifierProvider = AsyncNotifierProviderFamily(
   () => BaseOnlineSchoolDataNotifier(DataFetchType.exam),
 );
 
-final   onlineScoresNotifierProvider = AsyncNotifierProviderFamily(
+final onlineScoresNotifierProvider = AsyncNotifierProviderFamily(
   () => BaseOnlineSchoolDataNotifier(DataFetchType.score),
 );

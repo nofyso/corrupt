@@ -10,7 +10,8 @@ class TermData {
 
   TermData(this.academicYear, this.semester, this.theFirstDay);
 
-  factory TermData.fromJson(Map<String, dynamic> json) => _$TermDataFromJson(json);
+  factory TermData.fromJson(Map<String, dynamic> json) =>
+      _$TermDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$TermDataToJson(this);
 }

@@ -4,8 +4,8 @@ import 'dart:math';
 import 'package:corrupt/features/channel/domain/entity/class_table_entity.dart';
 import 'package:corrupt/features/channel/domain/entity/common_school_data_entity.dart';
 import 'package:corrupt/presentation/i18n/app_localizations.dart';
-import 'package:corrupt/presentation/util/class_time_util.dart';
 import 'package:corrupt/presentation/util/platform_util.dart';
+import 'package:corrupt/util/class_time_util.dart';
 import 'package:dartlin/dartlin.dart';
 import 'package:flutter/material.dart' hide State;
 import 'package:flutter/widgets.dart';
@@ -39,7 +39,8 @@ class ClassesWidget extends ConsumerStatefulWidget {
   ConsumerState<ClassesWidget> createState() => _ClassesWidgetState();
 }
 
-class _ClassesWidgetState extends ConsumerState<ClassesWidget> with SingleTickerProviderStateMixin {
+class _ClassesWidgetState extends ConsumerState<ClassesWidget>
+    with SingleTickerProviderStateMixin {
   static const int firstColWeight = 2;
   static const int normalClassColWeight = 3;
   static const int firstRowWeight = 4;
@@ -84,7 +85,9 @@ class _ClassesWidgetState extends ConsumerState<ClassesWidget> with SingleTicker
                   flex: 5,
                   fit: FlexFit.tight,
                   child: TabBar(
-                    tabs: [for (final i in 0.to(19)) Tab(child: Text("${i + 1}"))],
+                    tabs: [
+                      for (final i in 0.to(19)) Tab(child: Text("${i + 1}")),
+                    ],
                     controller: _tabController,
                   ),
                 ),
@@ -112,15 +115,22 @@ class _ClassesWidgetState extends ConsumerState<ClassesWidget> with SingleTicker
 
   double _getCurrentTimeWeight(ClassTime classTime) {
     final currentMillisecondOffset = _timeCount.let(
-      (it) => it.hour * 60 * 60 * 1000 + it.minute * 60 * 1000 + it.second * 1000 + it.millisecond,
+      (it) =>
+          it.hour * 60 * 60 * 1000 +
+          it.minute * 60 * 1000 +
+          it.second * 1000 +
+          it.millisecond,
     );
     final classesLength = classTime.times.length;
     for (final (i, (fromMs, toMs)) in classTime.times.indexed) {
-      if (fromMs < currentMillisecondOffset && toMs < currentMillisecondOffset) continue;
+      if (fromMs < currentMillisecondOffset && toMs < currentMillisecondOffset) {
+        continue;
+      }
       if (fromMs > currentMillisecondOffset) {
         return i.toDouble() / classesLength;
       }
-      if (fromMs <= currentMillisecondOffset && currentMillisecondOffset <= toMs) {
+      if (fromMs <= currentMillisecondOffset &&
+          currentMillisecondOffset <= toMs) {
         final time = currentMillisecondOffset - fromMs;
         final length = toMs - fromMs;
         final weight = time / length.toDouble();
@@ -213,22 +223,35 @@ class _ClassesWidgetState extends ConsumerState<ClassesWidget> with SingleTicker
     );
   }
 
-  Widget _timeIndicator(BuildContext context, ClassTime classTime, double timeIndicatorAlpha) {
+  Widget _timeIndicator(
+    BuildContext context,
+    ClassTime classTime,
+    double timeIndicatorAlpha,
+  ) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
     final totalClasses = classTime.times.length;
     final weight = _getCurrentTimeWeight(classTime);
     final totalFlex = 1000;
-    final unitFlex = totalFlex / ((totalClasses * normalClassColWeight) + firstColWeight);
+    final unitFlex =
+        totalFlex / ((totalClasses * normalClassColWeight) + firstColWeight);
     final reservedFlex = 30;
     final topFlex = unitFlex * firstColWeight;
     final baseFlex = topFlex - reservedFlex;
     final leftFlex = totalFlex - topFlex;
     return Column(
       children: [
-        Flexible(flex: baseFlex.toInt(), fit: FlexFit.tight, child: SizedBox.shrink()),
-        Flexible(flex: (weight * leftFlex).toInt(), fit: FlexFit.tight, child: SizedBox.shrink()),
+        Flexible(
+          flex: baseFlex.toInt(),
+          fit: FlexFit.tight,
+          child: SizedBox.shrink(),
+        ),
+        Flexible(
+          flex: (weight * leftFlex).toInt(),
+          fit: FlexFit.tight,
+          child: SizedBox.shrink(),
+        ),
         Flexible(
           flex: 0,
           fit: FlexFit.tight,
@@ -240,7 +263,9 @@ class _ClassesWidgetState extends ConsumerState<ClassesWidget> with SingleTicker
                 padding: EdgeInsetsGeometry.directional(end: 8.0),
                 child: Text(
                   _dateFormat.format(_timeCount),
-                  style: textTheme.labelLarge?.copyWith(color: colorScheme.primary),
+                  style: textTheme.labelLarge?.copyWith(
+                    color: colorScheme.primary,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -248,7 +273,9 @@ class _ClassesWidgetState extends ConsumerState<ClassesWidget> with SingleTicker
                 height: 2,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: colorScheme.primary.withAlpha((timeIndicatorAlpha * 255).toInt()),
+                    color: colorScheme.primary.withAlpha(
+                      (timeIndicatorAlpha * 255).toInt(),
+                    ),
                   ),
                 ),
               ),
@@ -281,7 +308,11 @@ class _ClassesWidgetState extends ConsumerState<ClassesWidget> with SingleTicker
     final firstDay = currentTerm?.theFirstDay;
     final targetDay = firstDay?.add(Duration(days: 7 * weekIndex + dayIndex));
     final targetClasses = classTable.classes
-        .filter((it) => it.weeks.contains(weekIndex) && it.dayOfWeek == DayOfWeek.valueOf(dayIndex))
+        .filter(
+          (it) =>
+              it.weeks.contains(weekIndex) &&
+              it.dayOfWeek == DayOfWeek.valueOf(dayIndex),
+        )
         .mergeClasses();
     final currentDay = _timeCount;
     final showIndicator =
@@ -292,7 +323,9 @@ class _ClassesWidgetState extends ConsumerState<ClassesWidget> with SingleTicker
     return Container(
       decoration: showIndicator
           ? BoxDecoration(
-              color: colorScheme.primary.withAlpha((dateInspectorAlpha * 255).toInt()),
+              color: colorScheme.primary.withAlpha(
+                (dateInspectorAlpha * 255).toInt(),
+              ),
               borderRadius: BorderRadius.circular(8.0),
             )
           : null,
@@ -325,7 +358,9 @@ class _ClassesWidgetState extends ConsumerState<ClassesWidget> with SingleTicker
           Flexible(
             flex: normalClassColWeight * classTime.times.length,
             fit: FlexFit.tight,
-            child: Stack(children: [..._singleClassCol(targetClasses, context, classTime)]),
+            child: Stack(
+              children: [..._singleClassCol(targetClasses, context, classTime)],
+            ),
           ),
         ],
       ),
@@ -357,8 +392,16 @@ class _ClassesWidgetState extends ConsumerState<ClassesWidget> with SingleTicker
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(it.name, style: textTheme.labelSmall, textAlign: TextAlign.center),
-                      Text(it.place, style: textTheme.labelSmall, textAlign: TextAlign.center),
+                      Text(
+                        it.name,
+                        style: textTheme.labelSmall,
+                        textAlign: TextAlign.center,
+                      ),
+                      Text(
+                        it.place,
+                        style: textTheme.labelSmall,
+                        textAlign: TextAlign.center,
+                      ),
                     ],
                   ),
                 ),
@@ -375,7 +418,11 @@ class _ClassesWidgetState extends ConsumerState<ClassesWidget> with SingleTicker
     );
   }
 
-  Widget _classTimeRow(BuildContext context, ClassTime classTime, int weekIndex) {
+  Widget _classTimeRow(
+    BuildContext context,
+    ClassTime classTime,
+    int weekIndex,
+  ) {
     final i18n = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
     String toTimeString(int time) => (time / 1000 / 60).let(

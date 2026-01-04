@@ -18,8 +18,9 @@ enum ClassesDataSource {
   default_,
   currentDate;
 
-  static ClassesDataSource fromRawValue(String settingValue) => switch (settingValue) {
-    SettingKeysGen.classDataSourceValue1 => currentDate,
-    _ => default_,
-  };
+  static ClassesDataSource fromRawValue(String settingValue) =>
+      switch (settingValue) {
+        SettingKeysGen.classDataSourceValue1 => currentDate,
+        _ => default_,
+      };
 }

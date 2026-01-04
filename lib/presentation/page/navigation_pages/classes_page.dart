@@ -10,10 +10,10 @@ import 'package:corrupt/features/pref/provider/local_pref_provider.dart';
 import 'package:corrupt/features/refresh/provider/refresh_provider.dart';
 import 'package:corrupt/infrastructure/di.dart';
 import 'package:corrupt/presentation/i18n/app_localizations.dart';
-import 'package:corrupt/presentation/util/class_time_util.dart';
 import 'package:corrupt/presentation/widget/classes_widget.dart';
 import 'package:corrupt/presentation/widget/load_waiting_mask_widget.dart';
 import 'package:corrupt/presentation/widget/simple_widget.dart';
+import 'package:corrupt/util/class_time_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart' hide State;
@@ -25,16 +25,31 @@ class ClassesPage extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _ClassesPageState();
 }
 
-class _ClassesPageState extends ConsumerState<ClassesPage> with SingleTickerProviderStateMixin {
+class _ClassesPageState extends ConsumerState<ClassesPage>
+    with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    final classTableResult = ref.watch(classLocalProviderMap[DataFetchType.classes]!);
-    final termDataResult = ref.watch(classLocalProviderMap[DataFetchType.termData]!);
-    final classTimeResult = ref.watch(classLocalProviderMap[DataFetchType.classTime]!);
-    final showTimeInspector = ref.watch(prefProvider(SettingKeysGen.classInspectorSwitch));
-    final showDateInspector = ref.watch(prefProvider(SettingKeysGen.dateInspectorSwitch));
-    final timeInspectorAlpha = ref.watch(prefProvider(SettingKeysGen.classInspectorAlpha));
-    final dateInspectorAlpha = ref.watch(prefProvider(SettingKeysGen.dateInspectorAlpha));
+    final classTableResult = ref.watch(
+      classLocalProviderMap[DataFetchType.classes]!,
+    );
+    final termDataResult = ref.watch(
+      classLocalProviderMap[DataFetchType.termData]!,
+    );
+    final classTimeResult = ref.watch(
+      classLocalProviderMap[DataFetchType.classTime]!,
+    );
+    final showTimeInspector = ref.watch(
+      prefProvider(SettingKeysGen.classInspectorSwitch),
+    );
+    final showDateInspector = ref.watch(
+      prefProvider(SettingKeysGen.dateInspectorSwitch),
+    );
+    final timeInspectorAlpha = ref.watch(
+      prefProvider(SettingKeysGen.classInspectorAlpha),
+    );
+    final dateInspectorAlpha = ref.watch(
+      prefProvider(SettingKeysGen.dateInspectorAlpha),
+    );
     final dataSource = ref.watch(prefProvider(SettingKeysGen.classDataSource));
     final isLoggedResult = ref.watch(prefProvider(LocalDataKey.logged));
     final neededValue = <AsyncValue<Option<dynamic>>>[
@@ -69,18 +84,24 @@ class _ClassesPageState extends ConsumerState<ClassesPage> with SingleTickerProv
             showDateInspector == null ||
             timeInspectorAlpha == null ||
             dateInspectorAlpha == null) {
-          return isLogged ? _noClassesPage(context, dataSource) : _notLoggedPage(context);
+          return isLogged
+              ? _noClassesPage(context, dataSource)
+              : _notLoggedPage(context);
         }
         final time = DateTime.timestamp().toLocal();
-        final termData = ClassTimeUtil.selectCurrentTermData(time, termDataList);
-        final initialPageIndex = termData == null
-            ? 0
-            : ClassTimeUtil.getCurrentWeek(time, termData);
+        final termData = ClassTimeUtil.selectCurrentTermData(
+          time,
+          termDataList,
+        );
+        final initialPageIndex = termData.match(
+          () => 0,
+          (td) => ClassTimeUtil.getCurrentWeek(time, td),
+        );
         return (classTable.classes.isNotEmpty || false
             ? ClassesWidget(
                 classTable: classTable,
                 classTime: classTime,
-                termData: termData,
+                termData: termData.toNullable(),
                 showTimeInspector: showTimeInspector,
                 showDateInspector: showDateInspector,
                 timeInspectorAlpha: timeInspectorAlpha,
@@ -102,8 +123,14 @@ class _ClassesPageState extends ConsumerState<ClassesPage> with SingleTickerProv
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.blur_circular_outlined, size: 32),
-                Text(i18n.page_classes_error_main_empty_title, style: textTheme.titleMedium),
-                Text(i18n.page_classes_error_main_empty_subtitle, textAlign: TextAlign.center),
+                Text(
+                  i18n.page_classes_error_main_empty_title,
+                  style: textTheme.titleMedium,
+                ),
+                Text(
+                  i18n.page_classes_error_main_empty_subtitle,
+                  textAlign: TextAlign.center,
+                ),
                 SizedBox(height: 8),
                 textIconButton(
                   onPressed: () async {
@@ -158,7 +185,10 @@ class _ClassesPageState extends ConsumerState<ClassesPage> with SingleTickerProv
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.key_off, size: 32),
-          Text(i18n.page_classes_error_not_logged_title, style: textTheme.titleMedium),
+          Text(
+            i18n.page_classes_error_not_logged_title,
+            style: textTheme.titleMedium,
+          ),
           Text(i18n.page_classes_error_not_logged_content),
         ],
       ),

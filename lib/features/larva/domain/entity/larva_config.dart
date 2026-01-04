@@ -9,9 +9,14 @@ class LarvaConfig {
   final List<List<int>> clips;
   final Map<String, dynamic> values;
 
-  LarvaConfig({required this.operations, required this.clips, required this.values});
+  LarvaConfig({
+    required this.operations,
+    required this.clips,
+    required this.values,
+  });
 
-  factory LarvaConfig.fromJson(Map<String, dynamic> json) => _$LarvaConfigFromJson(json);
+  factory LarvaConfig.fromJson(Map<String, dynamic> json) =>
+      _$LarvaConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$LarvaConfigToJson(this);
 }
@@ -22,13 +27,14 @@ sealed class Operation {
 
   Operation(this.type);
 
-  factory Operation.fromJson(Map<String, dynamic> json) => switch (json["type"]) {
-    "clip" => ClipOperation.fromJson(json),
-    "convolution" => ConvolutionOperation.fromJson(json),
-    "two_valuation" => TwoValuationOperation.fromJson(json),
-    "reverse" => ReverseOperation.fromJson(json),
-    _ => throw Exception("Unknown type: ${json['type']}"),
-  };
+  factory Operation.fromJson(Map<String, dynamic> json) =>
+      switch (json["type"]) {
+        "clip" => ClipOperation.fromJson(json),
+        "convolution" => ConvolutionOperation.fromJson(json),
+        "two_valuation" => TwoValuationOperation.fromJson(json),
+        "reverse" => ReverseOperation.fromJson(json),
+        _ => throw Exception("Unknown type: ${json['type']}"),
+      };
 }
 
 @JsonSerializable()
@@ -38,10 +44,15 @@ class ClipOperation extends Operation {
   final int width;
   final int height;
 
-  ClipOperation({required this.x, required this.y, required this.width, required this.height})
-    : super("clip");
+  ClipOperation({
+    required this.x,
+    required this.y,
+    required this.width,
+    required this.height,
+  }) : super("clip");
 
-  factory ClipOperation.fromJson(Map<String, dynamic> json) => _$ClipOperationFromJson(json);
+  factory ClipOperation.fromJson(Map<String, dynamic> json) =>
+      _$ClipOperationFromJson(json);
 
   Map<String, dynamic> toJson() => _$ClipOperationToJson(this);
 }
@@ -74,12 +85,14 @@ class TwoValuationOperation extends Operation {
 class ReverseOperation extends Operation {
   ReverseOperation() : super("reverse");
 
-  factory ReverseOperation.fromJson(Map<String, dynamic> json) => _$ReverseOperationFromJson(json);
+  factory ReverseOperation.fromJson(Map<String, dynamic> json) =>
+      _$ReverseOperationFromJson(json);
 
   Map<String, dynamic> toJson() => _$ReverseOperationToJson(this);
 }
 
-class _OperationTypeConverter implements JsonConverter<Operation, Map<String, dynamic>> {
+class _OperationTypeConverter
+    implements JsonConverter<Operation, Map<String, dynamic>> {
   const _OperationTypeConverter();
 
   @override

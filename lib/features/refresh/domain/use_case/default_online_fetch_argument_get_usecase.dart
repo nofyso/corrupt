@@ -9,12 +9,17 @@ class DefaultOnlineFetchArgumentGetUseCase {
   final LocalRawDataRepository _localRawDataRepository;
   final GetCurrentTermArgUseCase _termArgUseCase;
 
-  DefaultOnlineFetchArgumentGetUseCase(this._localRawDataRepository, this._termArgUseCase);
+  DefaultOnlineFetchArgumentGetUseCase(
+    this._localRawDataRepository,
+    this._termArgUseCase,
+  );
 
   Future<P> getArgument<P, V>(DataFetchType<P, V> fetchType) async {
     switch (fetchType) {
       case DataFetchType.classes:
-        final sourceRaw = await _localRawDataRepository.getData(SettingKeysGen.classDataSource);
+        final sourceRaw = await _localRawDataRepository.getData(
+          SettingKeysGen.classDataSource,
+        );
         final source = ClassesDataSource.fromRawValue(sourceRaw);
         final arg = (source == ClassesDataSource.currentDate
             ? (await _termArgUseCase.getCurrentTermData()).toNullable()?.let(

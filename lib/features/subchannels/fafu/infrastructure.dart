@@ -10,19 +10,26 @@ import 'package:dio_redirect_interceptor/dio_redirect_interceptor.dart';
 class InfraFafu implements DIRegister {
   @override
   void diRegister() {
-    getIt.registerLazySingleton<FafuSchoolRepository>(() => FafuSchoolRepositoryImpl());
+    getIt.registerLazySingleton<FafuSchoolRepository>(
+      () => FafuSchoolRepositoryImpl(),
+    );
     getIt.registerSingleton<Dio>(
       Dio(
         BaseOptions(
           followRedirects: true,
           maxRedirects: 20,
           validateStatus: (status) => status != null && status < 400,
-          headers: {"Host": "jwgl.fafu.edu.cn", "Origin": "http://jwgl.fafu.edu.cn"},
+          headers: {
+            "Host": "jwgl.fafu.edu.cn",
+            "Origin": "http://jwgl.fafu.edu.cn",
+          },
         ),
       ).let((it) => it..interceptors.add(RedirectInterceptor(() => it))),
       instanceName: "fafuDio",
     );
-    getIt.registerLazySingleton<FafuApiRaw>(() => FafuApiRaw(getIt<Dio>(instanceName: "fafuDio")));
+    getIt.registerLazySingleton<FafuApiRaw>(
+      () => FafuApiRaw(getIt<Dio>(instanceName: "fafuDio")),
+    );
     getIt.registerLazySingleton<FafuApi>(() => FafuApi());
   }
 }

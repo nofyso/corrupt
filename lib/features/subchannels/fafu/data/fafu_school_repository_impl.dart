@@ -15,7 +15,8 @@ class FafuSchoolRepositoryImpl extends FafuSchoolRepository {
   static final FafuApi _fafuApi = FafuApi();
 
   static final _termData = [
-    TermData("2025-2026", "1", DateTime(2025, DateTime.august, 31)), //TODO network fetch
+    TermData("2025-2026", "1", DateTime(2025, DateTime.august, 31)),
+    //TODO network fetch
   ];
 
   static final _classTime = ClassTime.of([
@@ -45,27 +46,37 @@ class FafuSchoolRepositoryImpl extends FafuSchoolRepository {
             terms?.let((it) => (it.academicYear, it.semester)) ?? (null, null);
         final result = await _fafuApi.loopBackSafe(
           () => _fafuApi.fetchClassTable(
-            dataPair: semester == null || academicYear == null ? null : (academicYear, semester),
+            dataPair: semester == null || academicYear == null
+                ? null
+                : (academicYear, semester),
           ),
         );
         return result as Either<data_fetch_failure.SchoolDataFetchFailure, V>;
       case DataFetchType.exam:
         final (academicYear, semester) =
-            (DataFetchType.exam.castP(p)?.let((it) => (it.academicYear, it.semester)) ??
+            (DataFetchType.exam
+                .castP(p)
+                ?.let((it) => (it.academicYear, it.semester)) ??
             (null, null));
         final result = await _fafuApi.loopBackSafe(
           () => _fafuApi.fetchExams(
-            dataPair: semester == null || academicYear == null ? null : (academicYear, semester),
+            dataPair: semester == null || academicYear == null
+                ? null
+                : (academicYear, semester),
           ),
         );
         return result as Either<data_fetch_failure.SchoolDataFetchFailure, V>;
       case DataFetchType.score:
         final (academicYear, semester) =
-            (DataFetchType.score.castP(p)?.let((it) => (it.academicYear, it.semester)) ??
+            (DataFetchType.score
+                .castP(p)
+                ?.let((it) => (it.academicYear, it.semester)) ??
             (null, null));
         final result = await _fafuApi.loopBackSafe(
           () => _fafuApi.fetchScores(
-            dataPair: semester == null || academicYear == null ? null : (academicYear, semester),
+            dataPair: semester == null || academicYear == null
+                ? null
+                : (academicYear, semester),
           ),
         );
         return result as Either<data_fetch_failure.SchoolDataFetchFailure, V>;

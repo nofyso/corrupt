@@ -12,11 +12,21 @@ class LocalDataRepositoryImpl extends LocalDataRepository {
   Future<Option<V>> fetchLocalData<P, V>(DataFetchType<P, V> dataType) async {
     try {
       final value = await switch (dataType) {
-        DataFetchType.classes => _localRawDataRepository.getData(LocalDataKey.localClassTable),
-        DataFetchType.termData => _localRawDataRepository.getData(LocalDataKey.localTermData),
-        DataFetchType.classTime => _localRawDataRepository.getData(LocalDataKey.localClassTime),
-        DataFetchType.exam => _localRawDataRepository.getData(LocalDataKey.localExamData),
-        DataFetchType.score => _localRawDataRepository.getData(LocalDataKey.localScoreData),
+        DataFetchType.classes => _localRawDataRepository.getData(
+          LocalDataKey.localClassTable,
+        ),
+        DataFetchType.termData => _localRawDataRepository.getData(
+          LocalDataKey.localTermData,
+        ),
+        DataFetchType.classTime => _localRawDataRepository.getData(
+          LocalDataKey.localClassTime,
+        ),
+        DataFetchType.exam => _localRawDataRepository.getData(
+          LocalDataKey.localExamData,
+        ),
+        DataFetchType.score => _localRawDataRepository.getData(
+          LocalDataKey.localScoreData,
+        ),
       }.then((it) => it as Option<V>);
       return value;
     } catch (e) {

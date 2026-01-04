@@ -30,7 +30,8 @@ class ClassEntity {
     this.user,
   );
 
-  factory ClassEntity.fromJson(Map<String, dynamic> json) => _$ClassEntityFromJson(json);
+  factory ClassEntity.fromJson(Map<String, dynamic> json) =>
+      _$ClassEntityFromJson(json);
 
   Map<String, dynamic> toJson() => _$ClassEntityToJson(this);
 }
@@ -43,7 +44,8 @@ class ClassTable {
 
   ClassTable(this.academicYear, this.semester, this.classes);
 
-  factory ClassTable.fromJson(Map<String, dynamic> json) => _$ClassTableFromJson(json);
+  factory ClassTable.fromJson(Map<String, dynamic> json) =>
+      _$ClassTableFromJson(json);
 
   Map<String, dynamic> toJson() => _$ClassTableToJson(this);
 }
@@ -64,16 +66,17 @@ enum DayOfWeek {
   static DayOfWeek? valueOf(int serial) =>
       DayOfWeek.values.filter((it) => it.value == serial).firstOrNull;
 
-  static DayOfWeek fromDateTime(int dateTimeWeekDay) => switch (dateTimeWeekDay) {
-    DateTime.monday => DayOfWeek.mon,
-    DateTime.tuesday => DayOfWeek.tue,
-    DateTime.wednesday => DayOfWeek.wed,
-    DateTime.thursday => DayOfWeek.thu,
-    DateTime.friday => DayOfWeek.fri,
-    DateTime.saturday => DayOfWeek.sat,
-    DateTime.sunday => DayOfWeek.sun,
-    _ => throw Exception(""),
-  };
+  static DayOfWeek fromDateTime(int dateTimeWeekDay) =>
+      switch (dateTimeWeekDay) {
+        DateTime.monday => DayOfWeek.mon,
+        DateTime.tuesday => DayOfWeek.tue,
+        DateTime.wednesday => DayOfWeek.wed,
+        DateTime.thursday => DayOfWeek.thu,
+        DateTime.friday => DayOfWeek.fri,
+        DateTime.saturday => DayOfWeek.sat,
+        DateTime.sunday => DayOfWeek.sun,
+        _ => throw Exception(""),
+      };
 
   static DayOfWeek? chineseValueOf(String char) => switch (char) {
     "一" => DayOfWeek.mon,
@@ -93,7 +96,8 @@ class ClassTime {
 
   ClassTime(this.times);
 
-  factory ClassTime.fromJson(Map<String, dynamic> json) => _$ClassTimeFromJson(json);
+  factory ClassTime.fromJson(Map<String, dynamic> json) =>
+      _$ClassTimeFromJson(json);
 
   Map<String, dynamic> toJson() => _$ClassTimeToJson(this);
 
@@ -101,8 +105,9 @@ class ClassTime {
     : this(
         timeList
             .map(
-              (it) =>
-                  ((it.$1 * 60 * 60 + it.$2 * 60) * 1000).let((time) => (time, time + duration)),
+              (it) => ((it.$1 * 60 * 60 + it.$2 * 60) * 1000).let(
+                (time) => (time, time + duration),
+              ),
             )
             .toList(),
       );

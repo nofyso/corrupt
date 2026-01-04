@@ -44,7 +44,9 @@ Widget _cardRequestLogin(BuildContext context) {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute<void>(builder: (context) => Material(child: LoginScreen())),
+                MaterialPageRoute<void>(
+                  builder: (context) => Material(child: LoginScreen()),
+                ),
               );
             },
             child: Text(i18n.page_home_req_button),
@@ -56,9 +58,22 @@ Widget _cardRequestLogin(BuildContext context) {
 }
 
 Widget _cardClassTime(BuildContext context, DateTime time, WidgetRef ref) {
-  (ClassEntity? current, ClassEntity? previous, ClassEntity? next, int msLeft, bool inClass)?
-  getClassStatus(ClassTable classTable, List<TermData> termDataList, ClassTime classTime) {
-    final currentTerm = ClassTimeUtil.selectCurrentTermData(time, termDataList);
+  (
+    ClassEntity? current,
+    ClassEntity? previous,
+    ClassEntity? next,
+    int msLeft,
+    bool inClass,
+  )?
+  getClassStatus(
+    ClassTable classTable,
+    List<TermData> termDataList,
+    ClassTime classTime,
+  ) {
+    final currentTerm = ClassTimeUtil.selectCurrentTermData(
+      time,
+      termDataList,
+    ).toNullable();
     if (currentTerm == null) return null;
     final currentWeek = ClassTimeUtil.getCurrentWeek(time, currentTerm);
     final classes = classTable.classes
@@ -88,14 +103,26 @@ Widget _cardClassTime(BuildContext context, DateTime time, WidgetRef ref) {
         .sortWith((it) => it.time, Order.orderInt);
     if (classes.isEmpty) return (null, null, null, -1, false);
     final currentMillisecondOffset = time.let(
-      (it) => it.hour * 60 * 60 * 1000 + it.minute * 60 * 1000 + it.second * 1000 + it.millisecond,
+      (it) =>
+          it.hour * 60 * 60 * 1000 +
+          it.minute * 60 * 1000 +
+          it.second * 1000 +
+          it.millisecond,
     );
     final classTimeMap = classTime.times;
     for (final (i, it) in classes.indexed) {
       final (fromMs, toMs) = classTimeMap[it.time];
-      if (currentMillisecondOffset > fromMs && currentMillisecondOffset > toMs) continue;
+      if (currentMillisecondOffset > fromMs && currentMillisecondOffset > toMs) {
+        continue;
+      }
       if (currentMillisecondOffset < fromMs) {
-        return (null, classes.getOrNull(i - 1), it, fromMs - currentMillisecondOffset, false);
+        return (
+          null,
+          classes.getOrNull(i - 1),
+          it,
+          fromMs - currentMillisecondOffset,
+          false,
+        );
       }
       return (
         it,
@@ -134,7 +161,9 @@ Widget _cardClassTime(BuildContext context, DateTime time, WidgetRef ref) {
             final termDataList = result[1] as List<TermData>?;
             final classTime = result[2] as ClassTime?;
             final isLogged = result[4] as bool;
-            if (classTable == null || termDataList == null || classTime == null) {
+            if (classTable == null ||
+                termDataList == null ||
+                classTime == null) {
               return Center(
                 child: !isLogged
                     ? iconTitleAndSubtitle(
@@ -152,7 +181,11 @@ Widget _cardClassTime(BuildContext context, DateTime time, WidgetRef ref) {
               );
             }
             final cardStyle = result[3] as String;
-            final classStatus = getClassStatus(classTable, termDataList, classTime);
+            final classStatus = getClassStatus(
+              classTable,
+              termDataList,
+              classTime,
+            );
             if (classStatus == null) {
               return Center(
                 child: iconTitleAndSubtitle(
@@ -171,16 +204,33 @@ Widget _cardClassTime(BuildContext context, DateTime time, WidgetRef ref) {
               bool isInClass,
             ) = classStatus;
             final classTimeMap = classTime.times;
-            final isNoClass = current == null && previous == null && next == null && msLeft == -1;
+            final isNoClass =
+                current == null &&
+                previous == null &&
+                next == null &&
+                msLeft == -1;
             final isAllFinished =
-                current == null && previous == null && next == null && msLeft == -2;
+                current == null &&
+                previous == null &&
+                next == null &&
+                msLeft == -2;
             final List<Widget> textWidgets = isInClass
                 ? [
-                    Text(i18n.page_home_class_current_class("${current!.name}@${current.place}")),
+                    Text(
+                      i18n.page_home_class_current_class(
+                        "${current!.name}@${current.place}",
+                      ),
+                    ),
                     Text(i18n.page_home_class_times_left(_formatTime(msLeft))),
                     ...next == null
                         ? []
-                        : [Text(i18n.page_home_class_next_class("${next.name}@${next.place}"))],
+                        : [
+                            Text(
+                              i18n.page_home_class_next_class(
+                                "${next.name}@${next.place}",
+                              ),
+                            ),
+                          ],
                   ]
                 : (isNoClass
                       ? [Text(i18n.page_home_class_empty)]
@@ -188,12 +238,22 @@ Widget _cardClassTime(BuildContext context, DateTime time, WidgetRef ref) {
                             ? [Text(i18n.page_home_class_all_finished)]
                             : next!.let(
                                 (it) => [
-                                  Text(i18n.page_home_class_next_class("${it.name}@${it.place}")),
-                                  Text(i18n.page_home_class_times_coming(_formatTime(msLeft))),
+                                  Text(
+                                    i18n.page_home_class_next_class(
+                                      "${it.name}@${it.place}",
+                                    ),
+                                  ),
+                                  Text(
+                                    i18n.page_home_class_times_coming(
+                                      _formatTime(msLeft),
+                                    ),
+                                  ),
                                 ],
                               )));
             final progress = isInClass
-                ? classTimeMap[current!.time].let((it) => msLeft / (it.$2 - it.$1))
+                ? classTimeMap[current!.time].let(
+                    (it) => msLeft / (it.$2 - it.$1),
+                  )
                 : (isNoClass
                       ? 0.0
                       : (isAllFinished
@@ -203,10 +263,15 @@ Widget _cardClassTime(BuildContext context, DateTime time, WidgetRef ref) {
                                       (classTimeMap[next!.time].$1 -
                                           (previous == null
                                               ? 0
-                                              : classTimeMap[previous.time].$2))));
+                                              : classTimeMap[previous.time]
+                                                    .$2))));
             final weight = switch (cardStyle) {
               SettingKeysGen.classesCardStyleValue1 => Padding(
-                padding: EdgeInsetsGeometry.directional(start: 0, end: 8, bottom: 8),
+                padding: EdgeInsetsGeometry.directional(
+                  start: 0,
+                  end: 8,
+                  bottom: 8,
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -221,7 +286,11 @@ Widget _cardClassTime(BuildContext context, DateTime time, WidgetRef ref) {
                 ),
               ),
               SettingKeysGen.classesCardStyleValue2 => Padding(
-                padding: EdgeInsetsGeometry.directional(start: 8, end: 8, bottom: 8),
+                padding: EdgeInsetsGeometry.directional(
+                  start: 8,
+                  end: 8,
+                  bottom: 8,
+                ),
                 child: Row(
                   children: [
                     Expanded(
@@ -249,7 +318,11 @@ Widget _cardClassTime(BuildContext context, DateTime time, WidgetRef ref) {
                 ),
               ),
               SettingKeysGen.classesCardStyleValue0 || _ => Padding(
-                padding: EdgeInsetsGeometry.directional(start: 8, end: 8, bottom: 8),
+                padding: EdgeInsetsGeometry.directional(
+                  start: 8,
+                  end: 8,
+                  bottom: 8,
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,7 +385,10 @@ Widget _cardExams(BuildContext context, DateTime time, WidgetRef ref) {
             final upcomingExams = exams.entities
                 .filter((it) => it.fromTime != null && it.toTime != null)
                 .filter((it) => it.fromTime!.isAfter(DateTime.now()))
-                .sortWith((it) => it.fromTime!.millisecondsSinceEpoch, Order.orderInt);
+                .sortWith(
+                  (it) => it.fromTime!.millisecondsSinceEpoch,
+                  Order.orderInt,
+                );
             if (upcomingExams.isEmpty) {
               return Text(i18n.page_home_exams_empty);
             }
@@ -343,14 +419,19 @@ Widget _cardExams(BuildContext context, DateTime time, WidgetRef ref) {
                                 text:
                                     "${dateFormat.format(it.fromTime!)} ${timeFormat.format(it.fromTime!)}-${timeFormat.format(it.toTime!)}",
                               ),
-                              textIconWidget(icon: Icons.location_on, text: it.campus),
+                              textIconWidget(
+                                icon: Icons.location_on,
+                                text: it.campus,
+                              ),
                               textIconWidget(
                                 icon: Icons.grid_view,
                                 text: "${it.place} - ${it.seat}",
                               ),
                               textIconWidget(
                                 icon: Icons.timelapse,
-                                text: _formatDuration(it.fromTime!.difference(time)),
+                                text: _formatDuration(
+                                  it.fromTime!.difference(time),
+                                ),
                               ),
                             ],
                           ),
@@ -518,7 +599,9 @@ Widget cardWithPadding({required Widget child}) {
 
 String _formatTime(int millisecond) => (millisecond / 1000 / 60 / 60).let(
   (hour) => (millisecond / 1000 / 60 - hour.toInt() * 60).let(
-    (min) => ((millisecond / 1000) - hour.toInt() * 60 * 60 - min.toInt() * 60).let(
+    (
+      min,
+    ) => ((millisecond / 1000) - hour.toInt() * 60 * 60 - min.toInt() * 60).let(
       (sec) =>
           "${_addZero(hour.toInt().toString())}:${_addZero(min.toInt().toString())}:${_addZero(sec.toInt().toString())}",
     ),

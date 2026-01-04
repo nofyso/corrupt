@@ -14,9 +14,9 @@ import 'package:corrupt/presentation/i18n/app_localizations.dart';
 import 'package:corrupt/presentation/page/login_screen.dart';
 import 'package:corrupt/presentation/page/main_screen.dart';
 import 'package:corrupt/presentation/page/navigation_pages/home/home_update_card.dart';
-import 'package:corrupt/presentation/util/class_time_util.dart';
 import 'package:corrupt/presentation/widget/load_waiting_mask_widget.dart';
 import 'package:corrupt/presentation/widget/simple_widget.dart';
+import 'package:corrupt/util/class_time_util.dart';
 import 'package:dartlin/collections.dart';
 import 'package:dartlin/control_flow.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +55,9 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final needValues = <AsyncValue<Option<dynamic>>>[ref.watch(prefProvider(LocalDataKey.logged))];
+    final needValues = <AsyncValue<Option<dynamic>>>[
+      ref.watch(prefProvider(LocalDataKey.logged)),
+    ];
     return loadWaitingMask(
       values: needValues,
       requiredValues: needValues,
@@ -71,12 +73,20 @@ class _HomePageState extends ConsumerState<HomePage> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Flexible(fit: FlexFit.tight, child: _cardGreeting(context,_time)),
-                      Flexible(fit: FlexFit.tight, child: _cardTime(context,_time)),
+                      Flexible(
+                        fit: FlexFit.tight,
+                        child: _cardGreeting(context, _time),
+                      ),
+                      Flexible(
+                        fit: FlexFit.tight,
+                        child: _cardTime(context, _time),
+                      ),
                     ],
                   ),
                 ),
-                ...isLogged ? _loggedWidget(context) : _notLoggedWidget(context),
+                ...isLogged
+                    ? _loggedWidget(context)
+                    : _notLoggedWidget(context),
               ],
             ),
           ),

@@ -15,7 +15,12 @@ void main() async {
   await getIt.allReady();
   setupEventListener();
   final app = Corrupt();
-  runApp(UncontrolledProviderScope(container: getIt<ProviderContainer>(), child: app));
+  runApp(
+    UncontrolledProviderScope(
+      container: getIt<ProviderContainer>(),
+      child: app,
+    ),
+  );
 }
 
 class Corrupt extends ConsumerWidget {
@@ -25,7 +30,9 @@ class Corrupt extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final neededValue = [
       ref.watch(prefProvider(SettingKeysGen.colorScheme)),
-      ref.watch(prefProvider(SettingKeysGen.settingsCustomizeLegacyColorSwitch)),
+      ref.watch(
+        prefProvider(SettingKeysGen.settingsCustomizeLegacyColorSwitch),
+      ),
     ];
     return Material(
       child: emptyLoadWaitingMask(
@@ -33,8 +40,13 @@ class Corrupt extends ConsumerWidget {
         child: (value) {
           final theme = value[0] as String?;
           final legacyColor = value[1] as bool?;
-          final (lightTheme, darkTheme) = getThemeData(theme, legacyColor == true);
-          final themeSetting = ref.watch(prefProvider(SettingKeysGen.themeSwitch));
+          final (lightTheme, darkTheme) = getThemeData(
+            theme,
+            legacyColor == true,
+          );
+          final themeSetting = ref.watch(
+            prefProvider(SettingKeysGen.themeSwitch),
+          );
           final themeMode = switch (themeSetting.when(
             data: (d) => d.toNullable()!,
             error: (_, _) => SettingKeysGen.themeSwitchValue0,
@@ -58,7 +70,10 @@ class Corrupt extends ConsumerWidget {
     );
   }
 
-  (ThemeData, ThemeData) getThemeData(String? theme, bool legacy) => switch (theme) {
+  (ThemeData, ThemeData) getThemeData(
+    String? theme,
+    bool legacy,
+  ) => switch (theme) {
     SettingKeysGen.colorSchemeValue1 => (
       ThemeData.from(colorScheme: ColorScheme.fromSwatch(), useMaterial3: true),
       ThemeData.dark(useMaterial3: true),
@@ -73,7 +88,9 @@ class Corrupt extends ConsumerWidget {
                   cardColor: Color.fromARGB(255, 250, 250, 250),
                   backgroundColor: Color.fromARGB(255, 250, 250, 250),
                 )
-                .copyWith(surfaceContainerHighest: Color.fromARGB(255, 200, 200, 200))
+                .copyWith(
+                  surfaceContainerHighest: Color.fromARGB(255, 200, 200, 200),
+                )
                 .let((it) => legacy ? it.legacyTransform() : it),
       ),
       ThemeData(
@@ -85,7 +102,9 @@ class Corrupt extends ConsumerWidget {
                   backgroundColor: Color.fromARGB(255, 20, 20, 20),
                   cardColor: Color.fromARGB(255, 20, 20, 20),
                 )
-                .copyWith(surfaceContainerHighest: Color.fromARGB(255, 77, 77, 77))
+                .copyWith(
+                  surfaceContainerHighest: Color.fromARGB(255, 77, 77, 77),
+                )
                 .let((it) => legacy ? it.legacyTransform() : it),
       ),
     ),
@@ -99,7 +118,9 @@ class Corrupt extends ConsumerWidget {
                   cardColor: Color.fromARGB(255, 250, 250, 250),
                   backgroundColor: Color.fromARGB(255, 250, 250, 250),
                 )
-                .copyWith(surfaceContainerHighest: Color.fromARGB(255, 200, 200, 200))
+                .copyWith(
+                  surfaceContainerHighest: Color.fromARGB(255, 200, 200, 200),
+                )
                 .let((it) => legacy ? it.legacyTransform() : it),
       ),
       ThemeData(
@@ -111,7 +132,9 @@ class Corrupt extends ConsumerWidget {
                   backgroundColor: Color.fromARGB(255, 20, 20, 20),
                   cardColor: Color.fromARGB(255, 20, 20, 20),
                 )
-                .copyWith(surfaceContainerHighest: Color.fromARGB(255, 77, 77, 77))
+                .copyWith(
+                  surfaceContainerHighest: Color.fromARGB(255, 77, 77, 77),
+                )
                 .let((it) => legacy ? it.legacyTransform() : it),
       ),
     ),
@@ -135,7 +158,7 @@ class Corrupt extends ConsumerWidget {
 }
 
 const Map<int, Color> _mikuGreenSwatch = {
-  50:  Color(0xFFE0F8F6),
+  50: Color(0xFFE0F8F6),
   100: Color(0xFFB3EBE6),
   200: Color(0xFF80DDD5),
   300: Color(0xFF4DCFC4),
@@ -167,6 +190,7 @@ extension on ColorScheme {
 }
 
 extension on Color {
-  Color legacyTransform() =>
-      ((r + g + b) / 3.0).let((it) => Color.from(alpha: a, red: it, green: it, blue: it));
+  Color legacyTransform() => ((r + g + b) / 3.0).let(
+    (it) => Color.from(alpha: a, red: it, green: it, blue: it),
+  );
 }

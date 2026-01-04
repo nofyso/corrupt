@@ -17,7 +17,11 @@ class InfraChannel implements DIRegister {
     getIt.registerFactory<FetchSchoolDataOnlineUseCase>(
       () => FetchSchoolDataOnlineUseCase(getIt(), getIt()),
     );
-    getIt.registerFactory<SchoolImplSelectUseCase>(() => SchoolImplSelectUseCase(getIt(), getIt()));
-    getIt.registerFactory<SchoolLoginUseCase>(() => SchoolLoginUseCase(getIt()));
+    getIt.registerFactory<SchoolImplSelectUseCase>(
+      () => SchoolImplSelectUseCase(getIt(), getIt()),
+    );
+    getIt.registerFactory<SchoolLoginUseCase>(
+      () => SchoolLoginUseCase(getIt()),
+    );
   }
 }

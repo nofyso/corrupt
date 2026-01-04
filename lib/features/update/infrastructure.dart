@@ -5,7 +5,11 @@ import 'package:corrupt/infrastructure/di.dart';
 class InfraUpdate implements DIRegister {
   @override
   void diRegister() {
-    getIt.registerFactory<UpdateCheckUseCase>(() => UpdateCheckUseCase(getIt()));
-    getIt.registerLazySingleton<GithubApiRepository>(() => GithubApiRepository());
+    getIt.registerFactory<UpdateCheckUseCase>(
+      () => UpdateCheckUseCase(getIt()),
+    );
+    getIt.registerLazySingleton<GithubApiRepository>(
+      () => GithubApiRepository(),
+    );
   }
 }

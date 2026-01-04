@@ -6,7 +6,8 @@ import 'package:event_bus/event_bus.dart';
 class PrefReadUseCase {
   Future<ET> read<OT, ET>(CirnoPrefKey<OT, ET> key) async => key.read(null);
 
-  Future<OT> readRaw<OT, ET>(CirnoPrefKey<OT, ET> key) async => key.readRaw(null);
+  Future<OT> readRaw<OT, ET>(CirnoPrefKey<OT, ET> key) async =>
+      key.readRaw(null);
 }
 
 class PrefWriteUseCase {

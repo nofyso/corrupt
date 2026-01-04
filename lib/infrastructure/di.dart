@@ -23,7 +23,9 @@ void setupDependencies() {
 
   getIt.registerLazySingleton<EventBus>(() => EventBus());
   getIt.registerLazySingleton<Dio>(() => Dio());
-  getIt.registerLazySingleton<LoginController>(() => LoginController()); //FIXME ???
+  getIt.registerLazySingleton<LoginController>(
+    () => LoginController(),
+  ); //FIXME ???
   getIt.registerLazySingleton<ProviderContainer>(() => ProviderContainer());
   getIt.registerLazySingleton<DeviceInfoPlugin>(() => DeviceInfoPlugin());
 

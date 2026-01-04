@@ -56,7 +56,10 @@ class UpdateCheckUseCase {
   UpdateCheckUseCase(this._githubRepository);
 
   Future<Option<UpdateInfo>> checkUpdate() async {
-    final latest = await _githubRepository.getLatestRelease().wrapNetworkSafeTask().run();
+    final latest = await _githubRepository
+        .getLatestRelease()
+        .wrapNetworkSafeTask()
+        .run();
     switch (latest) {
       case Right<RequestFailure, GithubRelease>(value: final value):
         final tagName = value.tagName;

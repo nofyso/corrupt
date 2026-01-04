@@ -5,7 +5,11 @@ import 'package:dartlin/collections.dart';
 import 'package:dartlin/control_flow.dart';
 
 class MjuEncryptUtil {
-  static String encrypt(String modulusHex, String exponentHex, String password) {
+  static String encrypt(
+    String modulusHex,
+    String exponentHex,
+    String password,
+  ) {
     final data = utf8.encode(password.split("").reversed.join());
     final modulus = BigInt.parse("00$modulusHex", radix: 16);
     final exponent = BigInt.parse(exponentHex, radix: 16);
@@ -15,7 +19,9 @@ class MjuEncryptUtil {
     for (final ind in 0.to(paddedData.length - 1, step: chunkSize)) {
       final blockHex = _toHex(paddedData.sublist(ind, ind + chunkSize));
       final crypt = BigInt.parse(blockHex, radix: 16).modPow(exponent, modulus);
-      stringBuilder.write(crypt.toRadixString(16).let((it) => it.length % 2 == 1 ? "0$it" : it));
+      stringBuilder.write(
+        crypt.toRadixString(16).let((it) => it.length % 2 == 1 ? "0$it" : it),
+      );
     }
     return stringBuilder.toString();
   }
@@ -32,7 +38,9 @@ class MjuEncryptUtil {
       .join();
 
   static Uint8List _paddingData(Uint8List data, int chunkSize) {
-    final newData = Uint8List((data.length / chunkSize.toDouble()).ceil() * chunkSize);
+    final newData = Uint8List(
+      (data.length / chunkSize.toDouble()).ceil() * chunkSize,
+    );
     newData.fillRange(0, newData.length, 0);
     newData.setAll(0, data);
     return newData;

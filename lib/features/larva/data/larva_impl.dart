@@ -15,7 +15,9 @@ class LarvaImpl extends LarvaRepository {
     required Uint8List imageData,
     required String modelPath,
   }) async {
-    final decoded = jsonDecode(await rootBundle.loadString("$modelPath.larva.json"));
+    final decoded = jsonDecode(
+      await rootBundle.loadString("$modelPath.larva.json"),
+    );
     final config = LarvaConfig.fromJson(decoded);
     final imageResult = await LarvaImage.fromBytes(imageData);
     if (imageResult.isLeft()) {

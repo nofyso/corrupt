@@ -71,7 +71,7 @@ class _HomeUpdateCardState extends ConsumerState<HomeUpdateCard> {
       children: [
         Text(i18n.page_home_update_os_android),
         SizedBox(height: 8),
-        Text(releaseInfo.body,textAlign:TextAlign.start,),
+        Text(releaseInfo.body, textAlign: TextAlign.start),
         SizedBox(height: 8),
         loadWaitingMask(
           values: neededValue,
@@ -83,9 +83,20 @@ class _HomeUpdateCardState extends ConsumerState<HomeUpdateCard> {
               showMoreText: i18n.page_home_update_download_expand,
               children: [
                 ...releaseInfo.assets
-                    .sortWith((it) => it.name, Order.from<String>((a, b) => a.compareTo(b)))
-                    .sortWith((it) => checkPlatform(androidInfo, it.name), Order.orderInt)
-                    .map((it) => _releaseEntry(it, checkPlatform(androidInfo, it.name) == 0)),
+                    .sortWith(
+                      (it) => it.name,
+                      Order.from<String>((a, b) => a.compareTo(b)),
+                    )
+                    .sortWith(
+                      (it) => checkPlatform(androidInfo, it.name),
+                      Order.orderInt,
+                    )
+                    .map(
+                      (it) => _releaseEntry(
+                        it,
+                        checkPlatform(androidInfo, it.name) == 0,
+                      ),
+                    ),
               ],
             );
 
@@ -188,7 +199,10 @@ class _HomeUpdateCardState extends ConsumerState<HomeUpdateCard> {
       showMoreText: i18n.page_home_update_download_expand,
       children: [
         ...releaseInfo.assets
-            .sortWith((it) => it.name, Order.from<String>((a, b) => a.compareTo(b)))
+            .sortWith(
+              (it) => it.name,
+              Order.from<String>((a, b) => a.compareTo(b)),
+            )
             .sortWith((it) => checkPlatform(it.name), Order.orderInt)
             .map((it) {
               final isCurrentPlatform = checkPlatform(it.name) == 0;
@@ -202,6 +216,7 @@ class _HomeUpdateCardState extends ConsumerState<HomeUpdateCard> {
     void Function() downloadJump(String url) {
       return () => (launchUrl(Uri.parse(url)));
     }
+
     final i18n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
@@ -220,7 +235,9 @@ class _HomeUpdateCardState extends ConsumerState<HomeUpdateCard> {
               if (isCurrentPlatform)
                 Text(
                   i18n.page_home_update_best_match,
-                  style: textTheme.labelLarge?.copyWith(color: colorScheme.primary),
+                  style: textTheme.labelLarge?.copyWith(
+                    color: colorScheme.primary,
+                  ),
                 ),
               //Text(it.digest, overflow: TextOverflow.fade, style: textTheme.labelSmall),
             ],
@@ -235,11 +252,17 @@ class _HomeUpdateCardState extends ConsumerState<HomeUpdateCard> {
               isCurrentPlatform
                   ? FilledButton(
                       onPressed: downloadJump(it.downloadUrl),
-                      child: textIconWidget(icon: Icons.link, text: i18n.page_home_update_jump),
+                      child: textIconWidget(
+                        icon: Icons.link,
+                        text: i18n.page_home_update_jump,
+                      ),
                     )
                   : OutlinedButton(
                       onPressed: downloadJump(it.downloadUrl),
-                      child: textIconWidget(icon: Icons.link, text: i18n.page_home_update_jump),
+                      child: textIconWidget(
+                        icon: Icons.link,
+                        text: i18n.page_home_update_jump,
+                      ),
                     ),
               Text(
                 "${(it.size / 1024 / 1024).toStringAsFixed(2)} MB",

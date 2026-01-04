@@ -2,7 +2,8 @@ import 'dart:io';
 
 import 'package:cirno_pref_key/cirno_pref.dart';
 import 'package:corrupt/features/pref/domain/entity/settings_key.dart';
-import 'package:corrupt/features/pref/provider/local_pref_provider.dart' as settings_provider;
+import 'package:corrupt/features/pref/provider/local_pref_provider.dart'
+    as settings_provider;
 import 'package:corrupt/presentation/i18n/app_localizations.dart';
 import 'package:dartlin/control_flow.dart';
 import 'package:file_selector/file_selector.dart';
@@ -13,15 +14,18 @@ import 'package:settings_ui/settings_ui.dart';
 
 part 'settings_page.g.dart';
 
-final _switchSettingsProviderFamily = FutureProviderFamily<bool, CirnoPrefKey<bool, bool>>(
-  (ref, arg) async => await arg.read(null),
-);
-final _selectSettingsProviderFamily = FutureProviderFamily<String, CirnoPrefKey<String, String>>(
-  (ref, arg) async => await arg.read(null),
-);
-final _sliderSettingsProviderFamily = FutureProviderFamily<double, CirnoPrefKey<double, double>>(
-  (ref, arg) async => await arg.read(null),
-);
+final _switchSettingsProviderFamily =
+    FutureProviderFamily<bool, CirnoPrefKey<bool, bool>>(
+      (ref, arg) async => await arg.read(null),
+    );
+final _selectSettingsProviderFamily =
+    FutureProviderFamily<String, CirnoPrefKey<String, String>>(
+      (ref, arg) async => await arg.read(null),
+    );
+final _sliderSettingsProviderFamily =
+    FutureProviderFamily<double, CirnoPrefKey<double, double>>(
+      (ref, arg) async => await arg.read(null),
+    );
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
@@ -77,7 +81,9 @@ class SettingsPageState extends ConsumerState<SettingsPage> {
                   extensions: <String>['jpg', 'png'],
                   uniformTypeIdentifiers: <String>['public.jpeg', 'public.png'],
                 );
-                final XFile? file = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+                final XFile? file = await openFile(
+                  acceptedTypeGroups: <XTypeGroup>[typeGroup],
+                );
                 if (file == null) return;
                 final dataPath = await getApplicationSupportDirectory();
                 File(file.path).copySync("${dataPath.path}/background");
@@ -95,7 +101,10 @@ class SettingsPageState extends ConsumerState<SettingsPage> {
               component: SettingComponentsGen.navigationBarAlpha,
               range: SettingKeysGen.navigationBarAlphaRange,
             ),
-            switchTile(component: SettingComponentsGen.settingsCustomizeLegacyColorSwitch),
+            switchTile(
+              component:
+                  SettingComponentsGen.settingsCustomizeLegacyColorSwitch,
+            ),
           ],
         ),
         SettingsSection(
@@ -220,7 +229,10 @@ class SettingsPageState extends ConsumerState<SettingsPage> {
                     (key, it) => MapEntry(
                       key,
                       MenuItemButton(
-                        child: Padding(padding: EdgeInsetsGeometry.all(16), child: Text(it)),
+                        child: Padding(
+                          padding: EdgeInsetsGeometry.all(16),
+                          child: Text(it),
+                        ),
                         onPressed: () async {
                           await settingsKey.write(null, key);
                           ref.invalidate(provider);

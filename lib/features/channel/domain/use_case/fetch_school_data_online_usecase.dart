@@ -14,19 +14,26 @@ class FetchSchoolDataOnlineUseCase {
 
   FetchSchoolDataOnlineUseCase(this._implSelect, this._prefWriteUseCase);
 
-  Future<Either<SchoolDataFetchFailure, V>> fetch<P, V>(DataFetchType<P, V> dataType, P p) async {
+  Future<Either<SchoolDataFetchFailure, V>> fetch<P, V>(
+    DataFetchType<P, V> dataType,
+    P p,
+  ) async {
     switch (await _implSelect.select()) {
-      case Some<(School, AbstractSchoolRepository<dynamic, dynamic>)>(value: final school):
+      case Some<(School, AbstractSchoolRepository<dynamic, dynamic>)>(
+        value: final school,
+      ):
         final (_, schoolRepository) = school;
         final result = await schoolRepository.fetchData(dataType, p);
         if (switch (result) {
-          Left<SchoolDataFetchFailure, V>(value: final value) => switch (value) {
-            LoginFailure(loginFailure: final loginFailure) => switch (loginFailure) {
-              BadDataFailure() => true,
+          Left<SchoolDataFetchFailure, V>(value: final value) =>
+            switch (value) {
+              LoginFailure(loginFailure: final loginFailure) =>
+                switch (loginFailure) {
+                  BadDataFailure() => true,
+                  _ => false,
+                },
               _ => false,
             },
-            _ => false,
-          },
           _ => false,
         }) {
           await _prefWriteUseCase.write(LocalDataKey.logged, false);

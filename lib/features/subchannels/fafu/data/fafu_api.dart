@@ -10,7 +10,8 @@ import 'package:corrupt/features/channel/domain/entity/failure/school_login_fail
     as login_failure;
 import 'package:corrupt/features/channel/domain/entity/score_entity.dart';
 import 'package:corrupt/features/larva/domain/abstract_repository/larva_repository.dart';
-import 'package:corrupt/features/larva/domain/entity/larva_failure.dart' as larva;
+import 'package:corrupt/features/larva/domain/entity/larva_failure.dart'
+    as larva;
 import 'package:corrupt/features/pref/domain/use_case/prefs_usecase.dart';
 import 'package:corrupt/features/subchannels/fafu/data/fafu_analyzer.dart';
 import 'package:corrupt/features/subchannels/fafu/domain/abstract_repository/fafu_api_raw.dart';
@@ -58,7 +59,9 @@ class FafuApi {
     String password,
   ) async =>
       TaskEither<dynamic, FafuLoginResult>.Do(($) async {
-            final loginPageResult = await $(_raw.getLoginPage().wrapNetworkSafeTask());
+            final loginPageResult = await $(
+              _raw.getLoginPage().wrapNetworkSafeTask(),
+            );
             final loginPage = loginPageResult.asGbkString();
             final uri = loginPageResult.response.realUri;
             final token = (uri.pathSegments.getOrNull(0) ?? "(invalid)").let(
@@ -68,7 +71,9 @@ class FafuApi {
               loginPage
                   .matchFirst(_viewStateRegex)
                   .toTaskOption()
-                  .toTaskEither(() => login_failure.OtherFailure("viewState not found")),
+                  .toTaskEither(
+                    () => login_failure.OtherFailure("viewState not found"),
+                  ),
             );
             final checkCodeDataPage = await $(
               _raw.getCheckCode(token: token).wrapNetworkSafeTask(),
@@ -89,19 +94,30 @@ class FafuApi {
               ).wrapNetworkSafeTask(),
             );
             final loginResponseUrl = loginResponse.response.realUri;
-            final loginResponseDocument = BeautifulSoup(loginResponse.asGbkString());
+            final loginResponseDocument = BeautifulSoup(
+              loginResponse.asGbkString(),
+            );
             if (_isLoopback(loginResponseUrl)) {
               final alert = await $(
                 loginResponse
                     .asGbkString()
                     .matchFirst(_alertRegex)
                     .toTaskOption()
-                    .toTaskEither(() => login_failure.OtherFailure("No alert but looped back???")),
+                    .toTaskEither(
+                      () => login_failure.OtherFailure(
+                        "No alert but looped back???",
+                      ),
+                    ),
               );
               await $(switch (alert) {
-                final s when s.contains("验证码") => TaskEither.left(login_failure.CaptchaFailure()),
+                final s when s.contains("验证码") => TaskEither.left(
+                  login_failure.CaptchaFailure(),
+                ),
                 final s when s.contains("用户名不存在") => TaskEither.left(
-                  login_failure.BadDataFailure(login_failure.BadDataType.username, false),
+                  login_failure.BadDataFailure(
+                    login_failure.BadDataType.username,
+                    false,
+                  ),
                 ),
                 final s when s.contains("密码错误") => TaskEither.left(
                   login_failure.BadDataFailure(
@@ -111,13 +127,23 @@ class FafuApi {
                   ),
                 ),
                 final s when s.contains("用户名不能为空") => TaskEither.left(
-                  login_failure.BadDataFailure(login_failure.BadDataType.username, true),
+                  login_failure.BadDataFailure(
+                    login_failure.BadDataType.username,
+                    true,
+                  ),
                 ),
                 final s when s.contains("密码不能为空") => TaskEither.left(
-                  login_failure.BadDataFailure(login_failure.BadDataType.password, true),
+                  login_failure.BadDataFailure(
+                    login_failure.BadDataType.password,
+                    true,
+                  ),
                 ),
                 final s => TaskEither.left(
-                  login_failure.BadDataFailure(login_failure.BadDataType.other, false, s),
+                  login_failure.BadDataFailure(
+                    login_failure.BadDataType.other,
+                    false,
+                    s,
+                  ),
                 ),
               });
             }
@@ -127,15 +153,25 @@ class FafuApi {
             if (internalErrorResult != null) {
               final rawErrorString = internalErrorResult.string;
               final errorString = rawErrorString.substring(
-                rawErrorString.lastIndexOf("：").let((it) => it == -1 ? 0 : it + 1),
+                rawErrorString
+                    .lastIndexOf("：")
+                    .let((it) => it == -1 ? 0 : it + 1),
               );
               await $(
-                TaskEither.left(login_failure.OtherFailure("server internal error: $errorString")),
+                TaskEither.left(
+                  login_failure.OtherFailure(
+                    "server internal error: $errorString",
+                  ),
+                ),
               );
             }
             final nameElementList = loginResponseDocument.find("*", id: "xhxm");
             if (nameElementList == null) {
-              await $(TaskEither.left(login_failure.NetworkFailure(loginResponse.response)));
+              await $(
+                TaskEither.left(
+                  login_failure.NetworkFailure(loginResponse.response),
+                ),
+              );
             }
             final name = ((nameElementList?.text ?? "")).replaceAll("同学", "");
             return FafuLoginResult(name, token);
@@ -143,7 +179,9 @@ class FafuApi {
           .mapLeft(
             (err) => switch (err) {
               larva.LarvaFailure() => switch (err) {
-                larva.FileFailure() => login_failure.OtherFailure("Larva error: corrupted file"),
+                larva.FileFailure() => login_failure.OtherFailure(
+                  "Larva error: corrupted file",
+                ),
                 larva.TensorFailure() => login_failure.OtherFailure(
                   "Larva error: bad tensor procession",
                 ),
@@ -155,12 +193,19 @@ class FafuApi {
           )
           .run();
 
-  Future<Either<data_fetch_failure.SchoolDataFetchFailure, (AvailableTermTime, ClassTable)>>
+  Future<
+    Either<
+      data_fetch_failure.SchoolDataFetchFailure,
+      (AvailableTermTime, ClassTable)
+    >
+  >
   fetchClassTable({(String academicYear, String semester)? dataPair}) async =>
       TaskEither<dynamic, (AvailableTermTime, ClassTable)>.Do(($) async {
         final token = await _prefReadUseCase.read(FafuDataKey.token);
         final studentId = await _prefReadUseCase.read(FafuDataKey.studentId);
-        final studentName = await _prefReadUseCase.read(FafuDataKey.studentName);
+        final studentName = await _prefReadUseCase.read(
+          FafuDataKey.studentName,
+        );
         final referer = _getReferer(token: token, studentId: studentId);
         final defaultPageResult = await $(
           _raw
@@ -185,8 +230,11 @@ class FafuApi {
           ),
         );
         if (dataPair == null ||
-            (dataPair.$1 == academicYearDefault && dataPair.$2 == semesterDefault)) {
-          return await $(FafuAnalyzer.analyzeClassTable(defaultPage).toTaskEither());
+            (dataPair.$1 == academicYearDefault &&
+                dataPair.$2 == semesterDefault)) {
+          return await $(
+            FafuAnalyzer.analyzeClassTable(defaultPage).toTaskEither(),
+          );
         }
         final viewState = _getViewState(defaultPage);
         final (academicYear, semester) = dataPair;
@@ -207,70 +255,88 @@ class FafuApi {
           await $(TaskEither.left(data_fetch_failure.LoopbackFailure()));
         }
         final selectedClassPage = selectedClassPageResult.asGbkString();
-        return await $(FafuAnalyzer.analyzeClassTable(selectedClassPage).toTaskEither());
+        return await $(
+          FafuAnalyzer.analyzeClassTable(selectedClassPage).toTaskEither(),
+        );
       }).mapLeft(_defaultErrorMapper).run();
 
-  Future<Either<data_fetch_failure.SchoolDataFetchFailure, (AvailableTermTime, ExamsEntity)>>
-  fetchExams({(String academicYear, String semester)? dataPair}) async =>
-      TaskEither<dynamic, (AvailableTermTime, ExamsEntity)>.Do(($) async {
-        final token = await _prefReadUseCase.read(FafuDataKey.token);
-        final studentId = await _prefReadUseCase.read(FafuDataKey.studentId);
-        final studentName = await _prefReadUseCase.read(FafuDataKey.studentName);
-        final referer = _getReferer(token: token, studentId: studentId);
-        final defaultPageResult = await $(
-          _raw
-              .getExamPageDefault(
-                token: token,
-                studentId: studentId,
-                studentName: studentName,
-                referer: referer,
-              )
-              .wrapNetworkSafeTask(),
-        );
-        if (_isLoopback(defaultPageResult.response.realUri)) {
-          await $(TaskEither.left(data_fetch_failure.LoopbackFailure()));
-        }
-        final defaultPage = defaultPageResult.asGbkString();
-        await $(_checkIsInTeachingEvaluation(defaultPage).toTaskEither());
-        final (academicYearDefault, semesterDefault) = await $(
-          FafuAnalyzer.getSelectedTime(defaultPage).toTaskOption().toTaskEither(
-            () => data_fetch_failure.OtherFailure(
-              "failed to fetch default academic year and semester",
-            ),
-          ),
-        );
-        if (dataPair == null ||
-            (dataPair.$1 == academicYearDefault && dataPair.$2 == semesterDefault)) {
-          return await $(FafuAnalyzer.analyzeExams(defaultPage).toTaskEither());
-        }
-        final viewState = _getViewState(defaultPage);
-        final (academicYear, semester) = dataPair;
-        final selectedClassPageResult = await $(
-          _raw
-              .getExamPage(
-                token: token,
-                studentId: studentId,
-                studentName: studentName,
-                viewState: viewState,
-                academicYear: academicYear,
-                semester: semester,
-                referer: referer,
-              )
-              .wrapNetworkSafeTask(),
-        );
-        if (_isLoopback(selectedClassPageResult.response.realUri)) {
-          await $(TaskEither.left(data_fetch_failure.LoopbackFailure()));
-        }
-        final selectedClassPage = selectedClassPageResult.asGbkString();
-        return await $(FafuAnalyzer.analyzeExams(selectedClassPage).toTaskEither());
-      }).mapLeft(_defaultErrorMapper).run();
+  Future<
+    Either<
+      data_fetch_failure.SchoolDataFetchFailure,
+      (AvailableTermTime, ExamsEntity)
+    >
+  >
+  fetchExams({
+    (String academicYear, String semester)? dataPair,
+  }) async => TaskEither<dynamic, (AvailableTermTime, ExamsEntity)>.Do((
+    $,
+  ) async {
+    final token = await _prefReadUseCase.read(FafuDataKey.token);
+    final studentId = await _prefReadUseCase.read(FafuDataKey.studentId);
+    final studentName = await _prefReadUseCase.read(FafuDataKey.studentName);
+    final referer = _getReferer(token: token, studentId: studentId);
+    final defaultPageResult = await $(
+      _raw
+          .getExamPageDefault(
+            token: token,
+            studentId: studentId,
+            studentName: studentName,
+            referer: referer,
+          )
+          .wrapNetworkSafeTask(),
+    );
+    if (_isLoopback(defaultPageResult.response.realUri)) {
+      await $(TaskEither.left(data_fetch_failure.LoopbackFailure()));
+    }
+    final defaultPage = defaultPageResult.asGbkString();
+    await $(_checkIsInTeachingEvaluation(defaultPage).toTaskEither());
+    final (academicYearDefault, semesterDefault) = await $(
+      FafuAnalyzer.getSelectedTime(defaultPage).toTaskOption().toTaskEither(
+        () => data_fetch_failure.OtherFailure(
+          "failed to fetch default academic year and semester",
+        ),
+      ),
+    );
+    if (dataPair == null ||
+        (dataPair.$1 == academicYearDefault &&
+            dataPair.$2 == semesterDefault)) {
+      return await $(FafuAnalyzer.analyzeExams(defaultPage).toTaskEither());
+    }
+    final viewState = _getViewState(defaultPage);
+    final (academicYear, semester) = dataPair;
+    final selectedClassPageResult = await $(
+      _raw
+          .getExamPage(
+            token: token,
+            studentId: studentId,
+            studentName: studentName,
+            viewState: viewState,
+            academicYear: academicYear,
+            semester: semester,
+            referer: referer,
+          )
+          .wrapNetworkSafeTask(),
+    );
+    if (_isLoopback(selectedClassPageResult.response.realUri)) {
+      await $(TaskEither.left(data_fetch_failure.LoopbackFailure()));
+    }
+    final selectedClassPage = selectedClassPageResult.asGbkString();
+    return await $(FafuAnalyzer.analyzeExams(selectedClassPage).toTaskEither());
+  }).mapLeft(_defaultErrorMapper).run();
 
-  Future<Either<data_fetch_failure.SchoolDataFetchFailure, (AvailableTermTime, ScoresEntity)>>
+  Future<
+    Either<
+      data_fetch_failure.SchoolDataFetchFailure,
+      (AvailableTermTime, ScoresEntity)
+    >
+  >
   fetchScores({(String academicYear, String semester)? dataPair}) async =>
       TaskEither<dynamic, (AvailableTermTime, ScoresEntity)>.Do(($) async {
         final token = await _prefReadUseCase.read(FafuDataKey.token);
         final studentId = await _prefReadUseCase.read(FafuDataKey.studentId);
-        final studentName = await _prefReadUseCase.read(FafuDataKey.studentName);
+        final studentName = await _prefReadUseCase.read(
+          FafuDataKey.studentName,
+        );
         final defaultPageResult = await $(
           _raw
               .getScorePageDefault(
@@ -298,8 +364,11 @@ class FafuApi {
           ),
         );
         if (dataPair == null ||
-            (dataPair.$1 == academicYearDefault && dataPair.$2 == semesterDefault)) {
-          return await $(FafuAnalyzer.analyzeScores(defaultPage).toTaskEither());
+            (dataPair.$1 == academicYearDefault &&
+                dataPair.$2 == semesterDefault)) {
+          return await $(
+            FafuAnalyzer.analyzeScores(defaultPage).toTaskEither(),
+          );
         }
         final referer = _getReferer(token: token, studentId: studentId);
         final viewState = _getViewState(defaultPage);
@@ -319,16 +388,23 @@ class FafuApi {
           await $(TaskEither.left(data_fetch_failure.LoopbackFailure()));
         }
         final selectedScorePage = selectedClassPageResult.asGbkString();
-        return await $(FafuAnalyzer.analyzeScores(selectedScorePage).toTaskEither());
+        return await $(
+          FafuAnalyzer.analyzeScores(selectedScorePage).toTaskEither(),
+        );
       }).mapLeft(_defaultErrorMapper).run();
 
-  data_fetch_failure.SchoolDataFetchFailure _defaultErrorMapper(dynamic error) => switch (error) {
+  data_fetch_failure.SchoolDataFetchFailure _defaultErrorMapper(
+    dynamic error,
+  ) => switch (error) {
     wrapper.RequestFailure() => error.asDataFetchFailure(),
     data_fetch_failure.SchoolDataFetchFailure() => error,
-    _ => data_fetch_failure.OtherFailure("Unknown failure, please beat nofyso: $error"),
+    _ => data_fetch_failure.OtherFailure(
+      "Unknown failure, please beat nofyso: $error",
+    ),
   };
 
-  String _getViewState(String htmlString) => (_viewStateRegex.firstMatch(htmlString)?.group(0))!;
+  String _getViewState(String htmlString) =>
+      (_viewStateRegex.firstMatch(htmlString)?.group(0))!;
 
   /// Motherfucker website, GB2312 encoding??? come on...
   /// I HAVE TO write such ugly code for your son of bitch api,
@@ -370,7 +446,8 @@ class FafuApi {
   );
 
   Future<Either<data_fetch_failure.SchoolDataFetchFailure, T>> loopBackSafe<T>(
-    Future<Either<data_fetch_failure.SchoolDataFetchFailure, T>> Function() function,
+    Future<Either<data_fetch_failure.SchoolDataFetchFailure, T>> Function()
+    function,
   ) async => (() => function()).loopbackSafe(() async => login(null));
 
   String _getReferer({required String token, required String studentId}) =>
@@ -380,11 +457,12 @@ class FafuApi {
       uri.pathSegments.lastOrNull == "default2.aspx" ||
       uri.pathSegments.lastOrNull?.isEmpty == true;
 
-  Either<data_fetch_failure.SchoolDataFetchFailure, void> _checkIsInTeachingEvaluation(
-    String pageString,
-  ) => pageString.contains("评价")
+  Either<data_fetch_failure.SchoolDataFetchFailure, void>
+  _checkIsInTeachingEvaluation(String pageString) => pageString.contains("评价")
       ? Either.left(
-          data_fetch_failure.OtherFailure.fromPresets(data_fetch_failure.Preset.fafuTeaching),
+          data_fetch_failure.OtherFailure.fromPresets(
+            data_fetch_failure.Preset.fafuTeaching,
+          ),
         )
       : Either.right(null);
 }
@@ -407,7 +485,10 @@ extension on String {
       .map(
         (c) => _reservedChar.contains(c)
             ? c
-            : gbk.encode(c).map((it) => "%${it.toRadixString(16).toUpperCase()}").join(),
+            : gbk
+                  .encode(c)
+                  .map((it) => "%${it.toRadixString(16).toUpperCase()}")
+                  .join(),
       )
       .join();
 }

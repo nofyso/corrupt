@@ -5,7 +5,10 @@ import 'package:corrupt/features/channel/domain/entity/failure/school_login_fail
     as login_failure;
 import 'package:fpdart/fpdart.dart';
 
-abstract class AbstractSchoolRepository<SchoolLoginParameter, SchoolLoginResult> {
+abstract class AbstractSchoolRepository<
+  SchoolLoginParameter,
+  SchoolLoginResult
+> {
   Future<Either<data_fetch_failure.SchoolDataFetchFailure, V>> fetchData<P, V>(
     DataFetchType<P, V> dataType,
     P p,

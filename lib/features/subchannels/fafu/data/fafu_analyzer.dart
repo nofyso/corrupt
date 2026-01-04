@@ -9,7 +9,10 @@ import 'package:dartlin/dartlin.dart';
 import 'package:fpdart/fpdart.dart';
 
 class FafuAnalyzer {
-  static Either<data_fetch_failure.SchoolDataFetchFailure, (AvailableTermTime, ClassTable)>
+  static Either<
+    data_fetch_failure.SchoolDataFetchFailure,
+    (AvailableTermTime, ClassTable)
+  >
   analyzeClassTable(String htmlString) => Either.Do(($) {
     final document = BeautifulSoup(htmlString.replaceAll("&nbsp;", ""));
     final (year, semester) = $(
@@ -52,7 +55,8 @@ class FafuAnalyzer {
         }
         if (entry.text.isEmpty) continue;
         final rowSpan = entry.attributes["rowspan"].let(
-          (it) => it == null ? 1 : it.toIntOption.match(() => 1, (some) => some),
+          (it) =>
+              it == null ? 1 : it.toIntOption.match(() => 1, (some) => some),
         );
         final trueDow = rowSpans
             .mapIndexed((i, it) => (i, it))
@@ -76,7 +80,11 @@ class FafuAnalyzer {
             .split("(<br><br>)(?!(<br>))".asRegExp)
             .filter((it) => !it.startsWith("<font"));
         result.addAll(
-          classes.map((it) => $(_generateClassEntity((time, rowSpan, trueDow, it.split("<br>"))))),
+          classes.map(
+            (it) => $(
+              _generateClassEntity((time, rowSpan, trueDow, it.split("<br>"))),
+            ),
+          ),
         );
         oldRowSpans[trueDow] = rowSpan;
       }
@@ -101,7 +109,11 @@ class FafuAnalyzer {
     String semesterId = "xqd",
   }) {
     final document = BeautifulSoup(htmlString.replaceAll("&nbsp;", ""));
-    return _getSelectedTime(document, academicYearId: academicYearId, semesterId: semesterId);
+    return _getSelectedTime(
+      document,
+      academicYearId: academicYearId,
+      semesterId: semesterId,
+    );
   }
 
   static Option<(String, String)> _getSelectedTime(
@@ -121,7 +133,9 @@ class FafuAnalyzer {
         .filter((it) => it.attributes["selected"] == "selected")
         .firstOrNull()
         ?.text;
-    return year == null || semester == null ? Option.none() : Option.of((year, semester));
+    return year == null || semester == null
+        ? Option.none()
+        : Option.of((year, semester));
   }
 
   static Option<(DateTime, DateTime)> convertDateTime(String dateString) {
@@ -139,11 +153,21 @@ class FafuAnalyzer {
         return Option.of((hour, min));
       }
 
-      final (fromHour, fromMin) = $(dateString.matchFirst(fromTimeRegex).flatMap(timeResolver));
-      final (toHour, toMin) = $(dateString.matchFirst(toTimeRegex).flatMap(timeResolver));
-      final year = $(dateString.matchFirst(yearRegex).flatMap((it) => it.toIntOption));
-      final month = $(dateString.matchFirst(monthRegex).flatMap((it) => it.toIntOption));
-      final day = $(dateString.matchFirst(dayRegex).flatMap((it) => it.toIntOption));
+      final (fromHour, fromMin) = $(
+        dateString.matchFirst(fromTimeRegex).flatMap(timeResolver),
+      );
+      final (toHour, toMin) = $(
+        dateString.matchFirst(toTimeRegex).flatMap(timeResolver),
+      );
+      final year = $(
+        dateString.matchFirst(yearRegex).flatMap((it) => it.toIntOption),
+      );
+      final month = $(
+        dateString.matchFirst(monthRegex).flatMap((it) => it.toIntOption),
+      );
+      final day = $(
+        dateString.matchFirst(dayRegex).flatMap((it) => it.toIntOption),
+      );
       return (
         DateTime(year, month, day, fromHour, fromMin),
         DateTime(year, month, day, toHour, toMin),
@@ -151,9 +175,11 @@ class FafuAnalyzer {
     });
   }
 
-  static Either<data_fetch_failure.OtherFailure, (AvailableTermTime, ExamsEntity)> analyzeExams(
-    String htmlString,
-  ) {
+  static Either<
+    data_fetch_failure.OtherFailure,
+    (AvailableTermTime, ExamsEntity)
+  >
+  analyzeExams(String htmlString) {
     return Either.Do(($) {
       final document = BeautifulSoup(htmlString.replaceAll("&nbsp;", ""));
       final table = $(
@@ -220,9 +246,15 @@ class FafuAnalyzer {
     });
   }
 
-  static Either<data_fetch_failure.SchoolDataFetchFailure, (AvailableTermTime, ScoresEntity)>
+  static Either<
+    data_fetch_failure.SchoolDataFetchFailure,
+    (AvailableTermTime, ScoresEntity)
+  >
   analyzeScores(String htmlString) =>
-      Either<data_fetch_failure.SchoolDataFetchFailure, (AvailableTermTime, ScoresEntity)>.Do(($) {
+      Either<
+        data_fetch_failure.SchoolDataFetchFailure,
+        (AvailableTermTime, ScoresEntity)
+      >.Do(($) {
         final document = BeautifulSoup(htmlString);
         final table = $(
           Option.fromNullable(document.find("table", id: "DataGrid1")).toEither(
@@ -233,7 +265,11 @@ class FafuAnalyzer {
           ),
         );
         final (academicYear, semester) = $(
-          _getSelectedTime(document, academicYearId: "ddlxn", semesterId: "ddlxq").toEither(
+          _getSelectedTime(
+            document,
+            academicYearId: "ddlxn",
+            semesterId: "ddlxq",
+          ).toEither(
             () => data_fetch_failure.OtherFailure.fromPresets(
               data_fetch_failure.Preset.fafuAnalyzing,
               "error in analyzing scores (year or semester not found)",
@@ -250,7 +286,11 @@ class FafuAnalyzer {
         );
         return (
           $(
-            _getAvailableTime(document, academicYearId: "ddlxn", semesterId: "ddlxq").toEither(
+            _getAvailableTime(
+              document,
+              academicYearId: "ddlxn",
+              semesterId: "ddlxq",
+            ).toEither(
               () => data_fetch_failure.OtherFailure.fromPresets(
                 data_fetch_failure.Preset.fafuAnalyzing,
                 "error in analyzing scores (available time not found)",
@@ -292,20 +332,28 @@ class FafuAnalyzer {
   }) {
     return Option.Do(($) {
       return AvailableTermTime(
-        $(
-          Option.fromNullable(document.find("*", id: academicYearId)),
-        ).children.map((it) => (it.text, $(Option.fromNullable(it.attributes["value"])))).toList(),
-        $(
-          Option.fromNullable(document.find("*", id: semesterId)),
-        ).children.map((it) => (it.text, $(Option.fromNullable(it.attributes["value"])))).toList(),
+        $(Option.fromNullable(document.find("*", id: academicYearId))).children
+            .map(
+              (it) => (it.text, $(Option.fromNullable(it.attributes["value"]))),
+            )
+            .toList(),
+        $(Option.fromNullable(document.find("*", id: semesterId))).children
+            .map(
+              (it) => (it.text, $(Option.fromNullable(it.attributes["value"]))),
+            )
+            .toList(),
       );
     });
   }
 
-  static Either<data_fetch_failure.SchoolDataFetchFailure, ClassEntity> _generateClassEntity(
-    (int optionTime, int optionDuration, int optionDow, List<String> data) dataGroup,
+  static Either<data_fetch_failure.SchoolDataFetchFailure, ClassEntity>
+  _generateClassEntity(
+    (int optionTime, int optionDuration, int optionDow, List<String> data)
+    dataGroup,
   ) {
-    return Either<data_fetch_failure.SchoolDataFetchFailure, ClassEntity>.Do(($) {
+    return Either<data_fetch_failure.SchoolDataFetchFailure, ClassEntity>.Do((
+      $,
+    ) {
       final normalTimeMatcher = "(周).(第)(.+,*)(节)".asRegExp;
       final normalWeekMatcher = "(?<=\\{).*(?=\\})".asRegExp;
       final dowMatcher = "(?<=周).(?=第)".asRegExp;
@@ -346,12 +394,20 @@ class FafuAnalyzer {
                     .matchFirst(timeMatcher)
                     .map((x) => x.split(","))
                     .map(
-                      (it) =>
-                          (it.getOrNull(0)?.toIntOption.match(() => null, (x) => x - 1), it.length),
+                      (it) => (
+                        it
+                            .getOrNull(0)
+                            ?.toIntOption
+                            .match(() => null, (x) => x - 1),
+                        it.length,
+                      ),
                     )
                     .toNullable() ??
                 (null, null);
-            final dow = some.matchFirst(dowMatcher).map(DayOfWeek.chineseValueOf).toNullable();
+            final dow = some
+                .matchFirst(dowMatcher)
+                .map(DayOfWeek.chineseValueOf)
+                .toNullable();
             if (time == null || duration == null || dow == null) {
               return Either.left(
                 data_fetch_failure.OtherFailure.fromPresets(
@@ -377,17 +433,27 @@ class FafuAnalyzer {
       final weeksRaw = primaryWeekMatch.split("|");
       final singleWeek = weeksRaw.contains("单周");
       final doubleWeek = weeksRaw.contains("双周");
-      final weeksRangeRaw = weeksRaw[0].let((it) => it.substring(1, it.length - 1)).split("-");
+      final weeksRangeRaw = weeksRaw[0]
+          .let((it) => it.substring(1, it.length - 1))
+          .split("-");
       final weeks =
           range(
                 weeksRangeRaw[0].toIntOption.getOrElse(
-                  () => throw Exception("error in analyzing class table (week[0] absent)"),
+                  () => throw Exception(
+                    "error in analyzing class table (week[0] absent)",
+                  ),
                 ),
                 to: weeksRangeRaw[1].toIntOption.getOrElse(
-                  () => throw Exception("error in analyzing class table (week[1] absent)"),
+                  () => throw Exception(
+                    "error in analyzing class table (week[1] absent)",
+                  ),
                 ),
               )
-              .filter((it) => !(singleWeek && it % 2 == 0) && !(doubleWeek && it % 2 != 0))
+              .filter(
+                (it) =>
+                    !(singleWeek && it % 2 == 0) &&
+                    !(doubleWeek && it % 2 != 0),
+              )
               .map((it) => it - 1)
               .toList();
       return ClassEntity(

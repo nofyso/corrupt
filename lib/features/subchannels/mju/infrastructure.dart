@@ -21,7 +21,9 @@ class InfraMju implements DIRegister {
       ),
       instanceName: "mjuCookieJar",
     );
-    getIt.registerLazySingleton<MjuSchoolRepository>(() => MjuSchoolRepositoryImpl());
+    getIt.registerLazySingleton<MjuSchoolRepository>(
+      () => MjuSchoolRepositoryImpl(),
+    );
     getIt.registerLazySingleton<Dio>(
       () =>
           Dio(
@@ -35,12 +37,18 @@ class InfraMju implements DIRegister {
             ),
           ).let(
             (it) => it
-              ..interceptors.add(CookieManager(getIt<CookieJar>(instanceName: "mjuCookieJar")))
+              ..interceptors.add(
+                CookieManager(getIt<CookieJar>(instanceName: "mjuCookieJar")),
+              )
               ..interceptors.add(RedirectInterceptor(() => it)),
           ),
       instanceName: "mjuDio",
     );
-    getIt.registerLazySingleton<MjuCasApiRaw>(() => MjuCasApiRaw(getIt(instanceName: "mjuDio")));
-    getIt.registerLazySingleton<MjuEduApiRaw>(() => MjuEduApiRaw(getIt(instanceName: "mjuDio")));
+    getIt.registerLazySingleton<MjuCasApiRaw>(
+      () => MjuCasApiRaw(getIt(instanceName: "mjuDio")),
+    );
+    getIt.registerLazySingleton<MjuEduApiRaw>(
+      () => MjuEduApiRaw(getIt(instanceName: "mjuDio")),
+    );
   }
 }

@@ -1,4 +1,3 @@
-import 'package:charset/charset.dart';
 import 'package:corrupt/features/channel/domain/entity/failure/school_login_failure.dart'
     as login_failure;
 import 'package:corrupt/features/pref/domain/abstract_repository/abstract_raw_local_data.dart';

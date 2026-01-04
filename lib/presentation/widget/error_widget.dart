@@ -21,8 +21,13 @@ Widget commonSchoolDataFailureWidget({
   }
   if (failures.isEmpty) return SizedBox.shrink();
   final i18n = AppLocalizations.of(context)!;
-  final (icon, errorTitle, errorSubtitle) = _getDisplayTriple(failures.first, i18n);
-  final isNotSingleFailureNorUnknown = _tryMerge(rawFailures: failures).isNone();
+  final (icon, errorTitle, errorSubtitle) = _getDisplayTriple(
+    failures.first,
+    i18n,
+  );
+  final isNotSingleFailureNorUnknown = _tryMerge(
+    rawFailures: failures,
+  ).isNone();
   return SizedBox.expand(
     child: Padding(
       padding: EdgeInsetsGeometry.directional(start: 32, end: 32),
@@ -45,7 +50,10 @@ Widget commonSchoolDataFailureWidget({
             textIconButton(
               onPressed: () {
                 final error = failures
-                    .map((it) => "$it: ${it.asException().toString()}\n${it.stackTrace.toString()}")
+                    .map(
+                      (it) =>
+                          "$it: ${it.asException().toString()}\n${it.stackTrace.toString()}",
+                    )
                     .join("\n\n====I'm a divider====\n\n");
                 Clipboard.setData(ClipboardData(text: error));
               },
@@ -69,7 +77,10 @@ Option<data_fetch_failure.SchoolDataFetchFailure> _tryMerge({
   required List<data_fetch_failure.SchoolDataFetchFailure?> rawFailures,
 }) {
   if (rawFailures.length == 1) return Option.fromNullable(rawFailures.first);
-  return rawFailures.sublist(1).filterNotNull().all((it) => it == rawFailures.first)
+  return rawFailures
+          .sublist(1)
+          .filterNotNull()
+          .all((it) => it == rawFailures.first)
       ? Option.fromNullable(rawFailures.first)
       : Option.none();
 }
@@ -88,12 +99,13 @@ Option<data_fetch_failure.SchoolDataFetchFailure> _tryMerge({
 //   },
 // };
 
-Widget _multiFailuresWidget(BuildContext context, AppLocalizations i18n) => iconTitleAndSubtitle(
-  context: context,
-  icon: Icons.error,
-  title: i18n.widget_error_multi_title,
-  subtitle: i18n.widget_error_multi_subtitle,
-);
+Widget _multiFailuresWidget(BuildContext context, AppLocalizations i18n) =>
+    iconTitleAndSubtitle(
+      context: context,
+      icon: Icons.error,
+      title: i18n.widget_error_multi_title,
+      subtitle: i18n.widget_error_multi_subtitle,
+    );
 
 (IconData, String, String) _getDisplayTriple(
   data_fetch_failure.SchoolDataFetchFailure failure,
@@ -127,7 +139,11 @@ Widget _multiFailuresWidget(BuildContext context, AppLocalizations i18n) => icon
       i18n.widget_error_captcha_title,
       i18n.widget_error_captcha_subtitle,
     ),
-    _ => (Icons.error, i18n.widget_error_other_title, i18n.widget_error_other_subtitle),
+    _ => (
+      Icons.error,
+      i18n.widget_error_other_title,
+      i18n.widget_error_other_subtitle,
+    ),
   },
   data_fetch_failure.LoopbackFailure() => (
     Icons.error,
@@ -144,14 +160,21 @@ Widget _multiFailuresWidget(BuildContext context, AppLocalizations i18n) => icon
     i18n.widget_error_unimplemented_title,
     i18n.widget_error_unimplemented_subtitle,
   ),
-  data_fetch_failure.OtherFailure() => _geDataFetchUnknownDisplayTriple(failure, i18n),
+  data_fetch_failure.OtherFailure() => _geDataFetchUnknownDisplayTriple(
+    failure,
+    i18n,
+  ),
 };
 
 (IconData, String, String) _geDataFetchUnknownDisplayTriple(
   data_fetch_failure.OtherFailure failure,
   AppLocalizations i18n,
 ) => switch (failure.preset) {
-  null => (Icons.error, i18n.widget_error_other_title, i18n.widget_error_other_subtitle),
+  null => (
+    Icons.error,
+    i18n.widget_error_other_title,
+    i18n.widget_error_other_subtitle,
+  ),
   data_fetch_failure.Preset.fafuTeaching => (
     Icons.no_accounts,
     i18n.widget_error_other_fafu_teaching_title,

@@ -23,7 +23,8 @@ import 'package:fpdart/fpdart.dart';
 import 'package:retrofit/dio.dart';
 
 class MjuApi {
-  static final _executionRegex = "(?<=name=\"execution\" value=\").*?(?=\")".asRegExp;
+  static final _executionRegex =
+      "(?<=name=\"execution\" value=\").*?(?=\")".asRegExp;
   static final _errorMsgRegex = "(?<=<span id=\"msg\">).*?(?=</span>)".asRegExp;
   static const _loopback0 = "jwgl.mju.edu.cn";
   static const _loopback1 = "authserver.mju.edu.cn";
@@ -34,7 +35,8 @@ class MjuApi {
   final _prefWriteUseCase = getIt<PrefWriteUseCase>();
 
   Future<Either<data_fetch_failure.SchoolDataFetchFailure, T>> loopBackSafe<T>(
-    Future<Either<data_fetch_failure.SchoolDataFetchFailure, T>> Function() function,
+    Future<Either<data_fetch_failure.SchoolDataFetchFailure, T>> Function()
+    function,
   ) async => (() => function()).loopbackSafe(() async => login(null));
 
   Future<Either<login_failure.SchoolLoginFailure, MjuLoginResult>> login(
@@ -67,7 +69,11 @@ class MjuApi {
               }
               return MjuLoginResult();
             }
-            await $(TaskEither.left(login_failure.OtherFailure("Too many trials, unknown error")));
+            await $(
+              TaskEither.left(
+                login_failure.OtherFailure("Too many trials, unknown error"),
+              ),
+            );
             throw AssertionError("Unreachable code");
           })
           .mapLeft(
@@ -90,7 +96,9 @@ class MjuApi {
       casLoginPage
           .matchFirst(_executionRegex)
           .toTaskOption()
-          .toTaskEither(() => login_failure.OtherFailure("execution not found")),
+          .toTaskEither(
+            () => login_failure.OtherFailure("execution not found"),
+          ),
     );
     final publicKey = await $(_casRaw.getPublicKey().wrapNetworkSafeTask());
     final encryptedPassword = MjuEncryptUtil.encrypt(
@@ -114,7 +122,9 @@ class MjuApi {
         casLoginResponse.data
             .matchFirst(_errorMsgRegex)
             .toTaskOption()
-            .toTaskEither(() => login_failure.OtherFailure("errorMsg not found")),
+            .toTaskEither(
+              () => login_failure.OtherFailure("errorMsg not found"),
+            ),
       );
       await $(
         TaskEither.left(switch (errorMsg) {
@@ -152,7 +162,10 @@ class MjuApi {
     final loopbackLevel = _getLoopbackLevel(initLoginPage.response.realUri);
     if (loopbackLevel == -1) {
       await $(
-        TaskEither<login_failure.SchoolLoginFailure, (int, HttpResponse<dynamic>)>.left(
+        TaskEither<
+          login_failure.SchoolLoginFailure,
+          (int, HttpResponse<dynamic>)
+        >.left(
           login_failure.OtherFailure(
             "Unknown loop back host: ${initLoginPage.response.realUri.toString()}",
           ),
@@ -162,30 +175,57 @@ class MjuApi {
     return (loopbackLevel, initLoginPage);
   }
 
-  Future<Either<data_fetch_failure.SchoolDataFetchFailure, (AvailableTermTime, ClassTable)>>
+  Future<
+    Either<
+      data_fetch_failure.SchoolDataFetchFailure,
+      (AvailableTermTime, ClassTable)
+    >
+  >
   fetchClassTable({(String academicYear, String semester)? dataPair}) async =>
       TaskEither<dynamic, (AvailableTermTime, ClassTable)>.Do(($) async {
         await $(
-          login(null).wrapToTaskEither().mapLeft((it) => data_fetch_failure.LoginFailure(it)),
+          login(null).wrapToTaskEither().mapLeft(
+            (it) => data_fetch_failure.LoginFailure(it),
+          ),
         );
-        final defaultPageResult = await $(_eduRaw.getClassesPage().wrapNetworkSafeTask());
+        final defaultPageResult = await $(
+          _eduRaw.getClassesPage().wrapNetworkSafeTask(),
+        );
         final document = BeautifulSoup(defaultPageResult.data);
-        final (availableTime, academicIndex, semesterIndex) =
-            MjuAnalyzer.getClassAvailableTermTimeAndSelected(document, "xnm", "xqm");
-        final defaultAcademicYear = availableTime.availableAcademicYear[academicIndex];
+        final (
+          availableTime,
+          academicIndex,
+          semesterIndex,
+        ) = MjuAnalyzer.getClassAvailableTermTimeAndSelected(
+          document,
+          "xnm",
+          "xqm",
+        );
+        final defaultAcademicYear =
+            availableTime.availableAcademicYear[academicIndex];
         final defaultSemester = availableTime.availableSemester[semesterIndex];
-        final (selectedAcademicYearRaw, selectedSemesterRaw) = dataPair ?? (null, null);
-        final selectedAcademicYear = (selectedAcademicYearRaw ?? defaultAcademicYear.$1).let(
-          (it) => availableTime.availableAcademicYear.filter((x) => x.$1 == it).first,
-        );
-        final selectedSemester = (selectedSemesterRaw ?? defaultSemester.$1).let(
-          (it) => availableTime.availableSemester.filter((x) => x.$1 == it).first,
-        );
+        final (selectedAcademicYearRaw, selectedSemesterRaw) =
+            dataPair ?? (null, null);
+        final selectedAcademicYear =
+            (selectedAcademicYearRaw ?? defaultAcademicYear.$1).let(
+              (it) => availableTime.availableAcademicYear
+                  .filter((x) => x.$1 == it)
+                  .first,
+            );
+        final selectedSemester = (selectedSemesterRaw ?? defaultSemester.$1)
+            .let(
+              (it) => availableTime.availableSemester
+                  .filter((x) => x.$1 == it)
+                  .first,
+            );
         final realAcademicYear = selectedAcademicYear.$2;
         final realSemester = selectedSemester.$2;
         final classesDataResult = await $(
           _eduRaw
-              .getClassesData(academicYear: realAcademicYear, semester: realSemester)
+              .getClassesData(
+                academicYear: realAcademicYear,
+                semester: realSemester,
+              )
               .wrapNetworkSafeTask(),
         );
         final jsonData = classesDataResult.data;
@@ -199,25 +239,49 @@ class MjuApi {
         return (availableTime, classTable);
       }).mapLeft(_defaultFailureMapper).run();
 
-  Future<Either<data_fetch_failure.SchoolDataFetchFailure, (AvailableTermTime, ExamsEntity)>>
+  Future<
+    Either<
+      data_fetch_failure.SchoolDataFetchFailure,
+      (AvailableTermTime, ExamsEntity)
+    >
+  >
   fetchExams({(String academicYear, String semester)? dataPair}) async =>
       TaskEither<dynamic, (AvailableTermTime, ExamsEntity)>.Do(($) async {
         await $(
-          login(null).wrapToTaskEither().mapLeft((it) => data_fetch_failure.LoginFailure(it)),
+          login(null).wrapToTaskEither().mapLeft(
+            (it) => data_fetch_failure.LoginFailure(it),
+          ),
         );
-        final defaultPageResult = await $(_eduRaw.getExamPage().wrapNetworkSafeTask());
+        final defaultPageResult = await $(
+          _eduRaw.getExamPage().wrapNetworkSafeTask(),
+        );
         final document = BeautifulSoup(defaultPageResult.data);
-        final (availableTime, academicIndex, semesterIndex) =
-            MjuAnalyzer.getClassAvailableTermTimeAndSelected(document, "cx_xnm", "cx_xqm");
-        final defaultAcademicYear = availableTime.availableAcademicYear[academicIndex];
+        final (
+          availableTime,
+          academicIndex,
+          semesterIndex,
+        ) = MjuAnalyzer.getClassAvailableTermTimeAndSelected(
+          document,
+          "cx_xnm",
+          "cx_xqm",
+        );
+        final defaultAcademicYear =
+            availableTime.availableAcademicYear[academicIndex];
         final defaultSemester = availableTime.availableSemester[semesterIndex];
-        final (selectedAcademicYearRaw, selectedSemesterRaw) = dataPair ?? (null, null);
-        final selectedAcademicYear = (selectedAcademicYearRaw ?? defaultAcademicYear.$1).let(
-          (it) => availableTime.availableAcademicYear.filter((x) => x.$1 == it).first,
-        );
-        final selectedSemester = (selectedSemesterRaw ?? defaultSemester.$1).let(
-          (it) => availableTime.availableSemester.filter((x) => x.$1 == it).first,
-        );
+        final (selectedAcademicYearRaw, selectedSemesterRaw) =
+            dataPair ?? (null, null);
+        final selectedAcademicYear =
+            (selectedAcademicYearRaw ?? defaultAcademicYear.$1).let(
+              (it) => availableTime.availableAcademicYear
+                  .filter((x) => x.$1 == it)
+                  .first,
+            );
+        final selectedSemester = (selectedSemesterRaw ?? defaultSemester.$1)
+            .let(
+              (it) => availableTime.availableSemester
+                  .filter((x) => x.$1 == it)
+                  .first,
+            );
         final realAcademicYear = selectedAcademicYear.$2;
         final realSemester = selectedSemester.$2;
         final timestamp = DateTime.timestamp().millisecondsSinceEpoch;
@@ -241,25 +305,49 @@ class MjuApi {
         return (availableTime, classTable);
       }).mapLeft(_defaultFailureMapper).run();
 
-  Future<Either<data_fetch_failure.SchoolDataFetchFailure, (AvailableTermTime, ScoresEntity)>>
+  Future<
+    Either<
+      data_fetch_failure.SchoolDataFetchFailure,
+      (AvailableTermTime, ScoresEntity)
+    >
+  >
   fetchScores({(String academicYear, String semester)? dataPair}) async =>
       TaskEither<dynamic, (AvailableTermTime, ScoresEntity)>.Do(($) async {
         await $(
-          login(null).wrapToTaskEither().mapLeft((it) => data_fetch_failure.LoginFailure(it)),
+          login(null).wrapToTaskEither().mapLeft(
+            (it) => data_fetch_failure.LoginFailure(it),
+          ),
         );
-        final defaultPageResult = await $(_eduRaw.getScorePage().wrapNetworkSafeTask());
+        final defaultPageResult = await $(
+          _eduRaw.getScorePage().wrapNetworkSafeTask(),
+        );
         final document = BeautifulSoup(defaultPageResult.data);
-        final (availableTime, academicIndex, semesterIndex) =
-            MjuAnalyzer.getClassAvailableTermTimeAndSelected(document, "xnm", "xqm");
-        final defaultAcademicYear = availableTime.availableAcademicYear[academicIndex];
+        final (
+          availableTime,
+          academicIndex,
+          semesterIndex,
+        ) = MjuAnalyzer.getClassAvailableTermTimeAndSelected(
+          document,
+          "xnm",
+          "xqm",
+        );
+        final defaultAcademicYear =
+            availableTime.availableAcademicYear[academicIndex];
         final defaultSemester = availableTime.availableSemester[semesterIndex];
-        final (selectedAcademicYearRaw, selectedSemesterRaw) = dataPair ?? (null, null);
-        final selectedAcademicYear = (selectedAcademicYearRaw ?? defaultAcademicYear.$1).let(
-          (it) => availableTime.availableAcademicYear.filter((x) => x.$1 == it).first,
-        );
-        final selectedSemester = (selectedSemesterRaw ?? defaultSemester.$1).let(
-          (it) => availableTime.availableSemester.filter((x) => x.$1 == it).first,
-        );
+        final (selectedAcademicYearRaw, selectedSemesterRaw) =
+            dataPair ?? (null, null);
+        final selectedAcademicYear =
+            (selectedAcademicYearRaw ?? defaultAcademicYear.$1).let(
+              (it) => availableTime.availableAcademicYear
+                  .filter((x) => x.$1 == it)
+                  .first,
+            );
+        final selectedSemester = (selectedSemesterRaw ?? defaultSemester.$1)
+            .let(
+              (it) => availableTime.availableSemester
+                  .filter((x) => x.$1 == it)
+                  .first,
+            );
         final realAcademicYear = selectedAcademicYear.$2;
         final realSemester = selectedSemester.$2;
         final timestamp = DateTime.timestamp().millisecondsSinceEpoch;
@@ -283,7 +371,9 @@ class MjuApi {
         return (availableTime, scores);
       }).mapLeft(_defaultFailureMapper).run();
 
-  data_fetch_failure.SchoolDataFetchFailure _defaultFailureMapper(dynamic error) => switch (error) {
+  data_fetch_failure.SchoolDataFetchFailure _defaultFailureMapper(
+    dynamic error,
+  ) => switch (error) {
     wrapper.RequestFailure() => error.asDataFetchFailure(),
     data_fetch_failure.SchoolDataFetchFailure() => error,
     _ => data_fetch_failure.OtherFailure("Unknown failure"),

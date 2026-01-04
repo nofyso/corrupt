@@ -16,7 +16,9 @@ class InfraRefresh implements DIRegister, EventRegister {
     getIt.registerFactory<DefaultOnlineFetchArgumentGetUseCase>(
       () => DefaultOnlineFetchArgumentGetUseCase(getIt(), getIt()),
     );
-    getIt.registerFactory<GetCurrentTermArgUseCase>(() => GetCurrentTermArgUseCase(getIt()));
+    getIt.registerFactory<GetCurrentTermArgUseCase>(
+      () => GetCurrentTermArgUseCase(getIt()),
+    );
     getIt.registerLazySingleton<RefreshUseCase>(() => RefreshUseCase(getIt()));
   }
 
