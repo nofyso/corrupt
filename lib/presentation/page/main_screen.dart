@@ -124,7 +124,9 @@ class MainScreen extends ConsumerWidget {
                 ),
                 appBar: _AppbarInkwell(
                   onTap: () {
-                    ref.invalidate(refreshNotifierProvider);
+                    if (refreshState.value?.isRefreshing == false) {
+                      ref.invalidate(refreshNotifierProvider);
+                    }
                   },
                   child: AppBar(
                     surfaceTintColor: Color.fromARGB(0, 0, 0, 0),
