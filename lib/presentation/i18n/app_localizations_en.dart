@@ -15,6 +15,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get school_mju => 'Minjiang University';
 
   @override
+  String get school_fjut => 'Fujian University of Technology';
+
+  @override
   String get screen_main_tab_home => 'Corrupt';
 
   @override
@@ -63,6 +66,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get screen_login_page2_subtitle_fafu =>
       'Log in the Educational Administration Management System of Fujian Agricultural and Forestry University via corrupt as a student.';
+
+  @override
+  String get screen_login_page2_subtitle_mju =>
+      'Log in the Educational Administration Management System of Minjiang University via corrupt as a student.';
+
+  @override
+  String get screen_login_page2_subtitle_fjut =>
+      'Log in the Educational Administration Management System of Fujian University of Technology via corrupt as a student.';
 
   @override
   String get screen_login_page2_back => 'Back to schools...';

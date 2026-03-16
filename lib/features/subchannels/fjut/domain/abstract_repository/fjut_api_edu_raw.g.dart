@@ -23,7 +23,7 @@ class _FjutEduApiRaw implements FjutEduApiRaw {
 
   @override
   Future<HttpResponse<String>> getClassesPage({
-    String functionModuleCode = "N253508",
+    String functionModuleCode = "N2151",
     String layout = "default",
   }) async {
     final _extra = <String, dynamic>{};
@@ -35,17 +35,17 @@ class _FjutEduApiRaw implements FjutEduApiRaw {
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<String>>(
       Options(
-        method: 'GET',
-        headers: _headers,
-        extra: _extra,
-        responseType: ResponseType.plain,
-      )
+            method: 'GET',
+            headers: _headers,
+            extra: _extra,
+            responseType: ResponseType.plain,
+          )
           .compose(
-        _dio.options,
-        '/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<String>(_options);
@@ -72,25 +72,25 @@ class _FjutEduApiRaw implements FjutEduApiRaw {
     final queryParameters = <String, dynamic>{r'gnmkdm': functionModuleCode};
     final _headers = <String, dynamic>{};
     final _data = {
-      'xnd': academicYear,
-      'xqd': semester,
+      'xnm': academicYear,
+      'xqm': semester,
       'kzlx': reserved1,
       'xsdm': reserved2,
     };
     final _options = _setStreamType<HttpResponse<String>>(
       Options(
-        method: 'POST',
-        headers: _headers,
-        extra: _extra,
-        contentType: 'application/x-www-form-urlencoded',
-        responseType: ResponseType.plain,
-      )
+            method: 'POST',
+            headers: _headers,
+            extra: _extra,
+            contentType: 'application/x-www-form-urlencoded',
+            responseType: ResponseType.plain,
+          )
           .compose(
-        _dio.options,
-        '/jwglxt/kbcx/xskbcx_cxXsgrkb.html',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/jwglxt/kbcx/xskbcx_cxXsgrkb.html',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<String>(_options);
@@ -119,17 +119,17 @@ class _FjutEduApiRaw implements FjutEduApiRaw {
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<String>>(
       Options(
-        method: 'GET',
-        headers: _headers,
-        extra: _extra,
-        responseType: ResponseType.plain,
-      )
+            method: 'GET',
+            headers: _headers,
+            extra: _extra,
+            responseType: ResponseType.plain,
+          )
           .compose(
-        _dio.options,
-        '/jwglxt/kwgl/kscx_cxXsksxxIndex.html',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/jwglxt/kwgl/kscx_cxXsksxxIndex.html',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<String>(_options);
@@ -170,8 +170,8 @@ class _FjutEduApiRaw implements FjutEduApiRaw {
     };
     final _headers = <String, dynamic>{};
     final _data = {
-      'xnd': academicYear,
-      'xqd': semester,
+      'xnm': academicYear,
+      'xqm': semester,
       'ksmcdmb_id': reserved1,
       'kch': reserved2,
       'kc': reserved3,
@@ -187,18 +187,113 @@ class _FjutEduApiRaw implements FjutEduApiRaw {
     };
     final _options = _setStreamType<HttpResponse<String>>(
       Options(
-        method: 'POST',
-        headers: _headers,
-        extra: _extra,
-        contentType: 'application/x-www-form-urlencoded',
-        responseType: ResponseType.plain,
-      )
+            method: 'POST',
+            headers: _headers,
+            extra: _extra,
+            contentType: 'application/x-www-form-urlencoded',
+            responseType: ResponseType.plain,
+          )
           .compose(
-        _dio.options,
-        '/jwglxt/kwgl/kscx_cxXsksxxIndex.html',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/jwglxt/kwgl/kscx_cxXsksxxIndex.html',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<String>(_options);
+    late String _value;
+    try {
+      _value = _result.data!;
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<String>> getScorePage({
+    String functionModuleCode = "N305005",
+    String layout = "default",
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'gnmkdm': functionModuleCode,
+      r'layout': layout,
+    };
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<HttpResponse<String>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/jwglxt/cjcx/cjcx_cxDgXscj.html',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<String>(_options);
+    late String _value;
+    try {
+      _value = _result.data!;
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<String>> getScoreData({
+    String doType = "query",
+    String functionModuleCode = "N305005",
+    required String academicYear,
+    required String semester,
+    String reserved2 = "",
+    String reserved3 = "false",
+    required String timestamp,
+    String reserved4 = "5000",
+    String reserved5 = "1",
+    String reserved6 = "",
+    String reserved7 = "asc",
+    String reserved8 = "0",
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'doType': doType,
+      r'gnmkdm': functionModuleCode,
+    };
+    final _headers = <String, dynamic>{};
+    final _data = {
+      'xnm': academicYear,
+      'xqm': semester,
+      'kcbj': reserved2,
+      '_search': reserved3,
+      'nd': timestamp,
+      'queryModel.showCount': reserved4,
+      'queryModel.currentPage': reserved5,
+      'queryModel.sortName': reserved6,
+      'queryModel.sortOrder': reserved7,
+      'time': reserved8,
+    };
+    final _options = _setStreamType<HttpResponse<String>>(
+      Options(
+            method: 'POST',
+            headers: _headers,
+            extra: _extra,
+            contentType: 'application/x-www-form-urlencoded',
+            responseType: ResponseType.plain,
+          )
+          .compose(
+            _dio.options,
+            '/jwglxt/cjcx/cjcx_cxXsgrcj.html',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<String>(_options);
@@ -227,9 +322,7 @@ class _FjutEduApiRaw implements FjutEduApiRaw {
   }
 
   String _combineBaseUrls(String dioBaseUrl, String? baseUrl) {
-    if (baseUrl == null || baseUrl
-        .trim()
-        .isEmpty) {
+    if (baseUrl == null || baseUrl.trim().isEmpty) {
       return dioBaseUrl;
     }
 

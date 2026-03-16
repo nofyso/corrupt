@@ -101,7 +101,7 @@ class ClassTime {
 
   Map<String, dynamic> toJson() => _$ClassTimeToJson(this);
 
-  ClassTime.of(List<(int fromHour, int fromMinute)> timeList, int duration)
+  ClassTime.fromTimes(List<(int fromHour, int fromMinute)> timeList, int duration)
     : this(
         timeList
             .map(

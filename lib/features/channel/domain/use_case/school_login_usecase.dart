@@ -4,6 +4,7 @@ import 'package:corrupt/features/channel/domain/entity/failure/school_login_fail
 import 'package:corrupt/features/channel/domain/entity/school_enum.dart';
 import 'package:corrupt/features/channel/domain/use_case/school_impl_select_usecase.dart';
 import 'package:corrupt/features/subchannels/fafu/domain/entity/fafu_request_parameters.dart';
+import 'package:corrupt/features/subchannels/fjut/domain/entity/fjut_request_parameter.dart';
 import 'package:corrupt/features/subchannels/mju/domain/entity/mju_request_parameter.dart';
 import 'package:fpdart/fpdart.dart';
 
@@ -35,8 +36,11 @@ class SchoolLoginUseCase {
                   : null,
             );
           case School.fjut:
-            // TODO: Handle this case.
-            throw UnimplementedError();
+            return await impl.login(
+              dataPair != null
+                  ? FjutLoginParameter(dataPair.$1, dataPair.$2)
+                  : null,
+            );
           case School.none:
             // TODO: Handle this case.
             throw UnimplementedError();

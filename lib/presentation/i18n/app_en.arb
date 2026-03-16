@@ -1,6 +1,7 @@
 {
   "school_fafu": "Fujian Agricultural and Forestry University",
   "school_mju": "Minjiang University",
+  "school_fjut": "Fujian University of Technology",
   "screen_main_tab_home": "Corrupt",
   "screen_main_tab_classes": "Classes",
   "screen_main_tab_settings": "Settings",
@@ -17,6 +18,8 @@
   "screen_login_page1_subtitle": "Where are you now?",
   "screen_login_page2_title": "Login",
   "screen_login_page2_subtitle_fafu": "Log in the Educational Administration Management System of Fujian Agricultural and Forestry University via corrupt as a student.",
+  "screen_login_page2_subtitle_mju": "Log in the Educational Administration Management System of Minjiang University via corrupt as a student.",
+  "screen_login_page2_subtitle_fjut": "Log in the Educational Administration Management System of Fujian University of Technology via corrupt as a student.",
   "screen_login_page2_back": "Back to schools...",
   "screen_login_page2_studentId": "StudentID",
   "screen_login_page2_password": "Password",

@@ -31,17 +31,17 @@ class _MjuCasApiRaw implements MjuCasApiRaw {
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<String>>(
       Options(
-        method: 'GET',
-        headers: _headers,
-        extra: _extra,
-        responseType: ResponseType.plain,
-      )
+            method: 'GET',
+            headers: _headers,
+            extra: _extra,
+            responseType: ResponseType.plain,
+          )
           .compose(
-        _dio.options,
-        '/authserver/login',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/authserver/login',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<String>(_options);
@@ -77,18 +77,18 @@ class _MjuCasApiRaw implements MjuCasApiRaw {
     };
     final _options = _setStreamType<HttpResponse<String>>(
       Options(
-        method: 'POST',
-        headers: _headers,
-        extra: _extra,
-        contentType: 'application/x-www-form-urlencoded',
-        responseType: ResponseType.plain,
-      )
+            method: 'POST',
+            headers: _headers,
+            extra: _extra,
+            contentType: 'application/x-www-form-urlencoded',
+            responseType: ResponseType.plain,
+          )
           .compose(
-        _dio.options,
-        '/authserver/login',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/authserver/login',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<String>(_options);
@@ -112,11 +112,11 @@ class _MjuCasApiRaw implements MjuCasApiRaw {
     final _options = _setStreamType<MjuLoginPublicKey>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
-        _dio.options,
-        '/authserver/v2/getPubKey',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/authserver/v2/getPubKey',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
@@ -144,9 +144,7 @@ class _MjuCasApiRaw implements MjuCasApiRaw {
   }
 
   String _combineBaseUrls(String dioBaseUrl, String? baseUrl) {
-    if (baseUrl == null || baseUrl
-        .trim()
-        .isEmpty) {
+    if (baseUrl == null || baseUrl.trim().isEmpty) {
       return dioBaseUrl;
     }
 

@@ -19,18 +19,6 @@ class RefreshUseCase {
     RefreshCheckPhase(),
     PrefGatePhase(LocalDataKey.logged, (it) => it),
     CommonDataFetchPhase(
-      DataFetchType.classes,
-      LocalDataKey.localClassTable,
-      (i18n) => i18n.screen_main_refresh_classes,
-      (it) => Option.of(it.$2),
-    ),
-    CommonDataFetchPhase(
-      DataFetchType.exam,
-      LocalDataKey.localExamData,
-      (i18n) => i18n.screen_main_refresh_exams,
-      (it) => Option.of(it.$2),
-    ),
-    CommonDataFetchPhase(
       DataFetchType.termData,
       LocalDataKey.localTermData,
       (i18n) => i18n.screen_main_refresh_terms,
@@ -41,6 +29,18 @@ class RefreshUseCase {
       LocalDataKey.localClassTime,
       (i18n) => i18n.screen_main_refresh_class_time,
       (it) => Option.of(it),
+    ),
+    CommonDataFetchPhase(
+      DataFetchType.classes,
+      LocalDataKey.localClassTable,
+      (i18n) => i18n.screen_main_refresh_classes,
+      (it) => Option.of(it.$2),
+    ),
+    CommonDataFetchPhase(
+      DataFetchType.exam,
+      LocalDataKey.localExamData,
+      (i18n) => i18n.screen_main_refresh_exams,
+      (it) => Option.of(it.$2),
     ),
   ];
 
