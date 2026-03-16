@@ -5,13 +5,15 @@ part 'fjut_api_edu_raw.g.dart';
 
 @RestApi(baseUrl: "https://jwxt-443.webvpn.fjut.edu.cn")
 abstract class FjutEduApiRaw {
-  static const _academicYear = "xnd";
-  static const _semester = "xqd";
   static const _functionModuleCode = "gnmkdm";
   static const _layout = "layout";
   static const _doType = "doType";
+
+  static const _academicYear = "xnm";
+  static const _semester = "xqm";
   static const _classesReserved1 = "kzlx";
   static const _classesReserved2 = "xsdm";
+
   static const _examsReserved1 = "ksmcdmb_id";
   static const _examsReserved2 = "kch";
   static const _examsReserved3 = "kc";
@@ -30,7 +32,7 @@ abstract class FjutEduApiRaw {
   @GET("/jwglxt/kbcx/xskbcx_cxXskbcxIndex.html")
   @DioResponseType(ResponseType.plain)
   Future<HttpResponse<String>> getClassesPage({
-    @Query(_functionModuleCode) String functionModuleCode = "N253508",
+    @Query(_functionModuleCode) String functionModuleCode = "N2151",
     @Query(_layout) String layout = "default",
   });
 
@@ -72,5 +74,29 @@ abstract class FjutEduApiRaw {
     @Field(_examsReserved9) String reserved9 = "",
     @Field(_examsReserved10) String reserved10 = "asc",
     @Field(_examsReserved11) String reserved11 = "0",
+  });
+
+  @GET("/jwglxt/cjcx/cjcx_cxDgXscj.html")
+  Future<HttpResponse<String>> getScorePage({
+    @Query(_functionModuleCode) String functionModuleCode = "N305005",
+    @Query(_layout) String layout = "default",
+  });
+
+  @POST("/jwglxt/cjcx/cjcx_cxXsgrcj.html")
+  @FormUrlEncoded()
+  @DioResponseType(ResponseType.plain)
+  Future<HttpResponse<String>> getScoreData({
+    @Query(_doType) String doType = "query",
+    @Query(_functionModuleCode) String functionModuleCode = "N305005",
+    @Field(_academicYear) required String academicYear,
+    @Field(_semester) required String semester,
+    @Field("kcbj") String reserved2 = "",
+    @Field("_search") String reserved3 = "false",
+    @Field("nd") required String timestamp,
+    @Field("queryModel.showCount") String reserved4 = "5000",
+    @Field("queryModel.currentPage") String reserved5 = "1",
+    @Field("queryModel.sortName") String reserved6 = "",
+    @Field("queryModel.sortOrder") String reserved7 = "asc",
+    @Field("time") String reserved8 = "0",
   });
 }

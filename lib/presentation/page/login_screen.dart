@@ -185,6 +185,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                   children: [
                     _schoolSelectItem(i18n.school_fafu, School.fafu, ref),
                     _schoolSelectItem(i18n.school_mju, School.mju, ref),
+                    _schoolSelectItem(i18n.school_fjut, School.fjut, ref),
                   ],
                 ),
               ),
@@ -261,7 +262,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                           i18n.screen_login_page2_title,
                           style: textTheme.titleLarge,
                         ),
-                        Text(i18n.screen_login_page2_subtitle_fafu),
+                        Text(switch( ref.read(_selectedSchool)){
+                          School.fafu =>  i18n.screen_login_page2_subtitle_fafu,
+                          School.mju => i18n.screen_login_page2_subtitle_mju,
+                          School.fjut => i18n.screen_login_page2_subtitle_fjut,
+                          School.none => "",
+                        }),
                         Padding(
                           padding: EdgeInsetsGeometry.all(8.0),
                           child: Column(

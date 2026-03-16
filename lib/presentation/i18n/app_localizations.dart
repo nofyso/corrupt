@@ -106,6 +106,12 @@ abstract class AppLocalizations {
   /// **'Minjiang University'**
   String get school_mju;
 
+  /// No description provided for @school_fjut.
+  ///
+  /// In en, this message translates to:
+  /// **'Fujian University of Technology'**
+  String get school_fjut;
+
   /// No description provided for @screen_main_tab_home.
   ///
   /// In en, this message translates to:
@@ -201,6 +207,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Log in the Educational Administration Management System of Fujian Agricultural and Forestry University via corrupt as a student.'**
   String get screen_login_page2_subtitle_fafu;
+
+  /// No description provided for @screen_login_page2_subtitle_mju.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in the Educational Administration Management System of Minjiang University via corrupt as a student.'**
+  String get screen_login_page2_subtitle_mju;
+
+  /// No description provided for @screen_login_page2_subtitle_fjut.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in the Educational Administration Management System of Fujian University of Technology via corrupt as a student.'**
+  String get screen_login_page2_subtitle_fjut;
 
   /// No description provided for @screen_login_page2_back.
   ///

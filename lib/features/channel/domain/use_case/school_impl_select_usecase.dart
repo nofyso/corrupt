@@ -3,6 +3,7 @@ import 'package:corrupt/features/channel/domain/entity/school_enum.dart';
 import 'package:corrupt/features/pref/domain/entity/local_data_key.dart';
 import 'package:corrupt/features/pref/domain/use_case/prefs_usecase.dart';
 import 'package:corrupt/features/subchannels/fafu/data/fafu_school_repository_impl.dart';
+import 'package:corrupt/features/subchannels/fjut/data/fjut_school_repository_impl.dart';
 import 'package:corrupt/features/subchannels/mju/data/mju_school_repository_impl.dart';
 import 'package:fpdart/fpdart.dart';
 
@@ -10,6 +11,7 @@ class SchoolImplSelectUseCase {
   static final Map<School, AbstractSchoolRepository<dynamic, dynamic>> _map = {
     School.fafu: FafuSchoolRepositoryImpl(),
     School.mju: MjuSchoolRepositoryImpl(),
+    School.fjut: FjutSchoolRepositoryImpl(),
   };
 
   final PrefReadUseCase _prefReadUseCase;

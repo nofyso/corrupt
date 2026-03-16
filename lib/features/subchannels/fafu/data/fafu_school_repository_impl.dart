@@ -16,10 +16,11 @@ class FafuSchoolRepositoryImpl extends FafuSchoolRepository {
 
   static final _termData = [
     TermData("2025-2026", "1", DateTime(2025, DateTime.august, 31)),
+    TermData("2025-2026", "2", DateTime(2026, DateTime.march, 1)),
     //TODO network fetch
   ];
 
-  static final _classTime = ClassTime.of([
+  static final _classTime = ClassTime.fromTimes([
     (8, 0),
     (8, 50),
     (9, 55),

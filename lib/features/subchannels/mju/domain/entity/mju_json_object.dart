@@ -1,6 +1,8 @@
+import 'package:beautiful_soup_dart/beautiful_soup.dart';
 import 'package:corrupt/features/channel/domain/entity/class_table_entity.dart';
 import 'package:corrupt/features/channel/domain/entity/exam_entity.dart';
 import 'package:corrupt/features/channel/domain/entity/score_entity.dart';
+import 'package:corrupt/util/regex_helper.dart';
 import 'package:dartlin/collections.dart';
 import 'package:dartlin/control_flow.dart';
 import 'package:fpdart/fpdart.dart';
@@ -127,6 +129,42 @@ class MjuExamEntity {
   );
 
   (DateTime, DateTime)? _tryParseTime() {
+    return [
+      _timeParse1(),
+      _timeParse2(),
+    ].firstWhere((it) => it != null, orElse: () => null);
+  }
+
+  (DateTime, DateTime)? _timeParse2() {
+    final timeRaw = this.timeRaw;
+    if (timeRaw == null) return null;
+    final timePattern = "..:..-..:..".asRegExp;
+    final timeMatch = timeRaw.matchFirst(timePattern).toNullable();
+    if (timeMatch == null) {
+      return null;
+    }
+    final datePattern = "(?<=\\().*(?=\\))".asRegExp;
+    final dateMatch = timeRaw.matchFirst(datePattern).toNullable();
+    if (dateMatch == null) {
+      return null;
+    }
+    final (year, month, day) = dateMatch
+        .split("-")
+        .let((it) => (int.parse(it[0]), int.parse(it[1]), int.parse(it[2])));
+    final (fromTime, toTime) = timeMatch
+        .split("-")
+        .map(
+          (it) => it.split(":").let((a) => (int.parse(a[0]), int.parse(a[1]))),
+        )
+        .toList()
+        .let((it) => (it[0], it[1]));
+    return (
+      DateTime(year, month, day, fromTime.$1, fromTime.$2),
+      DateTime(year, month, day, toTime.$1, toTime.$2),
+    );
+  }
+
+  (DateTime, DateTime)? _timeParse1() {
     if (timeRaw == null) return null;
     if (timeRaw!.length != 23) return null;
     final (year, month, day) = timeRaw!

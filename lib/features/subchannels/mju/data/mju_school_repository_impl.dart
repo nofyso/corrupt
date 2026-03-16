@@ -16,10 +16,11 @@ class MjuSchoolRepositoryImpl extends MjuSchoolRepository {
 
   static final _termData = [
     TermData("2025-2026", "1", DateTime(2025, DateTime.august, 31)),
+    TermData("2025-2026", "2", DateTime(2026, DateTime.march, 1)),
     //TODO network fetch
   ];
 
-  static final _classTime = ClassTime.of([
+  static final _classTime = ClassTime.fromTimes([
     (8, 30),
     (9, 25),
     (10, 30),
@@ -67,7 +68,7 @@ class MjuSchoolRepositoryImpl extends MjuSchoolRepository {
         return result as Either<data_fetch_failure.SchoolDataFetchFailure, V>;
       case DataFetchType.score:
         final (academicYear, semester) =
-            (DataFetchType.exam
+            (DataFetchType.score
                 .castP(p)
                 ?.let((it) => (it.academicYear, it.semester)) ??
             (null, null));
