@@ -18,11 +18,11 @@ class ClassTimeUtil {
         "1",
         "${year - 1}-$year",
       ),
-      final x when DateTime.march <= x && x < DateTime.september => (
+      final x when DateTime.march <= x && x < DateTime.august => (
         "2",
         "${year - 1}-$year",
       ),
-      final x when DateTime.september <= x && x <= DateTime.december => (
+      final x when DateTime.august <= x && x <= DateTime.december => (
         "1",
         "$year-${year + 1}",
       ),

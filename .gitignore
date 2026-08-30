@@ -46,3 +46,6 @@ app.*.map.json
 
 # Samples
 samples/
+
+# FVM Version Cache
+.fvm/

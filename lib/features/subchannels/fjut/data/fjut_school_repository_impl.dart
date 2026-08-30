@@ -1,22 +1,25 @@
 import 'package:corrupt/features/channel/domain/entity/class_table_entity.dart';
 import 'package:corrupt/features/channel/domain/entity/common_school_data_entity.dart';
+import 'package:corrupt/features/channel/domain/entity/data_fetch_type.dart';
 import 'package:corrupt/features/channel/domain/entity/failure/school_data_fetch_failure.dart'
     as data_fetch_failure;
 import 'package:corrupt/features/channel/domain/entity/failure/school_login_failure.dart'
     as login_failure;
+import 'package:corrupt/features/channel/domain/entity/school_enum.dart';
 import 'package:corrupt/features/subchannels/fjut/data/fjut_api.dart';
 import 'package:corrupt/features/subchannels/fjut/domain/abstract_repository/fjut_school_repository.dart';
 import 'package:corrupt/features/subchannels/fjut/domain/entity/fjut_request_parameter.dart';
+import 'package:corrupt/features/subchannels/term_data_fetch/domain/abstract_repository/github_api.dart';
+import 'package:corrupt/infrastructure/di.dart';
+import 'package:corrupt/util/wrapper.dart';
 import 'package:dartlin/dartlin.dart';
 import 'package:fpdart/fpdart.dart';
-
-import '../../../channel/domain/entity/data_fetch_type.dart';
 
 class FjutSchoolRepositoryImpl extends FjutSchoolRepository {
   static final FjutApi _fjutApi = FjutApi();
 
   static final _termData = [
-    TermData("2025-2026", "2", DateTime(2026, DateTime.march, 1)),
+    TermData(School.fjut, "2025-2026", "2", DateTime(2026, DateTime.march, 1)),
   ];
 
   static final _classTime = ClassTime.fromTimes([
@@ -80,7 +83,15 @@ class FjutSchoolRepositoryImpl extends FjutSchoolRepository {
         );
         return result as Either<data_fetch_failure.SchoolDataFetchFailure, V>;
       case DataFetchType.termData:
-        return Either.right(_termData as V);
+        return Either.right(
+          [
+                ...(await getIt<GithubApi>().fetchTermData().wrapNetworkSafe())
+                    .getOrElse((e) => [])
+                    .filter((it) => it.belonging == School.fjut),
+                ..._termData,
+              ]
+              as V,
+        );
       case DataFetchType.classTime:
         return Either.right(_classTime as V);
     }
