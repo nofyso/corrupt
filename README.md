@@ -16,8 +16,8 @@ __Notice that package for iOS(ipa) is NOT signed, you have to sign it yourself__
 
 ✅ = Supported  
 ❌ = Not supported  
-| |FAFU|MJU|
-|-:|:-:|:-:|
-|Class table|✅|✅|
-|Exams|✅|✅|
-|Scores|✅|✅|
+| |FAFU|MJU|FJUT|
+|-:|:-:|:-:|:-:|
+|Class table|✅|✅|✅|
+|Exams|✅|✅|✅|
+|Scores|✅|✅|✅|
