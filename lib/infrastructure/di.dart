@@ -2,6 +2,7 @@ import 'package:corrupt/features/channel/infrastructure.dart';
 import 'package:corrupt/features/larva/infrastructure.dart';
 import 'package:corrupt/features/pref/infrastructure.dart';
 import 'package:corrupt/features/refresh/infrastructure.dart';
+import 'package:corrupt/features/subchannels/term_data_fetch/infrastructure.dart';
 import 'package:corrupt/features/update/infrastructure.dart';
 import 'package:corrupt/presentation/page/login_screen.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -19,6 +20,7 @@ void setupDependencies() {
     InfraUpdate(),
     InfraLarva(),
     InfraRefresh(),
+    InfraTermDataApi(),
   ];
 
   getIt.registerLazySingleton<EventBus>(() => EventBus());

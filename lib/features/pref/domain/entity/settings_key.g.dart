@@ -1,5 +1,3 @@
-// GENERATED FILE, DON'T EDIT
-
 part of 'settings_key.dart';
 
 class SettingKeysGen {

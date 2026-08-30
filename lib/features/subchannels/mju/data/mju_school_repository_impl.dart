@@ -5,18 +5,23 @@ import 'package:corrupt/features/channel/domain/entity/failure/school_data_fetch
     as data_fetch_failure;
 import 'package:corrupt/features/channel/domain/entity/failure/school_data_fetch_failure.dart';
 import 'package:corrupt/features/channel/domain/entity/failure/school_login_failure.dart';
+import 'package:corrupt/features/channel/domain/entity/school_enum.dart';
 import 'package:corrupt/features/subchannels/mju/data/mju_api.dart';
 import 'package:corrupt/features/subchannels/mju/domain/abstract_repository/mju_school_repository.dart';
 import 'package:corrupt/features/subchannels/mju/domain/entity/mju_request_parameter.dart';
+import 'package:corrupt/features/subchannels/term_data_fetch/domain/abstract_repository/github_api.dart';
+import 'package:corrupt/util/wrapper.dart';
 import 'package:dartlin/dartlin.dart';
 import 'package:fpdart/fpdart.dart';
+
+import '../../../../infrastructure/di.dart';
 
 class MjuSchoolRepositoryImpl extends MjuSchoolRepository {
   static final _mjuApi = MjuApi();
 
   static final _termData = [
-    TermData("2025-2026", "1", DateTime(2025, DateTime.august, 31)),
-    TermData("2025-2026", "2", DateTime(2026, DateTime.march, 1)),
+    TermData(School.mju, "2025-2026", "1", DateTime(2025, DateTime.august, 31)),
+    TermData(School.mju, "2025-2026", "2", DateTime(2026, DateTime.march, 1)),
     //TODO network fetch
   ];
 
@@ -81,7 +86,15 @@ class MjuSchoolRepositoryImpl extends MjuSchoolRepository {
         );
         return result as Either<data_fetch_failure.SchoolDataFetchFailure, V>;
       case DataFetchType.termData:
-        return Either.right(_termData as V);
+        return Either.right(
+          [
+                ...(await getIt<GithubApi>().fetchTermData().wrapNetworkSafe())
+                    .getOrElse((e) => [])
+                    .filter((it) => it.belonging == School.mju),
+                ..._termData,
+              ]
+              as V,
+        );
       case DataFetchType.classTime:
         return Either.right(_classTime as V);
     }
