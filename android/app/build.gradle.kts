@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -31,10 +33,10 @@ android {
 
     signingConfigs {
         create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = file(keystoreProperties["storeFile"] as String)
-            storePassword = keystoreProperties["storePassword"] as String
+            keyAlias = keystoreProperties["keyAlias"]!! as String
+            keyPassword = keystoreProperties["keyPassword"]!! as String
+            storeFile = file(keystoreProperties["storeFile"]!! as String)
+            storePassword = keystoreProperties["storePassword"]!! as String
         }
     }
 
@@ -54,21 +56,25 @@ android {
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("release")
 
-            manifestPlaceholders.putAll (mapOf(
-                "app_label" to "corrupt",
-                "app_icon" to "@mipmap/ic_launcher",
-                "app_roundIcon" to "@mipmap/ic_launcher",
-                "debug" to ""
-            ))
+            manifestPlaceholders.putAll(
+                mapOf(
+                    "app_label" to "corrupt",
+                    "app_icon" to "@mipmap/ic_launcher",
+                    "app_roundIcon" to "@mipmap/ic_launcher",
+                    "debug" to ""
+                )
+            )
         }
         debug {
-            applicationIdSuffix=".oxalis"
-            manifestPlaceholders.putAll(mapOf(
-                "app_label" to "dorrupt",
-                "app_icon" to "@mipmap/ic_launcher_debug",
-                "app_roundIcon" to "@mipmap/ic_launcher_debug_round",
-                "debug" to "debug."
-            ))
+            applicationIdSuffix = ".oxalis"
+            manifestPlaceholders.putAll(
+                mapOf(
+                    "app_label" to "dorrupt",
+                    "app_icon" to "@mipmap/ic_launcher_debug",
+                    "app_roundIcon" to "@mipmap/ic_launcher_debug_round",
+                    "debug" to "debug."
+                )
+            )
         }
     }
 
