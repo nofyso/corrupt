@@ -3,7 +3,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'mju_api_edu_raw.g.dart';
 
-@RestApi(baseUrl: "https://jwgl.mju.edu.cn")
+@RestApi(baseUrl: "http://jwgl.mju.edu.cn")
 abstract class MjuEduApiRaw {
   static const _functionModuleCode = "gnmkdm";
   static const _layout = "layout";

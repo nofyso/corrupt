@@ -23,7 +23,7 @@ class _MjuCasApiRaw implements MjuCasApiRaw {
 
   @override
   Future<HttpResponse<String>> getLoginPage({
-    String service = "https://jwgl.mju.edu.cn/sso/zfiotlogin",
+    String service = "http://jwgl.mju.edu.cn/sso/zfiotlogin",
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'service': service};
