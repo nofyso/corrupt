@@ -143,7 +143,7 @@ class MjuExamEntity {
     if (timeMatch == null) {
       return null;
     }
-    final datePattern = "(?<=\\().*(?=\\))".asRegExp;
+    final datePattern = "....-..-..".asRegExp;
     final dateMatch = timeRaw.matchFirst(datePattern).toNullable();
     if (dateMatch == null) {
       return null;

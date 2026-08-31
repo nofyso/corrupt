@@ -12,7 +12,7 @@ part of 'mju_api_edu_raw.dart';
 
 class _MjuEduApiRaw implements MjuEduApiRaw {
   _MjuEduApiRaw(this._dio, {this.baseUrl, this.errorLogger}) {
-    baseUrl ??= 'https://jwgl.mju.edu.cn';
+    baseUrl ??= 'http://jwgl.mju.edu.cn';
   }
 
   final Dio _dio;

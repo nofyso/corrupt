@@ -20,7 +20,7 @@ abstract class MjuCasApiRaw {
   @DioResponseType(ResponseType.plain)
   Future<HttpResponse<String>> getLoginPage({
     @Query(_serviceQuery)
-    String service = "https://jwgl.mju.edu.cn/sso/zfiotlogin",
+    String service = "http://jwgl.mju.edu.cn/sso/zfiotlogin",
   });
 
   @POST("/authserver/login")
