@@ -9,7 +9,7 @@ import 'package:retrofit/http.dart';
 
 part 'github_api.g.dart';
 
-@RestApi(baseUrl: "https://hk.gh-proxy.org/https://raw.githubusercontent.com")
+@RestApi(baseUrl: "https://gh-proxy.org/https://raw.githubusercontent.com")
 abstract class GithubApiRaw {
   factory GithubApiRaw(Dio dio, {String baseUrl}) = _GithubApiRaw;
 

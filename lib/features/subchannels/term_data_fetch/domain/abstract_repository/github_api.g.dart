@@ -12,7 +12,7 @@ part of 'github_api.dart';
 
 class _GithubApiRaw implements GithubApiRaw {
   _GithubApiRaw(this._dio, {this.baseUrl, this.errorLogger}) {
-    baseUrl ??= 'https://hk.gh-proxy.org/https://raw.githubusercontent.com';
+    baseUrl ??= 'https://gh-proxy.org/https://raw.githubusercontent.com';
   }
 
   final Dio _dio;
